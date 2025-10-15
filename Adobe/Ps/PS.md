@@ -78,10 +78,14 @@
 
 ###### 修改hosts
 
-> C:\Windows\System32\drivers\etc
->
 > ```shell
+> 文件路径
+> C:\Windows\System32\drivers\etc
+> 
+> 加入
 > 127.0.0.1 adobe.io
+> 
+> 保存
 > ```
 
 1. 火绒——防护中心——系统防护
