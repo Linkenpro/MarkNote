@@ -206,3 +206,12 @@ AdvancedDisplay ! _OptionsPage _DisplayModes
 
 ```
 
+#### Rhino插件管理
+
+插件文件路径
+
+```
+C:\Users\用户名\AppData\Roaming\McNeel\Rhinoceros\版本号\Plug-ins
+```
+
+删除指定文件夹
