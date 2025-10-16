@@ -77,7 +77,7 @@ if __name__ == '__main__':
     get_ts(m3u8_url=m3u8_url, data=m3u8_data, title=title)
 ```
 
-拆解网易云视频加密
+##### 拆解网易云视频加密
 
 ```python
 import requests
@@ -111,7 +111,7 @@ m3u8_data = resp.text
 pprint(m3u8_data)
 ```
 
-m3u8data
+m3u8数据格式
 
 ```
 #EXTM3U
@@ -599,8 +599,38 @@ ffmpeg -i input.m3u8 -c copy -bsf:a aac_adtstoasc -hls_key_info_file key_info.ke
 ```
 # 输入密钥网址
 ffmpeg -i https://jdvodluwytr3t.stu.126.net/nos/ept/hls/2019/10/02/1215197861_a4ba13766c73473da1a3eaf3e190fee4_eshd.m3u8 -c copy -bsf:a aac_adtstoasc -hls_key_info_file <(echo "<key><uri>https://vod.study.163.com/eds/api/v1/vod/hls/key?id=1215197861&token=05fb375cf80232f24caf09eb34de6df0c1d15aca0647fad9aff9f3a2cccdb70cca02fff9199a5fdf19f0213738b6af603e269e35c2262e666e4986a28a4f554953dba6799bbecee1bf90934c7457b178d5962ba63ecf57de47ce5cfa456fbccb671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801</uri></key>") output.mp4
-
 ```
 
+##### 文件管理
 
+###### 提取子文件夹文件
+
+```python
+import os
+import shutil
+
+def extract_files(src_dir, dst_dir):
+    if not os.path.exists(dst_dir):
+        os.makedirs(dst_dir)
+    
+    for root, _, files in os.walk(src_dir):
+        for file in files:
+            src_path = os.path.join(root, file)
+            dst_path = os.path.join(dst_dir, file)
+            
+            # 处理同名文件冲突
+            counter = 1
+            while os.path.exists(dst_path):
+                name, ext = os.path.splitext(file)
+                dst_path = os.path.join(dst_dir, f"{name}_{counter}{ext}")
+                counter += 1
+                
+            shutil.copy2(src_path, dst_path)
+            print(f"Copied: {src_path} -> {dst_path}")
+
+if __name__ == "__main__":
+    extract_files(source_dir, dst_folder)
+    source_dir = r"D:\Font\70款圣诞节字体包\免费可商用\中文"
+    dst_folder = r"D:\Font"
+```
 
