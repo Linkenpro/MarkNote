@@ -1,636 +1,299 @@
-###### 抓取代码1
+
+
+##### 视频处理
+
+###### webm视频转mp4格式
+
+```py
+import os 
+import subprocess 
+ 
+def convert_webm_to_mp4(folder_path):
+    # 检查FFmpeg可用性
+    try:
+        subprocess.run(["ffmpeg",  "-version"], check=True, capture_output=True)
+    except FileNotFoundError:
+        print("错误：请先安装FFmpeg并添加到系统环境变量")
+        print("下载地址：https://ffmpeg.org/download.html") 
+        return 
+ 
+    # 遍历所有深层文件 [5]()[13]()
+    for root, dirs, files in os.walk(folder_path): 
+        for file in files:
+            if file.endswith(".webm"): 
+                input_path = os.path.join(root,  file)
+                output_path = os.path.splitext(input_path)[0]()   + ".mp4"
+                
+                # 执行转换命令 [6]()
+                cmd = [
+                    "ffmpeg",
+                    "-y",  # 覆盖已存在文件 
+                    "-i", input_path,
+                    "-loglevel", "error",  # 仅显示错误日志 
+                    output_path 
+                ]
+                
+                try:
+                    # 执行转换并等待完成 [9]()
+                    result = subprocess.run(cmd,  check=True, capture_output=True, text=True)
+                    
+                    # 转换成功则删除源文件 
+                    if result.returncode  == 0 and os.path.exists(output_path): 
+                        os.remove(input_path) 
+                        print(f"已转换并删除：{input_path}")
+                except subprocess.CalledProcessError as e:
+                    print(f"转换失败：{file}\n错误信息：{e.stderr}") 
+ 
+if __name__ == "__main__":
+    target_folder = r"D:\Blender\教程_Video"  # 修改为你的文件夹路径 
+    convert_webm_to_mp4(target_folder)
+
+```
+
+###### 小宝影院
 
 ```python
 import requests
+import os
 import re
-# 导入序列化模块
-import json
-from pprint import pprint
-# 导入AES
-from Cryptodome.Cipher import AES
-# 导入进度条模块
-from tqdm import tqdm
 
+m3u8_url = "https://m3u8.hmrvideo.com/play/fddc840a02024fbeabcece58f49f23e4.m3u8"
 
-def get_response(html):
-    """
-    模拟浏览器，发送请求函数
-    """
-    #请求头
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
-        }
+headers = {
+    'accept': '*/*',
+    'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+    'origin': 'https://xiaoxintv.cc',
+    'priority': 'u=1, i',
+    'sec-ch-ua': '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'cross-site',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36',
+}
 
-    # 发送请求，获取响应对象
-    response = requests.get(url=html, headers=headers)
+m3u8_content = requests.get(url=m3u8_url,headers=headers).text
 
-    # 返回值
-    return response
+# 解析 M3U8 文件内容，提取 TS 片段 URL
+ts_urls = re.sub('#E.*', '', m3u8_content).split()
 
-def get_m3u8(html):
-    """获取m3u8链接"""
-    html_data = get_response(html=html).text
-    # 解析提取标题/ m3u8链接
-    title = re.findall(pattern:'')
-    info = re.findall(pattern:'')
-    # 转换成字典
-    json_data = json.loads(info)
-    # m3u8地址
-    m3u8_url = json_data['url']
-    # 获取m3u8的数据
-    m3u8_data = get_response(html=m3u8_url).text
-    # 返回值
-    return m3u8_url, m3u8_data, title
+# 创建下载目录
+download_dir = './download'
+os.makedirs(download_dir, exist_ok=True)
 
-def get_ts(m3u8_url, data, title):
-    """获取ts文件，并且解密"""
+# 下载 TS 片段
+for i, ts_url in enumerate(ts_urls):
+    filename = os.path.join(download_dir, f'segment_{i}.ts')
+    with requests.get(ts_url, headers=headers, stream=True) as r:
+        r.raise_for_status()
+        with open(filename, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
+    # 写入状态
+    print(f'已写入片段 {i}')
 
-    # 提取ts的链接
-    ts_list = re.sub(pattern:'#E.*', repl:'', data).split()
-    # 密钥 https://s.xlzys.com/play/QeZpzYJb/enc.key
-    key1 = re.findall('URI="(.*?)"', data)[0]
-    # 密钥id
-    key_id = m3u8_url.split('/')[-2]
-    # 密钥链接
-    key_url = f'https://s.xlzys.com/play/{key_id}/{key1}'
-    # 获取密钥
-    key = get_response(html=key_url).content
-    # 解码器
-    ci = AES.new(key, AES.MODE_CBC)
+# 完成提示
+print('完成！')
 
-    # 提取解码
-    for ts in tqdm(ts_list):
-        # 获取视频内容
-        ts_content = get_response(html=ts).content
-        # 解密数据
-        content = ci.decrypt(ts_content)
-        with open(f'{title}.mp4', mode='ab') ad f:
-            f.write(content)
+```
+
+##### 图片处理
+
+###### webp转为png格式
+
+```py
+from PIL import Image
+import os
+
+# 指定目录路径
+directory_path = r"D:\笔记整理\Photography\photo_insert"
+
+# 获取目录下的所有 .webp 文件
+webp_files = [f for f in os.listdir(directory_path) if f.endswith('.webp')]
+
+# 遍历 .webp 文件并转换为 .png 文件
+for webp_file in webp_files:
+    # 构建 .webp 文件的完整路径
+    webp_path = os.path.join(directory_path, webp_file)
     
-# 网页地址
-networkUrl = 'https://study.163.com/course/courseMain.htm?courseId=1209509824&share=1&shareId=1386467372'
-
-# 函数入口，当你的文件被当作模块调用时，下面的代码不会执行
-if __name__ == '__main__':
-    # 调用函数
-    m3u8_url, m3u8_data, title = get_m3u8(html='')
-    get_ts(m3u8_url=m3u8_url, data=m3u8_data, title=title)
-```
-
-##### 拆解网易云视频加密
-
-```python
-import requests
-import time
-from pprint import pprint
-
-# m3u8链接
-m3u8_url = 'https://jdvodluwytr3t.stu.126.net/nos/ept/hls/2019/10/16/1215248188_df4533024e9a40038e06527d8e589f84_eshd.m3u8'
-
-# 获取13位时间1699838244691时间戳
-ms_time = int(time.time()*1000)
-
-# 请求头
-headers = {
-    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
-    }
-# 传参
-payload = {
-    'ak': '7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8ed33ac9c43dd73f6e19b71b0095261b51b81a1c5ef77158d30bdc2bacde682c67141b504489213a8ca8e47eaee23303f108dcfb9efdcac0300df2ae8173c01bae5eb0b27efe9e27051e5a0754075b88de6fc2ae2e15a00d5fd833ea365cf99f418ee2acb0c2e4fb41b82eb269fcd0d4e',
-    'token': 'https://vod.study.163.com/eds/api/v1/vod/hls/key?id=1215248188&token=190764619a66db0b9c75100023c9128577544b9cb025a2743e81ca002f942eeb4b36cc5724c9b7af612f72e8ceea9f16276da52cd244a7c03654bf366305208498290cc470eebbf5133633b8d84ac9205eddf2cddc3736f9d4b14f470f2de509671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801',
-    't': ms_time
-    }
-
-
-# 获取请求
-resp = requests.get(m3u8_url, headers=headers, params=payload)
-# 获取m3u8的数据
-m3u8_data = resp.text
-
-# 检测点
-pprint(m3u8_data)
-```
-
-m3u8数据格式
-
-```
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-TARGETDURATION:10
-#EXT-X-MEDIA-SEQUENCE:0
-#EXT-X-KEY:METHOD=AES-128,URI="https://vod.study.163.com/eds/api/v1/vod/hls/key?id=1215248188&token=d658862b093276615580310b6ea01f6cb0f811d0660fda101f03f9bd8b1bf9994b36cc5724c9b7af612f72e8ceea9f16146e6158d1398dade9962548580dcae3e80b8ea9a6e87587ab3001ff95d38a71142652ae694430971c0801bb2cdae5a3671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801"
-#EXT-CUSTOM-YUNXIN:ntsversion=0,ntsprivatedata=8b72b2cf9b478ef83c526808dc91669ec9df8cc9
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd0.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd1.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd2.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd3.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd4.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd5.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd6.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd7.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd8.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd9.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd10.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd11.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd12.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd13.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd14.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd15.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd16.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd17.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd18.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd19.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd20.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd21.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd22.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd23.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd24.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd25.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd26.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd27.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd28.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd29.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd30.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd31.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd32.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd33.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd34.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd35.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd36.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd37.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd38.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd39.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd40.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd41.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd42.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd43.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd44.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd45.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd46.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd47.ts
-#EXTINF:10.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd48.ts
-#EXTINF:2.000000,
-1215248188_df4533024e9a40038e06527d8e589f84_eshd49.ts
-#EXT-X-ENDLIST
-```
-
-```
-token='d658862b093276615580310b6ea01f6cb0f811d0660fda101f03f9bd8b1bf9994b36cc5724c9b7af612f72e8ceea9f16146e6158d1398dade9962548580dcae3e80b8ea9a6e87587ab3001ff95d38a71142652ae694430971c0801bb2cdae5a3671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801'
-```
-
-错误版本
-
-```python
-import requests
-import time
-import re
-from pprint import pprint
-# 导入AES
-from Crypto.Cipher import AES
-# 导入进度条模块
-from tqdm import tqdm
-
-# m3u8链接
-m3u8_url = 'https://jdvodluwytr3t.stu.126.net/nos/ept/hls/2019/10/16/1215248188_df4533024e9a40038e06527d8e589f84_eshd.m3u8'
-# 网页长参数
-ak = '7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8ed33ac9c43dd73f6e19b71b0095261b51b81a1c5ef77158d30bdc2bacde682c67141b504489213a8ca8e47eaee23303f108dcfb9efdcac0300df2ae8173c01bae5eb0b27efe9e27051e5a0754075b88de6fc2ae2e15a00d5fd833ea365cf99f418ee2acb0c2e4fb41b82eb269fcd0d4e'
-token = 'https://vod.study.163.com/eds/api/v1/vod/hls/key?id=1215248188&token=190764619a66db0b9c75100023c9128577544b9cb025a2743e81ca002f942eeb4b36cc5724c9b7af612f72e8ceea9f16276da52cd244a7c03654bf366305208498290cc470eebbf5133633b8d84ac9205eddf2cddc3736f9d4b14f470f2de509671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801'
-# 视频标题
-title = 'out'
-
-# 默认请求头
-headers = {
-    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
-    }
-
-def get_m3u8(m3u8_url):
-    # 获取13位时间戳
-    ms_time = int(time.time()*1000)
-    # 传参
-    payload = {
-        'ak': ak,
-        'token': token,
-        't': ms_time
-        }
-    # 获取请求
-    resp = requests.get(m3u8_url, headers=headers, params=payload)
-    # 获取m3u8的数据
-    m3u8_data = resp.text
-    return m3u8_data
-
-def get_ts(data, title):
-    # 提取ts的链接
-    ts_list = re.sub(pattern='#E.*', repl='', string=data).split()
-    # URI密钥
-    keyURI = re.findall('URI="(.*?)"', data)[0]
-    # 密钥链接
-    key_url = f'https://jdvodluwytr3t.stu.126.net/nos/ept/hls/2019/10/16/{keyURI}'
-    # 获取密钥
-    key = requests.get(key_url, headers=headers).content
-    # 解码器
-    ci = AES.new(key, AES.MODE_CBC)
-
-    # 提取ts并解码
-    for ts in tqdm(ts_list):
-        # 获取视频内容
-        ts_content = requests.get(ts, headers=headers).content
-        # 解密数据
-        content = ci.decrypt(ts_content)
-        # 保存文件
-        with open(f'{title}.mp4', mode='ab') as f:
-            f.write(content)
-        # 写入完成
-        print('完成！')
-            
-# 调用函数
-if __name__ == '__main__':
-    # 保存m3u8的数据
-    data = get_m3u8(m3u8_url)
-    get_ts(data,title)
-    
-
-```
-
-错误4
-
-> 这个错误表明密钥的长度为 256 字节，但是 `Crypto.Cipher.AES.new` 函数期望的是合法的 AES 密钥长度。AES 密钥的合法长度应该是 16、24 或 32 字节（对应 128、192 或 256 位）。
->
-> 在你的代码中，请确保你提供给 `AES.new` 函数的密钥长度是符合这些规格的。如果你的密钥是字符串形式，可以使用以下方式生成合法长度的密钥：
-
-```python
-import requests
-import time
-import re
-from pprint import pprint
-# 导入AES
-from Crypto.Cipher import AES
-# 导入进度条模块
-from tqdm import tqdm
-
-# m3u8链接
-m3u8_url = 'https://jdvodluwytr3t.stu.126.net/nos/ept/hls/2019/10/16/1215248188_df4533024e9a40038e06527d8e589f84_eshd.m3u8'
-# 网页长参数
-ak = '7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8ed33ac9c43dd73f6e19b71b0095261b51b81a1c5ef77158d30bdc2bacde682c67141b504489213a8ca8e47eaee23303f108dcfb9efdcac0300df2ae8173c01bae5eb0b27efe9e27051e5a0754075b88de6fc2ae2e15a00d5fd833ea365cf99f418ee2acb0c2e4fb41b82eb269fcd0d4e'
-token = 'https://vod.study.163.com/eds/api/v1/vod/hls/key?id=1215248188&token=190764619a66db0b9c75100023c9128577544b9cb025a2743e81ca002f942eeb4b36cc5724c9b7af612f72e8ceea9f16276da52cd244a7c03654bf366305208498290cc470eebbf5133633b8d84ac9205eddf2cddc3736f9d4b14f470f2de509671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801'
-# 视频标题
-title = 'out'
-
-# 默认请求头
-headers = {
-    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
-    }
-
-def get_m3u8(m3u8_url):
-    # 获取13位时间戳
-    ms_time = int(time.time()*1000)
-    # 传参
-    payload = {
-        'ak': ak,
-        'token': token,
-        't': ms_time
-        }
-    # 获取请求
-    resp = requests.get(m3u8_url, headers=headers, params=payload)
-    # 获取m3u8的数据
-    m3u8_data = resp.text
-    return m3u8_data
-
-def get_ts(data, title):
-    # 提取ts的链接
-    ts_list = re.sub(pattern='#E.*', repl='', string=data).split()
-    # 去出URI密钥
-    keyURI = re.findall('URI="(.*?)"', data)[0]
-    # 使用正则表达式提取 token
-    match = re.search(r'token=([^&]+)', keyURI)
-    if match:
-        key = match.group(1)
-        print(len(key))
-    else:
-        print("Token not found.")
+    # 打开 .webp 文件
+    with Image.open(webp_path) as img:
+        # 构建 .png 文件的完整路径
+        png_file = os.path.splitext(webp_file)[0] + '.png'
+        png_path = os.path.join(directory_path, png_file)
         
-    # 解码器
-    ci = AES.new(key, AES.MODE_CBC)
+        # 将图片保存为 .png 格式
+        img.save(png_path, 'PNG')
+        print(f"转换: {webp_path} 到 {png_path}")
 
-    # 提取ts并解码
-    for ts in tqdm(ts_list):
-        # 获取视频内容
-        ts_content = requests.get(ts, headers=headers).content
-        # 解密数据
-        content = ci.decrypt(ts_content)
-        # 保存文件
-        with open(f'{title}.mp4', mode='ab') as f:
-            f.write(content)
-        # 写入完成
-        print('完成！')
-            
-# 调用函数
-if __name__ == '__main__':
-    # 保存m3u8的数据
-    data = get_m3u8(m3u8_url)
-    get_ts(data,title)
-    
 ```
 
-###### 错误5
+##### 文件夹处理
+
+###### 文件夹名翻译
+
+```py
+from googletrans import Translator
+import os
+
+# 初始化翻译器
+translator = Translator()
+
+# 指定文件夹路径
+folder_path = "F:/Interior"
+
+# 获取指定文件夹中的所有项目
+items = os.listdir(folder_path)
+
+# 遍历文件夹中的所有项目
+for item in items:
+    # 构建项目的完整路径
+    item_path = os.path.join(folder_path, item)
+    # 判断项目是否为文件夹
+    if os.path.isdir(item_path):
+        # 判断文件夹名是否包含中文字符
+        if any('\u4e00' <= char <= '\u9fff' for char in item):
+            # 中文文件夹名，不需要翻译
+            print(f"{item} 是中文文件夹")
+        else:
+            # 如果文件夹名中含有下划线，则使用下划线分割单词
+            folder_name_parts = item.split('_')
+            # 将单词首字母大写，其余字母小写
+            folder_name_parts = [part.capitalize() for part in folder_name_parts]
+            # 将单词连接起来
+            translated_name = ' '.join(folder_name_parts)
+            # 将英文文件夹名翻译为中文
+            translated_name = translator.translate(translated_name, src='en', dest='zh-cn').text
+            # 构建文件夹的完整路径
+            old_folder_path = os.path.join(folder_path, item)
+            new_folder_path = os.path.join(folder_path, translated_name)
+            # 重命名文件夹
+            os.rename(old_folder_path, new_folder_path)
+            print(f"已将文件夹 {item} 改名为 {translated_name}")
+
+```
+
+###### 根据后缀名分类文件
 
 ```python
-import requests
-import time
-import re
-from pprint import pprint
-# 导入AES
-from Crypto.Cipher import AES
-# 导入进度条模块
-from tqdm import tqdm
-
-# m3u8链接
-m3u8_url = 'https://jdvodluwytr3t.stu.126.net/nos/ept/hls/2019/10/16/1215248188_df4533024e9a40038e06527d8e589f84_eshd.m3u8'
-# 网页长参数
-ak = '7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8ed33ac9c43dd73f6e19b71b0095261b51b81a1c5ef77158d30bdc2bacde682c67141b504489213a8ca8e47eaee23303f108dcfb9efdcac0300df2ae8173c01bae5eb0b27efe9e27051e5a0754075b88de6fc2ae2e15a00d5fd833ea365cf99f418ee2acb0c2e4fb41b82eb269fcd0d4e'
-token = 'https://vod.study.163.com/eds/api/v1/vod/hls/key?id=1215248188&token=190764619a66db0b9c75100023c9128577544b9cb025a2743e81ca002f942eeb4b36cc5724c9b7af612f72e8ceea9f16276da52cd244a7c03654bf366305208498290cc470eebbf5133633b8d84ac9205eddf2cddc3736f9d4b14f470f2de509671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801'
-# 视频标题
-title = 'out'
-
-"""处理token"""
-# 密钥网址
-key_url = re.search(r'https://[^?]+', token).group()
-# ID头
-t_id = re.search(r'id=(\d+)', token).group(1)
-# token解钥
-token2 =re.search(r'token=([^&]+)', token).group(1)
-
-# token_payload 的参数
-t_payload = {
-    'id': t_id,
-    'token': token2
-    }
-
-# 默认请求头
-headers = {
-    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
-    }
-
-def get_m3u8(m3u8_url):
-    # 获取13位时间戳
-    ms_time = int(time.time()*1000)
-    # 传参
-    payload = {
-        'ak': ak,
-        'token': token,
-        't': ms_time
-        }
-    # 获取请求
-    resp = requests.get(m3u8_url, headers=headers, params=payload)
-    # 获取m3u8的数据
-    m3u8_data = resp.text
-    return m3u8_data
-
-def get_ts(data, title, key_url, t_payload):
-    # 提取ts的链接
-    ts_list = re.sub(pattern='#E.*', repl='', string=data).split()
-    # 去出URI密钥
-    keyURI = re.findall('URI="(.*?)"', data)[0]
-    # 获取密钥
-    key = requests.get(key_url, headers=headers, params=t_payload).content
-        
-    # 解码器
-    ci = AES.new(key, AES.MODE_CBC)
-
-    # 提取ts并解码
-    for ts in tqdm(ts_list):
-        # 获取视频内容
-        ts_content = requests.get(ts, headers=headers).content
-        # 解密数据
-        content = ci.decrypt(ts_content)
-        # 保存文件
-        with open(f'{title}.mp4', mode='ab') as f:
-            f.write(content)
-        # 写入完成
-        print('完成！')
-            
-# 调用函数
-if __name__ == '__main__':
-    # 保存m3u8的数据
-    data = get_m3u8(m3u8_url)
-    get_ts(data, title, key_url, t_payload)
-    
-```
-
-单独测试
-
-```python
-import requests
-
-url = 'https://vod.study.163.com/eds/api/v1/vod/hls/key'
-
-params = {
-    'id': 1215248188,
-    'token': 'd658862b093276615580310b6ea01f6cb0f811d0660fda101f03f9bd8b1bf9994b36cc5724c9b7af612f72e8ceea9f16146e6158d1398dade9962548580dcae3e80b8ea9a6e87587ab3001ff95d38a71142652ae694430971c0801bb2cdae5a3671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801'}
-
-headers = {
-    'Origin': 'https://study.163.com',
-    'Referer': 'https://study.163.com/',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
-    }
-resp = requests.get(url, headers=headers, params=params)
-
-print(resp.content)
-```
-
-###### 错误6
-
-```python
-import requests
-import time
-import re
-from pprint import pprint
-# 导入AES
-from Crypto.Cipher import AES
-# 导入进度条模块
-from tqdm import tqdm
-
-# m3u8链接
-m3u8_url = 'https://jdvodluwytr3t.stu.126.net/nos/ept/hls/2019/10/16/1215248188_df4533024e9a40038e06527d8e589f84_eshd.m3u8'
-# 网页长参数
-ak = '7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8ed33ac9c43dd73f6e19b71b0095261b51b81a1c5ef77158d30bdc2bacde682c67141b504489213a8ca8e47eaee23303f108dcfb9efdcac0300df2ae8173c01bae5eb0b27efe9e27051e5a0754075b88de6fc2ae2e15a00d5fd833ea365cf99f418ee2acb0c2e4fb41b82eb269fcd0d4e'
-token = 'https://vod.study.163.com/eds/api/v1/vod/hls/key?id=1215248188&token=190764619a66db0b9c75100023c9128577544b9cb025a2743e81ca002f942eeb4b36cc5724c9b7af612f72e8ceea9f16276da52cd244a7c03654bf366305208498290cc470eebbf5133633b8d84ac9205eddf2cddc3736f9d4b14f470f2de509671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801'
-# 视频标题
-title = 'out'
-
-"""处理token"""
-# token解钥
-token2 =re.search(r'token=([^&]+)', token).group(1)
-
-
-# 默认请求头
-headers = {
-    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
-    }
-
-def get_m3u8(m3u8_url):
-    # 获取13位时间戳
-    ms_time = int(time.time()*1000)
-    # 传参
-    payload = {
-        'ak': ak,
-        'token': token,
-        't': ms_time
-        }
-    # 获取请求
-    resp = requests.get(m3u8_url, headers=headers, params=payload)
-    # 获取m3u8的数据
-    m3u8_data = resp.text
-    return m3u8_data
-
-def get_ts(data, title):
-    # 提取ts的链接
-    ts_list = re.sub(pattern='#E.*', repl='', string=data).split()
-    # 去出URI密钥
-    keyURI = re.findall('URI="(.*?)"', data)[0]
-    # 将token2转换为bytes类型
-    key = token2.encode()      
-    # 解码器
-    ci = AES.new(key, AES.MODE_CBC)
-
-    # 提取ts并解码
-    for ts in tqdm(ts_list):
-        # 获取视频内容
-        ts_content = requests.get(ts, headers=headers).content
-        # 解密数据
-        content = ci.decrypt(ts_content)
-        # 保存文件
-        with open(f'{title}.mp4', mode='ab') as f:
-            f.write(content)
-        # 写入完成
-        print('完成！')
-            
-# 调用函数
-if __name__ == '__main__':
-    # 保存m3u8的数据
-    data = get_m3u8(m3u8_url)
-    get_ts(data, title)
-```
-
-###### 寻找解决方法失败
-
-```
-from Crypto.Cipher import AES
-import requests
-
-# 从 URI 获取密钥
-key_uri = "https://vod.study.163.com/eds/api/v1/vod/hls/key?id=1215248188&token=190764619a66db0b9c75100023c9128577544b9cb025a2743e81ca002f942eeb4b36cc5724c9b7af612f72e8ceea9f16276da52cd244a7c03654bf366305208498290cc470eebbf5133633b8d84ac9205eddf2cddc3736f9d4b14f470f2de509671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801"
-response = requests.get(key_uri)
-key = response.content
-
-# 加密的数据
-encrypted_data = b'190764619a66db0b9c75100023c9128577544b9cb025a2743e81ca002f942eeb4b36cc5724c9b7af612f72e8ceea9f16276da52cd244a7c03654bf366305208498290cc470eebbf5133633b8d84ac9205eddf2cddc3736f9d4b14f470f2de509671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801'  # 你的加密数据
-
-# 使用密钥进行解密
-cipher = AES.new(key, AES.MODE_CBC, iv=b'\0' * 16)  # 注意：这里使用了 CBC 模式和一个零向量作为初始向量
-decrypted_data = cipher.decrypt(encrypted_data)
-
-print("Decrypted Data:", decrypted_data)
-
-```
-
-ffmpeg下载视频
-
-```
-ffmpeg.exe -user_agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" -i https://jdvodluwytr3t.stu.126.net/nos/ept/hls/2019/10/02/1215197861_a4ba13766c73473da1a3eaf3e190fee4_eshd.m3u8 -c copy -bsf:a aac_adtstoasc -movflags +faststart download1.mp4
-```
-
-> 遇到403报错的加一个 浏览器伪装就可以解决了
-
-执行以下命令解密M3U8文件
-
-```
-ffmpeg -i input.m3u8 -c copy -bsf:a aac_adtstoasc -hls_key_info_file key_info.keyinfo output.mp4
-```
-
-```
-# 输入密钥网址
-ffmpeg -i https://jdvodluwytr3t.stu.126.net/nos/ept/hls/2019/10/02/1215197861_a4ba13766c73473da1a3eaf3e190fee4_eshd.m3u8 -c copy -bsf:a aac_adtstoasc -hls_key_info_file <(echo "<key><uri>https://vod.study.163.com/eds/api/v1/vod/hls/key?id=1215197861&token=05fb375cf80232f24caf09eb34de6df0c1d15aca0647fad9aff9f3a2cccdb70cca02fff9199a5fdf19f0213738b6af603e269e35c2262e666e4986a28a4f554953dba6799bbecee1bf90934c7457b178d5962ba63ecf57de47ce5cfa456fbccb671e1bf5f8aa9769ad15bef447b747e37a42404d535868f94a5b4533c2e69801</uri></key>") output.mp4
-```
-
-##### 文件管理
-
-###### 提取子文件夹文件
-
-```python
+"""
+扫描指定文件夹中的所有文件
+然后将它们根据文件后缀名移动到相应的文件夹内。
+"""
 import os
 import shutil
 
-def extract_files(src_dir, dst_dir):
-    if not os.path.exists(dst_dir):
-        os.makedirs(dst_dir)
-    
-    for root, _, files in os.walk(src_dir):
-        for file in files:
-            src_path = os.path.join(root, file)
-            dst_path = os.path.join(dst_dir, file)
-            
-            # 处理同名文件冲突
-            counter = 1
-            while os.path.exists(dst_path):
-                name, ext = os.path.splitext(file)
-                dst_path = os.path.join(dst_dir, f"{name}_{counter}{ext}")
-                counter += 1
-                
-            shutil.copy2(src_path, dst_path)
-            print(f"Copied: {src_path} -> {dst_path}")
+# 源文件夹路径
+source_folder = "C:/Your/Source/Folder"
 
-if __name__ == "__main__":
-    extract_files(source_dir, dst_folder)
-    source_dir = r"D:\Font\70款圣诞节字体包\免费可商用\中文"
-    dst_folder = r"D:\Font"
+# 目标文件夹路径
+target_folder = "C:/Your/Target/Folder"
+
+# 遍历源文件夹中的所有文件
+for filename in os.listdir(source_folder):
+    # 获取文件的完整路径
+    file_path = os.path.join(source_folder, filename)
+    # 判断是否为文件
+    if os.path.isfile(file_path):
+        # 获取文件后缀名
+        _, file_extension = os.path.splitext(filename)
+        # 定义目标文件夹路径
+        destination_folder = os.path.join(target_folder, file_extension[1:].lower())
+        # 如果目标文件夹不存在，则创建它
+        if not os.path.exists(destination_folder):
+            os.makedirs(destination_folder)
+        # 移动文件到目标文件夹
+        shutil.move(file_path, os.path.join(destination_folder, filename))
+
+print("文件已归类完成。")
+
+```
+
+###### 遍历删除指定目录文件夹
+
+```python
+import os
+
+# 指定文件夹路径
+# E:/Texture/Fabric/CG_Fabric
+folder_path = "E:/Texture/Fabric/CG_Fabric"
+
+# 遍历指定目录及其子目录下的所有文件夹和文件
+for root, dirs, files in os.walk(folder_path):
+    # 遍历当前目录下的所有文件
+    for file_name in files:
+        # 构建文件的完整路径
+        file_path = os.path.join(root, file_name)
+        # 如果是文件且后缀不是 .hdr 或 .exr
+        if os.path.isfile(file_path) and not file_name.lower().endswith(('.jpg', '.png')):
+            # 删除文件
+            os.remove(file_path)
+
+print("删除完成。")
+```
+
+###### 重命名文件夹
+
+```
+import os
+
+# 指定文件夹路径
+folder_path = "G:/产品设计Alan/2023年/12月份"
+
+# 遍历文件夹中的所有文件夹
+for folder_name in os.listdir(folder_path):
+    # 构建文件夹的完整路径
+    folder_full_path = os.path.join(folder_path, folder_name)
+    # 检查是否是文件夹
+    if os.path.isdir(folder_full_path):
+        # 将文件夹名称中的点（.）替换为下划线（_）
+        new_folder_name = folder_name.replace(".", "_")
+        # 构建新的文件夹完整路径
+        new_folder_full_path = os.path.join(folder_path, new_folder_name)
+        # 重命名文件夹
+        os.rename(folder_full_path, new_folder_full_path)
+        print(f"重命名文件夹: {folder_name} to {new_folder_name}")
+```
+
+###### 提取文件夹内3dm后缀文件
+
+```
+import os
+import shutil
+
+# 指定源文件夹路径和目标文件夹路径
+source_folder = r'G:\产品设计Alan\Work'
+target_folder = r'G:\产品设计Alan\Copy'
+
+# 如果目标文件夹不存在，则创建它
+if not os.path.exists(target_folder):
+    os.makedirs(target_folder)
+
+# 遍历源文件夹及其子文件夹
+for root, dirs, files in os.walk(source_folder):
+    for file in files:
+        if file.lower().endswith('.3dm'):
+            # 构建源文件路径
+            source_file = os.path.join(root, file)
+            # 构建目标文件路径
+            target_file = os.path.join(target_folder, file)
+            
+            # 如果目标文件已存在，处理文件重名问题
+            if os.path.exists(target_file):
+                base, extension = os.path.splitext(file)
+                counter = 1
+                new_target_file = os.path.join(target_folder, f"{base}_{counter}{extension}")
+                while os.path.exists(new_target_file):
+                    counter += 1
+                    new_target_file = os.path.join(target_folder, f"{base}_{counter}{extension}")
+                target_file = new_target_file
+            
+            # 复制文件到目标文件夹
+            shutil.copy2(source_file, target_file)
+            print(f"已将文件 {source_file} 复制到 {target_file}")
+
+print("复制完成。")
+
 ```
 
