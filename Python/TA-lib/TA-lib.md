@@ -1,33 +1,13 @@
 # TA-Lib
 
-# 简介：
+###### 简介
 
-Talib一直缺乏有效的中文文档，自己又有空闲时间，且在研究量化对冲系统，就发点时间，做一下翻译。 原文地址： [TA-LIB document](https://mrjbq7.github.io/ta-lib/) 翻译地址：
-
-这是一个Python 金融指数处理库[TA-LIB](http://ta-lib.org/)，他是基于 Cython 而不是 SWIG。
-
-> TA-Lib is widely used by trading software developers requiring to perform technical analysis of financial market data.
-> TA-Lib广泛应用与交易软件，和金融市场数据进行技术分析。
+> 这是一个Python 金融指数处理库,基于 Cython 而不是 SWIG
 >
-> - Includes 150+ indicators such as ADX, MACD, RSI, Stochastic, Bollinger Bands, etc.
-> - Candlestick pattern recognition
-> - Open-source API for C/C++, Java, Perl, Python and 100% Managed .NET
-> - 包含了150多个指标,包括：ADX, MACD, RSI, Stochastic, Bollinger Bands, 等.
-> - K线形态识别
-> - 完全开源，支持 C/C++, Java, Perl, Python and 100% Managed .NET
 
 #### 安装TA-Lib
 
-## 案例（快速开始）
-
-Similar to TA-Lib, the function interface provides a lightweight wrapper of the exposed TA-Lib indicators.
-类似于TA-Lib，函数接口提供了一个暴漏TA-Lib指标的轻量级封装。
-
-Each function returns an output array and have default values for their parameters, unless specified as keyword arguments. Typically, these functions will have an initial "lookback" period (a required number of observations before an output is generated) set to `NaN`.
-每个函数都默认需要输入数组，并为它们提供默认值。 参数，除非指定为关键字参数。通常，这些函数 会有一个初步的“lookback”时期（观测所需数量 在生成一个输出之前），设置为“NaN”。
-
-All of the following examples use the function API:
-所有的API函数的使用，都需引入库文件：
+###### 案例
 
 ```python
 import numpy
