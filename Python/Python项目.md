@@ -258,7 +258,7 @@ for folder_name in os.listdir(folder_path):
 
 ###### 提取文件夹内3dm后缀文件
 
-```
+```py
 import os
 import shutil
 
