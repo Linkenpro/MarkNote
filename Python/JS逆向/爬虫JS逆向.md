@@ -136,3 +136,98 @@ print(result)
 - a=解密的方法或者函数(密文)
 
 - 结合堆栈(XHR)使用不然很多文件都有这个方法
+
+#### cookie反爬
+
+###### 动态生成cookie
+
+> 每次访问一个页面都会生成新的cookie
+> 海关药监局工商xxx
+> 瑞数6
+
+###### 时效性cookie
+
+> 一定时间内有效 容易过期
+> boss直聘 51job xxx
+
+###### 需要登录网站
+
+> 服务器返回cookie中有特殊字段加密
+> 批量登录
+
+###### 接口请求对象当中
+
+###### document (dom节点)
+
+##### cookie加密
+
+静态cookie处理
+13二次加载cookie组成
+同花顺v值加密
+
+> cookie有v值
+
+- 时效性cookie
+
+- set-cookie对象
+
+- 直接js代码生成在cookie当中的某一个字段
+
+- 定位技巧 HOOK
+
+  > 控制台注入hook做cookie
+  > 在第一次使用的时候
+  > 生成位置与使用位置空间隔了10几个栈
+  >
+  > 自己写的js代码，根据请求的内容区分对象：
+  >
+  > hook setheaders ->当中的关键字
+  >
+  > hook setcookie ->关键字
+  >
+  > JSON.parse(数据类型的转换) hook JSON
+  >
+  > hook data
+  >
+  > hook open 请求参数
+  > hook 网页反调试
+
+- 可以直接搜索关键字
+
+源代码——代码段——自己写工具代码
+
+cookie2hook
+
+```js
+//自执行函数
+(function () {
+    'use strict'
+    Object.defineProperty(document, 'cookie', {
+        get: function() {
+            // debugger;
+            return "";
+        },
+        set: function(value) {
+            debugger;
+            return value;
+        },
+    });
+})()
+
+(function () {
+    var cookie_cache = document.cookie;
+    Object.defineProperty(document, 'cookie', {
+        get: function() {
+            console.log('Get cookie');
+            // debugger
+            return cookie_cache;
+        },
+        set: function (val) {
+            console.log('Set cookie', val);
+            debugger; // Pause execution on every write
+            return cookie_cache; 
+        },
+    });
+})() 
+```
+
