@@ -4,7 +4,7 @@
 Get-AppxPackage -allusers | foreach {Add-AppxPackage -register "$($_.InstallLocation)\appxmanifest.xml" -DisableDevelopmentMode}
 ```
 
-###### 预装软件卸载
+###### win10预装软件卸载
 
 ```
 
