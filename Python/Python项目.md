@@ -106,28 +106,143 @@ print('完成！')
 from PIL import Image
 import os
 
-# 指定目录路径
-directory_path = r"D:\笔记整理\Photography\photo_insert"
-
-# 获取目录下的所有 .webp 文件
-webp_files = [f for f in os.listdir(directory_path) if f.endswith('.webp')]
-
-# 遍历 .webp 文件并转换为 .png 文件
-for webp_file in webp_files:
-    # 构建 .webp 文件的完整路径
-    webp_path = os.path.join(directory_path, webp_file)
+def convert_webp_to_png(directory_path):
+    """
+    将指定目录下的所有webp图片转换为png格式，并删除原webp文件
+    :param directory_path: 目标目录路径
+    """
+    # 获取目录下的所有.webp文件
+    webp_files = [f for f in os.listdir(directory_path) if f.endswith('.webp')]
     
-    # 打开 .webp 文件
-    with Image.open(webp_path) as img:
-        # 构建 .png 文件的完整路径
-        png_file = os.path.splitext(webp_file)[0] + '.png'
-        png_path = os.path.join(directory_path, png_file)
-        
-        # 将图片保存为 .png 格式
-        img.save(png_path, 'PNG')
-        print(f"转换: {webp_path} 到 {png_path}")
+    if not webp_files:
+        print(f"目录 {directory_path} 中没有找到webp文件")
+        return
+
+    for webp_file in webp_files:
+        try:
+            # 构建文件路径
+            webp_path = os.path.join(directory_path, webp_file)
+            png_path = os.path.join(directory_path, 
+                                  os.path.splitext(webp_file)[0] + '.png')
+            
+            # 转换格式
+            with Image.open(webp_path) as img:
+                img.save(png_path, 'PNG')
+                print(f"已转换: {webp_path} -> {png_path}")
+            
+            # 删除原文件
+            os.remove(webp_path)
+            print(f"已删除: {webp_path}")
+            
+        except Exception as e:
+            print(f"处理文件 {webp_file} 时出错: {str(e)}")
+
+if __name__ == "__main__":
+    # 使用示例
+    target_directory = input("请输入要转换的文件夹：")
+    # C:\Users\源恒\Downloads
+    convert_webp_to_png(target_directory)
+```
+
+###### avif转png格式
+
+```py
+import imageio.v2 as imageio
+import os
+
+def convert_avif_to_png(directory_path):
+    # 获取目录下的所有.avif文件
+    avif_files = [f for f in os.listdir(directory_path) if f.endswith('.avif')]
+
+    if not avif_files:
+        print(f"目录 {directory_path} 中没有找到AVIF文件")
+        return
+
+    for avif_file in avif_files:
+        try:
+            # 构建文件路径
+            avif_path = os.path.join(directory_path, avif_file)
+            png_path = os.path.join(directory_path, 
+                                      os.path.splitext(avif_file)[0] + '.png')
+
+            # 转换文件格式，使用imageio读取AVIF图片
+            image = imageio.imread(avif_path)
+            # 使用imageio将图片保存为PNG格式
+            imageio.imwrite(png_path, image)
+            print(f"转换完成: {png_path}")
+
+            # 删除原文件
+            os.remove(avif_path)
+            print(f"已删除: {avif_path}")
+
+        except Exception as e:
+            print(f"处理文件 {avif_file} 时出错: {str(e)}")
+
+if __name__ == "__main__":
+    # 使用示例
+    target_directory = input("请输入要转换的文件夹路径:")
+    # C:\Users\源恒\Downloads
+    convert_avif_to_png(target_directory)
 
 ```
+
+###### **递归处理子文件夹**中的webp 和 avif 图片文件
+
+```py
+import os
+from PIL import Image
+import imageio.v2 as imageio
+
+def convert_webp_to_png(file_path):
+    """ 将单个 .webp 文件转换为 .png 并删除原文件 """
+    try:
+        png_path = os.path.splitext(file_path)[0] + '.png'
+        with Image.open(file_path) as img:
+            img.save(png_path, 'PNG')
+        print(f"✅ 已转换: {file_path} -> {png_path}")
+        os.remove(file_path)
+        print(f"🗑️  已删除: {file_path}")
+    except Exception as e:
+        print(f"❌ 处理 WebP 文件 {file_path} 时出错: {str(e)}")
+
+def convert_avif_to_png(file_path):
+    """ 将单个 .avif 文件转换为 .png 并删除原文件 """
+    try:
+        png_path = os.path.splitext(file_path)[0] + '.png'
+        image = imageio.imread(file_path)
+        imageio.imwrite(png_path, image)
+        print(f"✅ 已转换: {file_path} -> {png_path}")
+        os.remove(file_path)
+        print(f"🗑️  已删除: {file_path}")
+    except Exception as e:
+        print(f"❌ 处理 AVIF 文件 {file_path} 时出错: {str(e)}")
+
+def process_directory(root_directory):
+    """ 递归遍历目录，转换所有 .webp 和 .avif 文件为 .png """
+    if not os.path.isdir(root_directory):
+        print(f"❌ 路径无效或不是目录: {root_directory}")
+        return
+
+    found_any = False
+    for dirpath, _, filenames in os.walk(root_directory):
+        for filename in filenames:
+            file_path = os.path.join(dirpath, filename)
+            if filename.lower().endswith('.webp'):
+                convert_webp_to_png(file_path)
+                found_any = True
+            elif filename.lower().endswith('.avif'):
+                convert_avif_to_png(file_path)
+                found_any = True
+
+    if not found_any:
+        print(f"⚠️  在目录 '{root_directory}' 及其子目录中未找到 .webp 或 .avif 文件。")
+
+if __name__ == "__main__":
+    target_directory = input("请输入要转换的文件夹路径（支持子文件夹）：").strip()
+    process_directory(target_directory)
+```
+
+
 
 ##### 文件夹处理
 
