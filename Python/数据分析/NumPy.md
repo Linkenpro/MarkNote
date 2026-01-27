@@ -360,3 +360,222 @@ x=np.fromiter(it, dtype=float)
 print(x)
 ```
 
+###### numpy.arange
+
+```python
+numpy.arange(start, stop, step, dtype)
+```
+
+| 参数    | 描述                                                         |
+| :------ | :----------------------------------------------------------- |
+| `start` | 起始值，默认为`0`                                            |
+| `stop`  | 终止值（不包含）                                             |
+| `step`  | 步长，默认为`1`                                              |
+| `dtype` | 返回`ndarray`的数据类型，如果没有提供，则会使用输入数据的类型。 |
+
+```python
+import numpy as np
+ 
+x = np.arange(5)  
+print (x)
+```
+
+###### numpy.linspace
+
+数组是一个等差数列构成的
+
+```python
+np.linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None)
+```
+
+| 参数       | 描述                                                         |
+| :--------- | :----------------------------------------------------------- |
+| `start`    | 序列的起始值                                                 |
+| `stop`     | 序列的终止值，如果`endpoint`为`true`，该值包含于数列中       |
+| `num`      | 要生成的等步长的样本数量，默认为`50`                         |
+| `endpoint` | 该值为 `true` 时，数列中包含`stop`值，反之不包含，默认是True。 |
+| `retstep`  | 如果为 True 时，生成的数组中会显示间距，反之不显示。         |
+| `dtype`    | `ndarray` 的数据类型                                         |
+
+```python
+import numpy as np
+a = np.linspace(1,10,10)
+print(a)
+```
+
+###### numpy.logspace
+
+函数用于创建一个于等比数列
+
+```python
+np.logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None)
+```
+
+| 参数       | 描述                                                         |
+| :--------- | :----------------------------------------------------------- |
+| `start`    | 序列的起始值为：base ** start                                |
+| `stop`     | 序列的终止值为：base ** stop。如果`endpoint`为`true`，该值包含于数列中 |
+| `num`      | 要生成的等步长的样本数量，默认为`50`                         |
+| `endpoint` | 该值为 `true` 时，数列中中包含`stop`值，反之不包含，默认是True。 |
+| `base`     | 对数 log 的底数。                                            |
+| `dtype`    | `ndarray` 的数据类型                                         |
+
+##### numpy 切片和索引
+
+```python
+import numpy as np
+ 
+a = np.arange(10)  
+# 分隔切片参数 start:stop:step
+b = a[2:7:2]   # 从索引 2 开始到索引 7 停止，间隔为 2
+print(b)
+```
+
+###### 整数数组索引
+
+```python
+import numpy as np 
+ 
+x = np.array([[1,  2],  [3,  4],  [5,  6]]) 
+y = x[[0,1,2],  [0,1,0]]  
+print (y)
+
+# [1  4  5]
+```
+
+###### 布尔索引
+
+```python
+import numpy as np 
+ 
+x = np.array([[  0,  1,  2],[  3,  4,  5],[  6,  7,  8],[  9,  10,  11]])  
+print ('我们的数组是：')
+print (x)
+print ('\n')
+# 现在我们会打印出大于 5 的元素  
+print  ('大于 5 的元素是：')
+print (x[x >  5])
+```
+
+###### np.isnan
+
+**~**（取补运算符）来过滤 NaN
+
+```python
+import numpy as np 
+ 
+a = np.array([np.nan,  1,2,np.nan,3,4,5])  
+print (a[~np.isnan(a)])
+```
+
+###### np.iscomplex
+
+```python
+import numpy as np 
+ 
+a = np.array([1,  2+6j,  5,  3.5+5j])  
+print (a[np.iscomplex(a)])
+```
+
+###### 二维数组
+
+```python
+import numpy as np 
+ 
+x=np.arange(32).reshape((8,4))
+print(x)
+# 二维数组读取指定下标对应的行
+print("-------读取下标对应的行-------")
+print (x[[4,2,1,7]])
+```
+
+传入倒序索引数组
+
+```python
+import numpy as np 
+ 
+x=np.arange(32).reshape((8,4))
+print (x[[-4,-2,-1,-7]])
+```
+
+##### NumPy 广播
+
+当运算中的 2 个数组的形状不同时，numpy 将自动触发广播机制
+
+```python
+import numpy as np 
+ 
+a = np.array([[ 0, 0, 0],
+           [10,10,10],
+           [20,20,20],
+           [30,30,30]])
+b = np.array([0,1,2])
+print(a + b)
+```
+
+##### 迭代数组
+
+###### numpy.nditer
+
+```python
+numpy.nditer(op, flags=None, op_flags=None, op_dtypes=None, order='K', ...)
+```
+
+| 参数        | 说明                                                         |
+| ----------- | ------------------------------------------------------------ |
+| `op`        | 要迭代的数组（或数组元组，用于多数组广播迭代）               |
+| `flags`     | 控制迭代行为的标志（如 `'multi_index'`, `'c_index'`, `'refs_ok'` 等） |
+| `op_flags`  | 每个操作数的访问权限（如 `['readonly']`, `['readwrite']`, `['writeonly']`） |
+| `op_dtypes` | 指定迭代时使用的数据类型（常用于类型转换）                   |
+| `order`     | 内存访问顺序：`'C'`（行优先）、`'F'`（列优先）、`'K'`（保持原布局，默认） |
+
+```python
+import numpy as np
+ 
+a = np.arange(6).reshape(2,3)
+print ('原始数组是：')
+print (a)
+print ('\n')
+
+print ('迭代输出元素：')
+for x in np.nditer(a):
+    print (x, end=", " )
+print ('\n')
+```
+
+- `for x in np.nditer(a, order='F'):`Fortran order，即是列序优先；
+- `for x in np.nditer(a.T, order='C'):`C order，即是行序优先；
+
+```python
+import numpy as np
+ 
+a = np.arange(0,60,5) 
+a = a.reshape(3,4)  
+print ('原始数组是：') 
+print (a) 
+print ('\n') 
+print ('原始数组的转置是：') 
+b = a.T 
+print (b) 
+print ('\n') 
+print ('以 C 风格顺序排序：') 
+c = b.copy(order='C')  
+print (c)
+for x in np.nditer(c):  
+    print (x, end=", " )
+print  ('\n') 
+print  ('以 F 风格顺序排序：')
+c = b.copy(order='F')  
+print (c)
+for x in np.nditer(c):  
+    print (x, end=", " )
+```
+
+##### Numpy 数组操作
+
+修改数组形状
+翻转数组
+修改数组维度
+连接数组
+分割数组
+数组元素的添加与删除
