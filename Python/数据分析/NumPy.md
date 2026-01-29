@@ -1215,3 +1215,521 @@ print ('13 和 17 的位与：')
 print (np.bitwise_and(13, 17))
 ```
 
+###### bitwise_or
+
+```python
+import numpy as np 
+ 
+a,b = 13,17 
+print ('13 和 17 的二进制形式：')
+print (bin(a), bin(b))
+ 
+print ('13 和 17 的位或：')
+print (np.bitwise_or(13, 17))
+```
+
+###### invert
+
+invert() 函数对数组中整数进行位取反运算，即 0 变成 1，1 变成 0
+
+```python
+import numpy as np 
+ 
+print ('13 的位反转，其中 ndarray 的 dtype 是 uint8：')
+print (np.invert(np.array([13], dtype = np.uint8)))
+print ('\n')
+# 比较 13 和 242 的二进制表示，我们发现了位的反转
+ 
+print ('13 的二进制表示：')
+print (np.binary_repr(13, width = 8))
+print ('\n')
+ 
+print ('242 的二进制表示：')
+print (np.binary_repr(242, width = 8))
+```
+
+###### left_shift
+
+```python
+import numpy as np 
+ 
+print ('将 10 左移两位：')
+print (np.left_shift(10,2))
+print ('\n')
+ 
+print ('10 的二进制表示：')
+print (np.binary_repr(10, width = 8))
+print ('\n')
+ 
+print ('40 的二进制表示：')
+print (np.binary_repr(40, width = 8))
+#  '00001010' 中的两位移动到了左边，并在右边添加了两个 0。
+```
+
+###### numpy.right_shift
+
+```python
+import numpy as np 
+ 
+print ('将 40 右移两位：')
+print (np.right_shift(40,2))
+print ('\n')
+ 
+print ('40 的二进制表示：')
+print (np.binary_repr(40, width = 8))
+print ('\n')
+ 
+print ('10 的二进制表示：')
+print (np.binary_repr(10, width = 8))
+#  '00001010' 中的两位移动到了右边，并在左边添加了两个 0。
+```
+
+##### NumPy 字符串函数
+
+###### numpy.char.add()
+依次对两个数组的元素进行字符串连接
+```python
+import numpy as np 
+ 
+print ('连接两个字符串：')
+print (np.char.add(['hello'],[' xyz']))
+print ('\n')
+ 
+print ('连接示例：')
+print (np.char.add(['hello', 'hi'],[' abc', ' xyz']))
+```
+###### numpy.char.multiply()
+执行多重连接
+```python
+import numpy as np 
+ 
+print (np.char.multiply('Runoob ',3))
+```
+###### numpy.char.center()
+用于将字符串居中，并使用指定字符在左侧和右侧进行填充
+```python
+import numpy as np 
+ 
+# np.char.center(str , width,fillchar) ：
+# str: 字符串，width: 长度，fillchar: 填充字符
+print (np.char.center('Runoob', 20,fillchar = '*'))
+```
+###### numpy.char.capitalize()
+函数将字符串的第一个字母转换为大写
+```python
+import numpy as np 
+ 
+print (np.char.capitalize('runoob'))
+```
+###### numpy.char.title()
+函数将字符串的每个单词的第一个字母转换为大写
+```python
+import numpy as np
+ 
+print (np.char.title('i like runoob'))
+```
+###### numpy.char.lower()
+函数对数组的每个元素转换为小写。它对每个元素调用 str.lower
+```python
+import numpy as np 
+ 
+#操作数组
+print (np.char.lower(['RUNOOB','GOOGLE']))
+ 
+# 操作字符串
+print (np.char.lower('RUNOOB'))
+```
+###### numpy.char.upper()
+函数对数组的每个元素转换为大写。它对每个元素调用 str.upper
+```python
+import numpy as np 
+ 
+#操作数组
+print (np.char.upper(['runoob','google']))
+ 
+# 操作字符串
+print (np.char.upper('runoob'))
+```
+###### numpy.char.split()
+通过指定分隔符对字符串进行分割，并返回数组。默认情况下，分隔符为空格
+```python
+import numpy as np 
+ 
+# 分隔符默认为空格
+print (np.char.split ('i like runoob?'))
+# 分隔符为 .
+print (np.char.split ('www.runoob.com', sep = '.'))
+```
+###### numpy.char.splitlines()
+函数以换行符作为分隔符来分割字符串，并返回数组
+```python
+import numpy as np 
+ 
+# 换行符 \n
+print (np.char.splitlines('i\nlike runoob?')) 
+print (np.char.splitlines('i\rlike runoob?'))
+```
+###### numpy.char.strip()
+函数用于移除开头或结尾处的特定字符
+```python
+import numpy as np 
+ 
+# 移除字符串头尾的 a 字符
+print (np.char.strip('ashok arunooba','a'))
+ 
+# 移除数组元素头尾的 a 字符
+print (np.char.strip(['arunooba','admin','java'],'a'))
+```
+###### numpy.char.join()
+函数通过指定分隔符来连接数组中的元素或字符串
+```python
+import numpy as np 
+ 
+# 操作字符串
+print (np.char.join(':','runoob'))
+ 
+# 指定多个分隔符操作数组元素
+print (np.char.join([':','-'],['runoob','google']))
+```
+###### numpy.char.replace()
+函数使用新字符串替换字符串中的所有子字符串
+```python
+import numpy as np 
+ 
+print (np.char.replace ('i like runoob', 'oo', 'cc'))
+```
+###### numpy.char.encode()
+函数对数组中的每个元素调用 str.encode 函数。 默认编码是 utf-8，可以使用标准 Python 库中的编解码器
+```python
+import numpy as np 
+ 
+a = np.char.encode('runoob', 'cp500') 
+print (a)
+```
+###### numpy.char.decode()
+函数对编码的元素进行 str.decode() 解码
+```python
+import numpy as np 
+ 
+a = np.char.encode('runoob', 'cp500') 
+print (a)
+print (np.char.decode(a,'cp500'))
+```
+##### NumPy 数学函数
+###### 三角函数
+NumPy 提供了标准的三角函数：sin()、cos()、tan()。
+```python
+import numpy as np
+ 
+a = np.array([0,30,45,60,90])
+print ('不同角度的正弦值：')
+# 通过乘 pi/180 转化为弧度  
+print (np.sin(a*np.pi/180))
+print ('\n')
+print ('数组中角度的余弦值：')
+print (np.cos(a*np.pi/180))
+print ('\n')
+print ('数组中角度的正切值：')
+print (np.tan(a*np.pi/180))
+```
+
+###### 舍入函数
+```
+numpy.around(a,decimals)
+```
+示例
+```python
+import numpy as np
+ 
+a = np.array([1.0,5.55,  123,  0.567,  25.532])  
+print  ('原数组：')
+print (a)
+print ('\n')
+print ('舍入后：')
+print (np.around(a))
+print (np.around(a, decimals =  1))
+print (np.around(a, decimals =  -1))
+```
+###### numpy.floor()
+返回小于或者等于指定表达式的最大整数，即向下取整
+```python
+import numpy as np
+ 
+a = np.array([-1.7,  1.5,  -0.2,  0.6,  10])
+print ('提供的数组：')
+print (a)
+print ('\n')
+print ('修改后的数组：')
+print (np.floor(a))
+```
+###### numpy.ceil()
+返回大于或者等于指定表达式的最小整数，即向上取整
+```python
+import numpy as np
+ 
+a = np.array([-1.7,  1.5,  -0.2,  0.6,  10])  
+print  ('提供的数组：')
+print (a)
+print ('\n')
+print ('修改后的数组：')
+print (np.ceil(a))
+```
+##### NumPy 算术函数
+包含简单的加减乘除: add()，subtract()，multiply() 和 divide()
+```python
+import numpy as np 
+ 
+a = np.arange(9, dtype = np.float_).reshape(3,3)  
+print ('第一个数组：')
+print (a)
+print ('\n')
+print ('第二个数组：')
+b = np.array([10,10,10])  
+print (b)
+print ('\n')
+print ('两个数组相加：')
+print (np.add(a,b))
+print ('\n')
+print ('两个数组相减：')
+print (np.subtract(a,b))
+print ('\n')
+print ('两个数组相乘：')
+print (np.multiply(a,b))
+print ('\n')
+print ('两个数组相除：')
+print (np.divide(a,b))
+```
+###### numpy.reciprocal()
+函数返回参数逐元素的倒数。如 1/4 倒数为 4/1。
+```python
+import numpy as np 
+ 
+a = np.array([0.25,  1.33,  1,  100])  
+print ('我们的数组是：')
+print (a)
+print ('\n')
+print ('调用 reciprocal 函数：')
+print (np.reciprocal(a))
+```
+###### numpy.power()
+函数将第一个输入数组中的元素作为底数，计算它与第二个输入数组中相应元素的幂
+```python
+import numpy as np 
+ 
+a = np.array([10,100,1000])  
+print ('我们的数组是；')
+print (a)
+print ('\n') 
+print ('调用 power 函数：')
+print (np.power(a,2))
+print ('\n')
+print ('第二个数组：')
+b = np.array([1,2,3])  
+print (b)
+print ('\n')
+print ('再次调用 power 函数：')
+print (np.power(a,b))
+```
+###### numpy.mod()
+计算输入数组中相应元素的相除后的余数。 函数 numpy.remainder() 也产生相同的结果
+```python
+import numpy as np
+ 
+a = np.array([10,20,30]) 
+b = np.array([3,5,7])  
+print ('第一个数组：')
+print (a)
+print ('\n')
+print ('第二个数组：')
+print (b)
+print ('\n')
+print ('调用 mod() 函数：')
+print (np.mod(a,b))
+print ('\n')
+print ('调用 remainder() 函数：')
+print (np.remainder(a,b))
+```
+##### NumPy 统计函数
+提供了很多统计函数，用于从数组中查找最小元素，最大元素，百分位标准差和方差等
+##### numpy.amin() 和 numpy.amax()
+numpy.amin() 用于计算数组中的元素沿指定轴的最小值
+```
+numpy.amin(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)
+```
+numpy.amax() 用于计算数组中的元素沿指定轴的最大值
+```
+numpy.amax(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)
+```
+示例
+```python
+import numpy as np 
+ 
+a = np.array([[3,7,5],[8,4,3],[2,4,9]])  
+print ('我们的数组是：')
+print (a)
+print ('\n')
+print ('调用 amin() 函数：')
+print (np.amin(a,1))
+print ('\n')
+print ('再次调用 amin() 函数：')
+print (np.amin(a,0))
+print ('\n')
+print ('调用 amax() 函数：')
+print (np.amax(a))
+print ('\n')
+print ('再次调用 amax() 函数：')
+print (np.amax(a, axis =  0))
+```
+###### numpy.ptp()
+函数计算数组中元素最大值与最小值的差（最大值 - 最小值）
+```python
+numpy.ptp(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)
+```
+示例
+```python
+import numpy as np 
+ 
+a = np.array([[3,7,5],[8,4,3],[2,4,9]])  
+print ('我们的数组是：')
+print (a)
+print ('\n')
+print ('调用 ptp() 函数：')
+print (np.ptp(a))
+print ('\n')
+print ('沿轴 1 调用 ptp() 函数：')
+print (np.ptp(a, axis =  1))
+print ('\n')
+print ('沿轴 0 调用 ptp() 函数：')
+print (np.ptp(a, axis =  0))
+```
+##### numpy.percentile()
+位数是统计中使用的度量，表示小于这个值的观察值的百分比。 函数numpy.percentile()接受以下参数
+```
+numpy.percentile(a, q, axis)
+```
+示例
+```python
+import numpy as np 
+ 
+a = np.array([[10, 7, 4], [3, 2, 1]])
+print ('我们的数组是：')
+print (a)
+ 
+print ('调用 percentile() 函数：')
+# 50% 的分位数，就是 a 里排序之后的中位数
+print (np.percentile(a, 50)) 
+ 
+# axis 为 0，在纵列上求
+print (np.percentile(a, 50, axis=0)) 
+ 
+# axis 为 1，在横行上求
+print (np.percentile(a, 50, axis=1)) 
+ 
+# 保持维度不变
+print (np.percentile(a, 50, axis=1, keepdims=True))
+```
+###### numpy.median()
+numpy.median() 函数用于计算数组 a 中元素的中位数（中值）
+```
+numpy.median(a, axis=None, out=None, overwrite_input=False, keepdims=<no value>)
+```
+```python
+import numpy as np 
+ 
+a = np.array([[30,65,70],[80,95,10],[50,90,60]])  
+print ('我们的数组是：')
+print (a)
+print ('\n')
+print ('调用 median() 函数：')
+print (np.median(a))
+print ('\n')
+print ('沿轴 0 调用 median() 函数：')
+print (np.median(a, axis =  0))
+print ('\n')
+print ('沿轴 1 调用 median() 函数：')
+print (np.median(a, axis =  1))
+```
+###### numpy.mean()
+函数返回数组中元素的算术平均值，如果提供了轴，则沿其计算
+```python
+numpy.mean(a, axis=None, dtype=None, out=None, keepdims=<no value>)
+```
+示例
+```python
+import numpy as np 
+ 
+a = np.array([[1,2,3],[3,4,5],[4,5,6]])  
+print ('我们的数组是：')
+print (a)
+print ('\n')
+print ('调用 mean() 函数：')
+print (np.mean(a))
+print ('\n')
+print ('沿轴 0 调用 mean() 函数：')
+print (np.mean(a, axis =  0))
+print ('\n')
+print ('沿轴 1 调用 mean() 函数：')
+print (np.mean(a, axis =  1))
+```
+
+######  numpy.average()
+
+函数根据在另一个数组中给出的各自的权重计算数组中元素的加权平均值
+
+```
+numpy.average(a, axis=None, weights=None, returned=False)
+```
+
+- `a`: 输入的数组，可以是一个 NumPy 数组或类似数组的对象。
+- `axis`: 可选参数，用于指定在哪个轴上计算加权平均值。如果不提供此参数，则计算整个数组的加权平均值。可以是一个整数表示轴的索引，也可以是一个元组表示多个轴。
+- `weights`: 可选参数，用于指定对应数据点的权重。如果不提供权重数组，则默认为等权重。
+- `returned`: 可选参数，如果为True，将同时返回加权平均值和权重总和
+
+```python
+import numpy as np 
+ 
+a = np.array([1,2,3,4])  
+print ('我们的数组是：')
+print (a)
+print ('\n')
+print ('调用 average() 函数：')
+print (np.average(a))
+print ('\n')
+# 不指定权重时相当于 mean 函数
+wts = np.array([4,3,2,1])  
+print ('再次调用 average() 函数：')
+print (np.average(a,weights = wts))
+print ('\n')
+# 如果 returned 参数设为 true，则返回权重的和  
+print ('权重的和：')
+print (np.average([1,2,3,  4],weights =  [4,3,2,1], returned =  True))
+```
+
+###### numpy.std()
+
+###### 标准差
+
+标准差是一组数据平均值分散程度的一种度量
+
+```
+std = sqrt(mean((x - x.mean())**2))
+```
+
+示例
+
+```python
+import numpy as np 
+ 
+print (np.std([1,2,3,4]))
+```
+
+###### numpy.var()
+
+方差
+
+```python
+import numpy as np
+ 
+print (np.var([1,2,3,4]))
+```
+
