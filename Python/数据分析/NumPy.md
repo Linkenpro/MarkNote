@@ -1733,3 +1733,321 @@ import numpy as np
 print (np.var([1,2,3,4]))
 ```
 
+##### NumPy 字节交换
+###### numpy.ndarray.byteswap()
+函数将 ndarray 中每个元素中的字节进行大小端转换
+```python
+import numpy as np 
+ 
+a = np.array([1,  256,  8755], dtype = np.int16)  
+print ('我们的数组是：')
+print (a)
+print ('以十六进制表示内存中的数据：')
+print (map(hex,a))
+# byteswap() 函数通过传入 true 来原地交换 
+print ('调用 byteswap() 函数：')
+print (a.byteswap(True))
+print ('十六进制形式：')
+print (map(hex,a))
+# 我们可以看到字节已经交换了
+```
+##### NumPy 副本和视图
+副本是一个数据的完整的拷贝，如果我们对副本进行修改，它不会影响到原始数据，物理内存不在同一位置。
+
+视图是数据的一个别称或引用，通过该别称或引用亦便可访问、操作原有数据，但原有数据不会产生拷贝。如果我们对视图进行修改，它会影响到原始数据，物理内存在同一位置
+###### 无复制
+简单的赋值不会创建数组对象的副本。 相反，它使用原始数组的相同id()来访问它。 
+```python
+import numpy as np 
+ 
+a = np.arange(6)  
+print ('我们的数组是：')
+print (a)
+print ('调用 id() 函数：')
+print (id(a))
+print ('a 赋值给 b：')
+b = a 
+print (b)
+print ('b 拥有相同 id()：')
+print (id(b))
+print ('修改 b 的形状：')
+b.shape =  3,2  
+print (b)
+print ('a 的形状也修改了：')
+print (a)
+```
+###### 视图或浅拷贝
+ndarray.view() 方会创建一个新的数组对象，该方法创建的新数组的维数变化不会改变原始数据的维数。
+```python
+import numpy as np 
+ 
+# 最开始 a 是个 3X2 的数组
+a = np.arange(6).reshape(3,2)  
+print ('数组 a：')
+print (a)
+print ('创建 a 的视图：')
+b = a.view()  
+print (b)
+print ('两个数组的 id() 不同：')
+print ('a 的 id()：')
+print (id(a))
+print ('b 的 id()：' )
+print (id(b))
+# 修改 b 的形状，并不会修改 a
+b.shape =  2,3
+print ('b 的形状：')
+print (b)
+print ('a 的形状：')
+print (a)
+```
+
+使用切片创建视图修改数据会影响到原始数组
+```python
+import numpy as np 
+ 
+arr = np.arange(12)
+print ('我们的数组：')
+print (arr)
+print ('创建切片：')
+a=arr[3:]
+b=arr[3:]
+a[1]=123
+b[2]=234
+print(arr)
+print(id(a),id(b),id(arr[3:]))
+```
+###### 副本或深拷贝
+ndarray.copy() 函数创建一个副本。 对副本数据进行修改，不会影响到原始数据，它们物理内存不在同一位置。
+```python
+import numpy as np 
+ 
+a = np.array([[10,10],  [2,3],  [4,5]])  
+print ('数组 a：')
+print (a)
+print ('创建 a 的深层副本：')
+b = a.copy()  
+print ('数组 b：')
+print (b)
+# b 与 a 不共享任何内容  
+print ('我们能够写入 b 来写入 a 吗？')
+print (b is a)
+print ('修改 b 的内容：')
+b[0,0]  =  100  
+print ('修改后的数组 b：')
+print (b)
+print ('a 保持不变：')
+print (a)
+```
+##### NumPy 矩阵库(Matrix)
+NumPy 中包含了一个矩阵库 numpy.matlib，该模块中的函数返回的是一个矩阵，而不是 ndarray 对象。
+###### 转置矩阵
+NumPy 中除了可以使用 numpy.transpose 函数来对换数组的维度，还可以使用 T 属性。
+```python
+import numpy as np
+ 
+a = np.arange(12).reshape(3,4)
+ 
+print ('原数组：')
+print (a)
+print ('\n')
+ 
+print ('转置数组：')
+print (a.T)
+```
+###### matlib.empty()
+matlib.empty() 函数返回一个新的矩阵，语法格式为：
+```
+numpy.matlib.empty(shape, dtype, order)
+```
+示例
+```python
+import numpy.matlib 
+import numpy as np
+ 
+print (np.matlib.empty((2,2)))
+# 填充为随机数据
+```
+###### numpy.matlib.zeros()
+numpy.matlib.zeros() 函数创建一个以 0 填充的矩阵。
+```python
+import numpy.matlib 
+import numpy as np 
+ 
+print (np.matlib.zeros((2,2)))
+```
+###### numpy.matlib.ones()
+numpy.matlib.ones()函数创建一个以 1 填充的矩阵。
+```python
+import numpy.matlib 
+import numpy as np 
+ 
+print (np.matlib.ones((2,2)))
+```
+###### numpy.matlib.eye()
+numpy.matlib.eye() 函数返回一个矩阵，对角线元素为 1，其他位置为零。
+```python
+# numpy.matlib.eye(n, M,k, dtype)
+
+import numpy.matlib 
+import numpy as np 
+ 
+print (np.matlib.eye(n =  3, M =  4, k =  0, dtype =  float))
+```
+###### numpy.matlib.identity()
+numpy.matlib.identity() 函数返回给定大小的单位矩阵。
+```python
+import numpy.matlib 
+import numpy as np 
+ 
+# 大小为 5，类型位浮点型
+print (np.matlib.identity(5, dtype =  float))
+```
+###### numpy.matlib.rand()
+numpy.matlib.rand() 函数创建一个给定大小的矩阵，数据是随机填充的。
+```python
+import numpy.matlib 
+import numpy as np 
+ 
+print (np.matlib.rand(3,3))
+
+i=np.martix(＇1,2;3,4＇)
+print(i)
+
+```
+表格
+##### NumPy 线性代数
+NumPy 提供了线性代数函数库 linalg，该库包含了线性代数所需的所有功能
+###### numpy.dot()
+对于两个一维的数组，计算的是这两个数组对应下标元素的乘积和
+```python
+# numpy.dot(a, b, out=None) 
+
+import numpy.matlib
+import numpy as np
+ 
+a = np.array([[1,2],[3,4]])
+b = np.array([[11,12],[13,14]])
+print(np.dot(a,b))
+```
+##### numpy.vdot()
+numpy.vdot() 函数是两个向量的点积
+```python
+import numpy as np 
+ 
+a = np.array([[1,2],[3,4]]) 
+b = np.array([[11,12],[13,14]]) 
+ 
+# vdot 将数组展开计算内积
+print (np.vdot(a,b))
+```
+##### numpy.inner()
+numpy.inner() 函数返回一维数组的向量内积。对于更高的维度，它返回最后一个轴上的和的乘积
+```python
+import numpy as np 
+ 
+print (np.inner(np.array([1,2,3]),np.array([0,1,0])))
+# 等价于 1*0+2*1+3*0
+```
+###### numpy.matmul
+numpy.matmul 函数返回两个数组的矩阵乘积
+```python
+import numpy.matlib 
+import numpy as np 
+ 
+a = [[1,0],[0,1]] 
+b = [[4,1],[2,2]] 
+print (np.matmul(a,b))
+```
+###### numpy.linalg.det()
+numpy.linalg.det() 函数计算输入矩阵的行列式。
+行列式在线性代数中是非常有用的值。
+```python
+import numpy as np
+a = np.array([[1,2], [3,4]]) 
+ 
+print (np.linalg.det(a))
+```
+###### numpy.linalg.solve()
+numpy.linalg.solve() 函数给出了矩阵形式的线性方程的解。
+###### numpy.linalg.inv()
+numpy.linalg.inv() 函数计算矩阵的乘法逆矩阵。
+```python
+import numpy as np 
+ 
+x = np.array([[1,2],[3,4]]) 
+y = np.linalg.inv(x) 
+print (x)
+print (y)
+print (np.dot(x,y))
+```
+##### NumPy IO
+Numpy 可以读写磁盘上的文本数据或二进制数据
+###### numpy.save()
+```
+numpy.save(file, arr, allow_pickle=True, fix_imports=True)
+```
+###### numpy.load()
+读取数据
+```python
+import numpy as np 
+ 
+b = np.load('outfile.npy')  
+print (b)
+```
+
+###### np.savez()
+
+```
+numpy.savez(file, *args, **kwds)
+```
+
+- **file**：要保存的文件，扩展名为 **.npz**，如果文件路径末尾没有扩展名 **.npz**，该扩展名会被自动加上。
+- **args**: 要保存的数组，可以使用关键字参数为数组起一个名字，非关键字参数传递的数组会自动起名为 **arr_0**, **arr_1**, …　。
+- **kwds**: 要保存的数组使用关键字名称。
+
+```python
+import numpy as np 
+ 
+a = np.array([[1,2,3],[4,5,6]])
+b = np.arange(0, 1.0, 0.1)
+c = np.sin(b)
+# c 使用了关键字参数 sin_array
+np.savez("runoob.npz", a, b, sin_array = c)
+r = np.load("runoob.npz")  
+print(r.files) # 查看各个数组名称
+print(r["arr_0"]) # 数组 a
+print(r["arr_1"]) # 数组 b
+print(r["sin_array"]) # 数组 c
+```
+
+###### savetxt()
+
+```
+np.loadtxt(FILENAME, dtype=int, delimiter=' ')
+np.savetxt(FILENAME, a, fmt="%d", delimiter=",")
+```
+
+示例
+
+```python
+import numpy as np 
+ 
+a = np.array([1,2,3,4,5]) 
+np.savetxt('out.txt',a) 
+b = np.loadtxt('out.txt')  
+ 
+print(b)
+```
+
+使用 delimiter 参数
+
+```python
+import numpy as np 
+ 
+ 
+a=np.arange(0,10,0.5).reshape(4,-1)
+np.savetxt("out.txt",a,fmt="%d",delimiter=",") # 改为保存为整数，以逗号分隔
+b = np.loadtxt("out.txt",delimiter=",") # load 时也要指定为逗号分隔
+print(b)
+```
+
