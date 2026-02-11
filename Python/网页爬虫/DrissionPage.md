@@ -18,64 +18,49 @@ https://gitee.com/g1879/DrissionPage
 pip install DrissionPage
 ```
 
-## 一、基本逻辑
-
-操作浏览器的基本逻辑
-
-1. 创建浏览器对象，用于启动或接管浏览器
-2. 获取一个 Tab 对象
-3. 使用 Tab 对象访问网址
-4. 使用 Tab 对象获取标签页内需要的元素对象
-5. 使用元素对象进行交互
+##### 基本逻辑
 
 > 示例：测试打开百度网页
 >
 
 ```python
-# 导入
 from DrissionPage import Chromium
 
-# 连接浏览器
+# 创建浏览器
 browser = Chromium()  
-# 获取标签页对象
 tab = browser.latest_tab  
-# 访问网页
-tab.get('https://www.baidu.com')  
+tab.get('https://www.baidu.com')
+
 # 获取文本框元素对象
 ele = tab.ele('#kw')
-# 向文本框元素对象输入文本
-ele.input('DrissionPage')  
-# 点击按钮，上两行的代码可以缩写成这样
-tab('#su').click()  
+ele.input('DrissionPage')
+tab('#chat-submit-button').click()
+
 # 获取所有<h3>元素
 links = tab.eles('tag:h3')  
-# 遍历并打印结果
 for link in links:  
     print(link.text)
 ```
 
 > 百度网页，弹窗问题
 
-## 二、概述
+##### 概述
 
-##### 浏览器对象
+###### 浏览器对象
 
-`Chromium`对象，用于管理浏览器整体相关的操作
-
-> 如标签页管理、获取浏览器信息、设置整体运行参数等
+> 如标签页管理、获取浏览器信息、设置整体运行参数
 >
-> 示例：测试打开浏览器，并关闭浏览器
 
 ```python
 from DrissionPage import Chromium
 
-browser = Chromium()  # 创建浏览器对象
+browser = Chromium()
 browser.set.retry_times(10)  # 设置整体运行参数
-tab = browser.latest_tab  # 获取Tab对象
-browser.quit()  # 关闭浏览器
+tab = browser.latest_tab
+browser.quit() # 关闭浏览器
 ```
 
-##### 标签页对象
+###### 标签页对象
 
 `Tab`对象从浏览器对象获取，每个`Tab` 对象对应浏览器上一个实际的标签页。
 
@@ -91,27 +76,21 @@ browser.quit()  # 关闭浏览器
 from DrissionPage import Chromium
 
 browser = Chromium()
-tab1 = browser.latest_tab  # 获取最后激活的标签页对象
-tab1.get('http://DrissionPage.cn')  # 标签页访问一个网址
-tab2 = browser.new_tab('https://www.baidu.com')  # 新建一个标签页并访问网址
-tab3 = browser.get_tab(title='DrissionPage')  # 按条件获取标签页对象
+tab1 = browser.latest_tab
+tab1.get('http://DrissionPage.cn')
+tab2 = browser.new_tab('https://www.baidu.com')
+tab3 = browser.get_tab(title='DrissionPage')
 ```
 
 ##### 元素对象
 
-元素对象`ChromiumElemet`是交互的执行者
+- 内部查找
+- 相对位置查找
 
-- 点击
-- 文本输入
-- 获取元素信息
+###### 内部查找
 
-> 元素对象可从 Tab 对象获取
+> Tab 对象和元素对象都有`ele()`方法，用于在其内部查找指定元素
 >
-> 另一个元素对象通过**内部查找**或**相对定位**的方式获取
-
-###### Tab对象内部查找
-
-Tab 对象和元素对象都有`ele()`方法，用于在其内部查找指定元素。
 
 ```python
 from DrissionPage import Chromium
@@ -136,7 +115,9 @@ ele2 = ele1.next()  # 获取ele1的后一个元素
 ele2.click()  # 点击该元素
 ```
 
-## 三、连接浏览器
+## 一、连接浏览器
+
+###### Chromium()
 
 `Chromium`对象用于连接和管理浏览器
 
@@ -146,18 +127,23 @@ ele2.click()  # 点击该元素
 - 接管已打开的浏览器
 - 启动新的浏览器。
 
-每个浏览器只能有一个`Chromium`对象（同一进程中）。对同一个浏览器重复使用`Chromium()`获取的都是同一个对象。
+每个浏览器只能有一个`Chromium`对象（同一进程中），同一个浏览器重复使用`Chromium()`获取的都是同一个对象
 
-> 程序结束时，被打开的浏览器不会主动关闭（VSCode 启动的除外），以便下次运行程序时使用。 新手在使用无头模式时需注意，程序关闭后其实浏览器进程还在，只是看不见。
+> 程序结束时，被打开的浏览器不会主动关闭（VSCode 启动的除外），以便下次运行程序时使用
+>
+> 在使用无头模式时需注意，程序关闭后其实浏览器进程还在，只是看不见
 
-|    初始化参数     |              类型               | 默认值 | 说明                                                         |
+```
+Chromium(addr_or_opts,session_options)
+```
+
+|    初始化参数     |              类型               |  默认值  | 说明                                                         |
 | :---------------: | :-----------------------------: | :----: | ------------------------------------------------------------ |
 |  `addr_or_opts`   |  `str` `int` `ChromiumOptions`  | `None` | 浏览器启动配置或接管信息。 传入 'ip: port' 字符串、浏览器 ws 地址、端口数字或`ChromiumOptions`对象时按配置启动或接管浏览器； 为`None`时使用配置文件配置启动浏览器 |
 | `session_options` | `SessionOptions` `None` `False` | `None` | 使用双模 Tab 时使用的默认 Session 配置，为`None`使用 ini 文件配置，为`False`不从 ini 读取 |
 
-##### 创建浏览器
-
-程序使用默认配置，自动生成页面对象
+> 创建浏览器，程序使用默认配置，自动生成页面对象
+>
 
 ```python
 from DrissionPage import Chromium
@@ -165,97 +151,88 @@ from DrissionPage import Chromium
 browser = Chromium()
 ```
 
-- 默认情况下，程序使用 9222 端口
-
-###### 指定端口或地址
-
-创建`Chromium`对象时向`addr_or_opts`参数传入端口号或地址，可接管指定端口浏览器，若端口空闲，使用默认配置在该端口启动一个浏览器。
-
-传入端口时用`int`类型，传入地址时用`'ip:port'`格式，传入 ws 地址需为完整地址。
+> 默认情况下，程序使用 9222 端口
 
 ```python
 from DrissionPage import Chromium
 
-browser = Chromium(9333)  # 接管9333端口的浏览器，如该端口空闲，启动一个浏览器
-browser = Chromium('127.0.0.1:9333')  # 与上一行一样
-browser = Chromium('ws://127.0.0.1:8987/devtools/browser/3e590fc5-4587-47e1-8756-cf6784f2fef3')  # 指定ws连接
+#传入端口
+browser = Chromium(9333)
+#传入地址时用 ip:port 格式
+browser = Chromium('127.0.0.1:9333')
+# 指定ws地址，需为完整地址
+browser = Chromium('ws://127.0.0.1:8987/devtools/browser/3e590fc5-4587-47e1-8756-cf6784f2fef3')  
 ```
 
-##### 通过配置信息创建
+###### ChromiumOptions()
 
-如果需要已指定方式启动浏览器，可使用`ChromiumOptions`。它是专门用于设置浏览器初始状态的类，内置了常用的配置。详细使用方法见“浏览器启动配置”一节。
-
-###### 使用方法
-
-`ChromiumOptions`用于管理创建浏览器时的配置，内置了常用的配置，并能实现链式操作。
+```python
+ChromiumOptions(read_file, ini_path)
+```
 
 | 初始化参数  | 类型   | 默认值 | 说明                                                         |
 | ----------- | ------ | ------ | ------------------------------------------------------------ |
 | `read_file` | `bool` | `True` | 是否从 ini 文件中读取配置信息，如果为`False`则用默认配置创建 |
 | `ini_path`  | `str`  | `None` | 文件路径，为`None`则读取默认 ini 文件                        |
 
-- 配置对象只有在启动浏览器时生效。
-- 浏览器创建后再修改这个配置是没有效果的。
-- 接管已打开的浏览器配置也不会生效。
+> 配置对象只有在启动浏览器时生效
+>
+> 浏览器创建后，再修改配置，是没有效果的
+>
+> 接管已打开的浏览器配置也不会生效
 
 ```python
-# 导入 ChromiumOptions
 from DrissionPage import Chromium, ChromiumOptions
 
-# 创建浏览器配置对象，指定浏览器路径
 co = ChromiumOptions().set_browser_path(r'D:\chrome.exe')
-# 用该配置创建页面对象
 browser = Chromium(addr_or_opts=co)
 ```
 
-##### 使用指定 ini 文件创建
-
-以上方法是使用默认 ini 文件中保存的配置信息创建对象，你可以保存一个 ini 文件到别的地方，并在创建对象时指定使用它。
+使用指定 ini 文件创建
 
 ```python
 from DrissionPage import Chromium, ChromiumOptions
 
-# 创建配置对象时指定要读取的ini文件路径
 co = ChromiumOptions(ini_path=r'./config1.ini')
-# 使用该配置对象创建页面
 browser = Chromium(addr_or_opts=co)
 ```
 
-##### 接管已打开的浏览器
+**接管已打开的浏览器**
 
 页面对象创建时，只要指定的地址（'ip:port' 或 ws 地址）已有浏览器在运行，就会直接接管。无论浏览器是下面哪种方式启动的。
 
-##### 用程序启动的浏览器
+**用程序启动的浏览器**
 
-默认情况下，创建浏览器页面对象时会自动启动一个浏览器。
+- 默认情况下，创建浏览器页面对象时会自动启动一个浏览器
 
-只要这个浏览器不关闭，下次运行程序时会接管同一个浏览器继续操作（配置的 ip:port 信息不变）。
 
-这种方式极大地方便了程序的调试，使程序不必每次重新开始，可以单独调试某个功能。
+- 只要这个浏览器不关闭，下次运行程序时会接管同一个浏览器继续操作（配置的 ip:port 信息不变）
+
+
+> 这种方式极大地方便了程序的调试
+>
+> 使程序不必每次重新开始，可以单独调试某个功能
 
 ```python
 from DrissionPage import Chromium
 
-# 在9333端口启动浏览器同时创建对象，如果浏览器已经存在，则接管它
 browser = Chromium(9333)  
 ```
 
-##### 手动打开的浏览器
+**接管手动打开的浏览器**
 
-如果需要手动打开浏览器再接管，可以这样做：
+- 右键点击浏览器图标，选择属性
+- 在“目标”路径后面加上` --remote-debugging-port=端口号`（注意最前面有个空格）
+- 点击确定
+- 在程序中的浏览器配置中指定接管该端口浏览器
 
-1. 右键点击浏览器图标，选择属性
-2. 在“目标”路径后面加上` --remote-debugging-port=端口号`（注意最前面有个空格）
-3. 点击确定
-4. 在程序中的浏览器配置中指定接管该端口浏览器
-
-文件快捷方式的目标路径设置：
+1.文件快捷方式的目标路径设置：
 
 ```text
 "D:\chrome.exe" --remote-debugging-port=9333
 ```
 
-程序代码：
+2.程序代码：
 
 ```python
 from DrissionPage import Chromium
@@ -265,7 +242,7 @@ browser = Chromium(9333)
 
 > 接管浏览器时只有`local_port`、`address`参数是有效的。
 
-##### bat 文件启动的浏览器
+ **bat文件启动的浏览器**
 
 可以把上一种方式的目标路径设置写进 bat 文件（Windows系统），运行 bat 文件来启动浏览器，再用程序接管。
 
@@ -275,34 +252,23 @@ browser = Chromium(9333)
 "D:\chrome.exe" --remote-debugging-port=9333
 ```
 
-保存后把后缀改成 bat，然后双击运行就能在 9333 端口启动一个浏览器。程序代码则和上一个方法一致。
-
-------
-
-##### 用 ws 连接的远程浏览器
-
-直接使用 ws 地址：
-
-```python
-from DrissionPage import Chromium
-
-browser = Chromium('wss://****.com/ws?apiKey=5482a4cba773')
-```
-
-在`ChromiumOptions`设置 ws 地址：
+**用 ws 连接的远程浏览器**
 
 ```python
 from DrissionPage import Chromium, ChromiumOptions
 
+# 直接使用ws地址
+browser = Chromium('wss://****.com/ws?apiKey=5482a4cba773')
+# 在`ChromiumOptions`设置 ws 地址
 co = ChromiumOptions().set_address('wss://****.com/ws?apiKey=5482a4cba773')
 browser = Chromium(co)
 ```
 
-#### 多浏览器共存
+**多浏览器共存**
 
 如果想要同时操作多个浏览器，或者自己在使用其中一个上网，同时控制另外几个跑自动化，就需要给这些被程序控制的浏览器设置单独的 **端口** 和 **用户文件夹**，否则会造成冲突。
 
-##### 指定独立端口和数据文件夹
+**指定独立端口和数据文件夹**
 
 每个要启动的浏览器使用一个独立的`ChromiumOptions`对象进行设置：
 
@@ -324,7 +290,7 @@ tab2.get('https://www.baidu.com')
 
 > 每个浏览器都要设置独立的端口号和用户文件夹，二者缺一不可。
 
-#####  `auto_port()`方法
+`auto_port()`**方法**
 
 `ChromiumOptions`对象的`auto_port()`方法，可以指定程序每次使用空闲的端口和临时用户文件夹创建浏览器。
 
@@ -347,7 +313,7 @@ tab2.get('http://DrissionPage.cn')
 tab1.get('https://www.baidu.com')
 ```
 
-##### 在 ini 文件设置自动分配
+在 ini 文件设置自动分配
 
 可以把自动分配的配置记录到 ini 文件，这样无需创建`ChromiumOptions`，每次启动的浏览器都是独立的，不会冲突。但和`auto_port()`一样，这些浏览器也不能复用。
 
@@ -369,7 +335,7 @@ tab1.get('http://DrissionPage.cn')
 tab2.get('https://www.baidu.com')
 ```
 
-#### 使用系统浏览器用户目录
+**使用系统浏览器用户目录**
 
 初始默认配置下，程序会为每个使用的端口创建空的用户目录，并且每次接管都使用，这样可以有效避免浏览器冲突。
 
