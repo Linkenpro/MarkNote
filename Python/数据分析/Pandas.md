@@ -2,23 +2,24 @@
 
 ##### Pandas 安装
 
-```
+```python
 pip install pandas
 ```
 
-版本查看
-
 ##### `pandas.__version__`
 
-```
->>> import pandas
->>> pandas.__version__  # 查看版本
-'1.1.5'
+版本查看
+
+```python
+import pandas
+pandas.__version__  # 查看版本
 ```
 
 ## 数据结构 Series
 
-类似于一维数组或列表，是由一组数据以及与之相关的数据标签（索引）构成。Series 可以看作是 DataFrame 中的一列，也可以是单独存在的一维数据结构。
+类似于一维数组或列表，是由一组数据以及与之相关的数据标签（索引）构成
+
+Series 可以看作是DataFrame中的一列，也可以是单独存在的一维数据结构。
 
 ![img](https://www.runoob.com/wp-content/uploads/2023/12/628084-20201205212241597-1156923446.png)
 
@@ -28,34 +29,32 @@ pip install pandas
 
 ```python
 import pandas as pd
-
-# 创建一个Series对象，指定名称为'A'，值分别为1, 2, 3, 4
-# 默认索引为0, 1, 2, 3
 series = pd.Series([1, 2, 3, 4], name='A')
-
-# 显示Series对象
 print(series)
 
-# 如果你想要显式地设置索引，可以这样做：
-custom_index = [1, 2, 3, 4]  # 自定义索引
+custom_index = [1, 2, 3, 4]
 series_with_index = pd.Series([1, 2, 3, 4], index=custom_index, name='A')
 
-# 显示带有自定义索引的Series对象
 print(series_with_index)
 ```
 
 ###### pandas.Series()
 
-```
+> pandas 库用于创建一维带标签（索引）数组的核心数据结构
+>
+> 它类似于带索引的 NumPy 数组，但功能更强大，尤其适合处理带标签的数据和缺失值
+
+```python
 pandas.Series(data=None, index=None, dtype=None, name=None, copy=False, fastpath=False)
 ```
 
-- `data`：Series 的数据部分，可以是列表、数组、字典、标量值等。如果不提供此参数，则创建一个空的 Series。
-- `index`：Series 的索引部分，用于对数据进行标记。可以是列表、数组、索引对象等。如果不提供此参数，则创建一个默认的整数索引。
-- `dtype`：指定 Series 的数据类型。可以是 NumPy 的数据类型，例如 `np.int64`、`np.float64` 等。如果不提供此参数，则根据数据自动推断数据类型。
-- `name`：Series 的名称，用于标识 Series 对象。如果提供了此参数，则创建的 Series 对象将具有指定的名称。
-- `copy`：是否复制数据。默认为 False，表示不复制数据。如果设置为 True，则复制输入的数据。
-- `fastpath`：是否启用快速路径。默认为 False。启用快速路径可能会在某些情况下提高性能。
+| 参数名  | 类型                               | 默认值  | 说明                                                         |
+| ------- | ---------------------------------- | ------- | ------------------------------------------------------------ |
+| `data`  | array-like, Iterable, dict, scalar | `None`  | 输入数据。可以是列表、NumPy 数组、字典、标量等。若为字典，则自动使用其键作为索引（除非显式指定 `index`）。 |
+| `index` | array-like or Index (1D)           | `None`  | 索引标签。长度必须与 `data` 一致（除非 `data` 是标量，此时会广播到所有索引位置）。如果 `data` 是字典且未提供 `index`，则使用字典的键。 |
+| `dtype` | str, numpy.dtype, 或 pandas 类型   | `None`  | 显式指定数据类型。若为 `None`，则自动推断。例如：`'int64'`, `'float32'`, `'category'`, `'string'` 等。 |
+| `name`  | str 或其他 hashable 对象           | `None`  | Series 的名称，常用于在 DataFrame 中标识列名。               |
+| `copy`  | bool                               | `False` | 是否从输入数据（如 NumPy 数组或字典）中复制数据。设为 `True` 可避免修改原始数据影响 Series。 |
 
 ```python
 import pandas as pd
@@ -124,6 +123,8 @@ print(myvar)
 | `to_frame()`                 | 将 Series 转换为 DataFrame                             |
 | `iloc[]`                     | 通过位置索引来选择数据                                 |
 | `loc[]`                      | 通过标签索引来选择数据                                 |
+
+
 
 方法使用实例
 
