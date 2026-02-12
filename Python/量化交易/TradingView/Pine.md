@@ -1,36 +1,30 @@
 # 内置变量
 
-### ask
+##### ask
+
+当前tick的ask价，代表活跃卖家以当前价值接受该商品的最低价格。
+
+此信息仅在“1T”时间周期内可用
+
+在其他时间周期内，变量的值为`na`。
+
+- 类型:series float
 
 
+> 如果bid/ask值自最后一tick发生变化，但没有进行新的交易，则这些变化将不会反映在此变量的值中。它仅在新的tick上更新。
+>
 
-当前tick的ask价，代表活跃卖家以当前价值接受该商品的最低价格。此信息仅在“1T”时间周期内可用。在其他时间周期内，变量的值为[na](https://cn.tradingview.com/pine-script-reference/v6/#var_na)。
+##### bar_index
 
-类型
+目前的价格棒指数。 
 
-series float
-
-备注
-
-如果bid/ask值自最后一tick发生变化，但没有进行新的交易，则这些变化将不会反映在此变量的值中。它仅在新的tick上更新。
-
-另见
-
-[open](https://cn.tradingview.com/pine-script-reference/v6/#var_open)[high](https://cn.tradingview.com/pine-script-reference/v6/#var_high)[low](https://cn.tradingview.com/pine-script-reference/v6/#var_low)[volume](https://cn.tradingview.com/pine-script-reference/v6/#var_volume)[time()](https://cn.tradingview.com/pine-script-reference/v6/#fun_time)[hl2](https://cn.tradingview.com/pine-script-reference/v6/#var_hl2)[hlc3](https://cn.tradingview.com/pine-script-reference/v6/#var_hlc3)[hlcc4](https://cn.tradingview.com/pine-script-reference/v6/#var_hlcc4)[ohlc4](https://cn.tradingview.com/pine-script-reference/v6/#var_ohlc4)[bid](https://cn.tradingview.com/pine-script-reference/v6/#var_bid)
-
-### bar_index
-
-
-
-目前的价格棒指数。 编号从零开始，第一个条的索引为0。
+编号从零开始，第一个条的索引为0。
 
 类型
 
 series int
 
-例子
-
-```
+```js
 //@version=6
 indicator("bar_index")
 plot(bar_index)

@@ -4,14 +4,19 @@ NumPy(Numerical Python) 是 Python 语言的一个扩展程序库，支持大量
 
 > 一个强大的N维数组对象 ndarray
 
-##### 安装与版本查询
+##### 安装
 
 ```python
-# 按装numpy
 pip install numpy
+```
 
-# 导入库
+###### `numpy.__version__`
+
+查询numpy库版本
+
+```python
 import numpy as np
+
 print(np.__version__)
 ```
 
@@ -23,46 +28,44 @@ print(np.__version__)
 numpy.array(object, dtype = None, copy = True, order = None, subok = False, ndmin = 0)
 ```
 
-| 名称   | 描述                                                      |
-| :----- | :-------------------------------------------------------- |
-| object | 数组或嵌套的数列                                          |
-| dtype  | 数组元素的数据类型，可选参数                              |
-| copy   | 对象是否需要复制，可选参数                                |
-| order  | 创建数组的样式，C为行方向，F为列方向，A为任意方向（默认） |
-| subok  | 默认返回一个与基类类型一致的数组                          |
-| ndmin  | 指定生成数组的最小维度                                    |
+| 名称   | 描述                                                      | 参数 |
+| :----- | :-------------------------------------------------------- | ---- |
+| object | 数组或嵌套的数列                                          |      |
+| dtype  | 数组元素的数据类型，可选参数                              |      |
+| copy   | 对象是否需要复制，可选参数                                |      |
+| order  | 创建数组的样式，C为行方向，F为列方向，A为任意方向（默认） |      |
+| subok  | 默认返回一个与基类类型一致的数组                          |      |
+| ndmin  | 指定生成数组的最小维度                                    |      |
 
 ```python
-# 导入numpy
 import numpy as np
 
-a = np.array([1,2,3])  
+a = np.array([1,2,3])  # 创建一个一维数组
 print (a)
 
-b = np.array([[1,  2],  [3,  4]])  
+b = np.array([[1,  2],  [3,  4]])  # 创建一个二维数组
 print (b)
 
-c = np.array([1, 2, 3, 4, 5], ndmin =  2)  
+c = np.array([1, 2, 3, 4, 5], ndmin =  2)  # 创建一个二维数组
 print (c)
 
-# dtype 参数  
-d = np.array([1,  2,  3], dtype = complex)  
+d = np.array([1,  2,  3], dtype = complex)  # 创建一个复数数组
 print (d)
 ```
 
 ##### numpy 数据类型
 
-###### 整数类型
+###### int整数类型
 
-| 类型（NumPy） | 别名 / 等价写法         | 字节（Bytes） | 取值范围                        |
-| ------------- | ----------------------- | ------------- | ------------------------------- |
-| `int8`        | `np.byte`               | 1             | -128 ～ 127                     |
-| `int16`       | `np.short`              | 2             | -32,768 ～ 32,767               |
-| `int32`       | `np.intc`（C int）      | 4             | -2,147,483,648 ～ 2,147,483,647 |
-| `int64`       | `np.int_`（默认）       | 8             | -9.2e18 ～ 9.2e18               |
-| `intp`        | 平台指针大小（32/64位） | 4 或 8        | 同 `int32` 或 `int64`           |
+| 类型    | 别名 / 等价写法         | 字节   | 取值范围                        |
+| ------- | ----------------------- | ------ | ------------------------------- |
+| `int8`  | `np.byte`               | 1      | -128 ～ 127                     |
+| `int16` | `np.short`              | 2      | -32,768 ～ 32,767               |
+| `int32` | `np.intc`（C int）      | 4      | -2,147,483,648 ～ 2,147,483,647 |
+| `int64` | `np.int_`（默认）       | 8      | -9.2e18 ～ 9.2e18               |
+| `intp`  | 平台指针大小（32/64位） | 4 或 8 | 同 `int32` 或 `int64`           |
 
-###### 无符号整型
+###### uint无符号整型
 
 | 类型     | 别名       | 字节 | 取值范围                   |
 | -------- | ---------- | ---- | -------------------------- |
@@ -71,16 +74,16 @@ print (d)
 | `uint32` | —          | 4    | 0 ～ 4,294,967,295         |
 | `uint64` | —          | 8    | 0 ～ 1.8e19                |
 
-###### 浮点型
+###### float浮点型
 
-| 类型      | 别名 / 说明          | 字节 | 精度（约）        | 默认？         |
-| --------- | -------------------- | ---- | ----------------- | -------------- |
-| `float16` | 半精度（IEEE 754）   | 2    | 3～4 位有效数字   | ❌              |
-| `float32` | 单精度（C `float`）  | 4    | 6～7 位有效数字   | ❌              |
-| `float64` | 双精度（C `double`） | 8    | 15～16 位有效数字 | ✅ 默认浮点类型 |
-| `float_`  | 等价于 `float64`     | 8    | —                 | ✅              |
+| 类型      | 说明                 | 字节 | 精度              |
+| --------- | -------------------- | ---- | ----------------- |
+| `float16` | 半精度（IEEE 754）   | 2    | 3～4 位有效数字   |
+| `float32` | 单精度（C `float`）  | 4    | 6～7 位有效数字   |
+| `float64` | 双精度（C `double`） | 8    | 15～16 位有效数字 |
+| `float_`  | 等价于 `float64`     | 8    | —                 |
 
-###### 复数
+###### complex复数类型
 
 | 类型         | 组成           | 总字节 | 说明                               |
 | ------------ | -------------- | ------ | ---------------------------------- |
@@ -88,7 +91,7 @@ print (d)
 | `complex128` | 2 × `float64`  | 16     | 实部+虚部各 8 字节（默认复数类型） |
 | `complex_`   | = `complex128` | 16     | —                                  |
 
-###### 布尔型
+###### bool布尔型
 
 | 类型   | 字节 | 取值             |
 | ------ | ---- | ---------------- |
@@ -128,40 +131,44 @@ numpy.dtype(object, align, copy)
 import numpy as np 
  
 a = np.arange(24)  
-print (a.ndim)             # a 现只有一个维度
-# 现在调整其大小
-b = a.reshape(2,4,3)  # b 现在拥有三个维度
+print (a.ndim)
+
+b = a.reshape(2,4,3)
 print (b.ndim)
 ```
 
 ###### ndarray.shape
 
-> 表示数组的维度，返回一个元组，这个元组的长度就是维度的数目，即 ndim 属性(秩)
+> 表示数组的维度
+>
+> 返回一个元组，这个元组的长度就是维度的数目，即ndim属性(秩)
 
 ```python
 import numpy as np  
- 
+
 a = np.array([[1,2,3],[4,5,6]])  
 print (a.shape)
 ```
 
 ###### ndarray.itemsize
 
-
+> 只读属性
+>
+> 返回数组中每个元素所占的字节数（bytes）
 
 ```python
 import numpy as np 
  
-# 数组的 dtype 为 int8（一个字节）  
 x = np.array([1,2,3,4,5], dtype = np.int8)  
 print (x.itemsize)
- 
-# 数组的 dtype 现在为 float64（八个字节） 
+
 y = np.array([1,2,3,4,5], dtype = np.float64)  
 print (y.itemsize)
 ```
 
 ###### ndarray.flags
+
+> 用于描述数组的内存布局和行为特性
 
 ```python
 import numpy as np 
@@ -173,6 +180,8 @@ print (x.flags)
 ##### numpy创建数组
 
 ###### numpy.empty
+
+> 用于快速创建未初始化数组的函数
 
 ```python
 numpy.empty(shape, dtype = float, order = 'C')
@@ -193,6 +202,10 @@ print (x)
 
 ###### numpy.zeros
 
+> 创建指定形状、数据类型，并用 0 填充的数组
+>
+> 科学计算场景中更常见
+
 ```python
 numpy.zeros(shape, dtype = float, order = 'C')
 ```
@@ -205,21 +218,20 @@ numpy.zeros(shape, dtype = float, order = 'C')
 
 ```python
 import numpy as np
- 
-# 默认为浮点数
+
 x = np.zeros(5) 
 print(x)
- 
-# 设置类型为整数
+
 y = np.zeros((5,), dtype = int) 
 print(y)
- 
-# 自定义类型
+
 z = np.zeros((2,2), dtype = [('x', 'i4'), ('y', 'i4')])  
 print(z)
 ```
 
 ###### numpy.ones
+
+> 创建指定形状的数组，数组元素以 1 来填充
 
 ```python
 numpy.ones(shape, dtype = None, order = 'C')
@@ -233,17 +245,17 @@ numpy.ones(shape, dtype = None, order = 'C')
 
 ```python
 import numpy as np
- 
-# 默认为浮点数
-x = np.ones(5) 
+
+x = np.ones(5)
 print(x)
- 
-# 自定义类型
+
 x = np.ones([2,2], dtype = int)
 print(x)
 ```
 
 ###### numpy.zeros_like
+
+> 创建一个与给定数组具有相同形状的数组，数组元素以 0 来填充
 
 ```python
 numpy.zeros_like(a, dtype=None, order='K', subok=True, shape=None)
@@ -270,6 +282,8 @@ print(zeros_arr)
 
 ###### numpy.ones_like
 
+> 创建一个与给定数组具有相同形状的数组，数组元素以 1 来填充
+
 ```python
 numpy.ones_like(a, dtype=None, order='K', subok=True, shape=None)
 ```
@@ -284,16 +298,18 @@ numpy.ones_like(a, dtype=None, order='K', subok=True, shape=None)
 
 ```python
 import numpy as np
- 
-# 创建一个 3x3 的二维数组
+
 arr = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
- 
-# 创建一个与 arr 形状相同的，所有元素都为 1 的数组
+
 ones_arr = np.ones_like(arr)
 print(ones_arr)
 ```
 
+##### 从已有数组创建
+
 ###### numpy.asarray
+
+> 将输入数据（如列表、元组、其他数组等）转换为 ndarray
 
 ```python
 numpy.asarray(a, dtype = None, order = None)
@@ -302,20 +318,21 @@ numpy.asarray(a, dtype = None, order = None)
 | 参数  | 描述                                                         |
 | :---- | :----------------------------------------------------------- |
 | a     | 任意形式的输入参数，可以是，列表, 列表的元组, 元组, 元组的元组, 元组的列表，多维数组 |
-| dtype | 数据类型，可选                                               |
+| dtype | 数据类型，(可选)                                             |
 | order | 可选，有"C"和"F"两个选项,分别代表，行优先和列优先，在计算机内存中的存储元素的顺序。 |
 
 ```python
 import numpy as np 
  
-x =  [1,2,3] 
+x = [1,2,3]
 a = np.asarray(x)  
 print (a)
 ```
 
 ###### numpy.frombuffer
 
-用于实现动态数组
+> 用于实现动态数组
+>
 
 ```python
 numpy.frombuffer(buffer, dtype = float, count = -1, offset = 0)
@@ -338,6 +355,10 @@ print (a)
 
 ###### numpy.fromiter
 
+> 用于从可迭代对象（如生成器、列表、元组、集合等）高效创建一维数组的函数
+>
+> 适用于**内存受限或数据量大**的场景，因为它可以避免先将整个可迭代对象转为列表再创建数组，从而节省内存
+
 ```python
 numpy.fromiter(iterable, dtype, count=-1)
 ```
@@ -350,17 +371,19 @@ numpy.fromiter(iterable, dtype, count=-1)
 
 ```python
 import numpy as np 
- 
-# 使用 range 函数创建列表对象  
+
 list=range(5)
 it=iter(list)
- 
-# 使用迭代器创建 ndarray 
+
 x=np.fromiter(it, dtype=float)
 print(x)
 ```
 
 ###### numpy.arange
+
+> 用于创建等差一维数组（类似 Python 内置的 range，但返回的是 ndarray）的核心函数
+>
+> 生成数值序列、索引、坐标轴等方面应用极为广泛
 
 ```python
 numpy.arange(start, stop, step, dtype)
@@ -375,14 +398,16 @@ numpy.arange(start, stop, step, dtype)
 
 ```python
 import numpy as np
- 
+
 x = np.arange(5)  
 print (x)
 ```
 
 ###### numpy.linspace
 
-数组是一个等差数列构成的
+> 在指定区间内生成等间距数值序列的函数
+>
+> 适合需要精确控制端点或避免浮点误差的场景
 
 ```python
 np.linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None)
@@ -405,7 +430,9 @@ print(a)
 
 ###### numpy.logspace
 
-函数用于创建一个于等比数列
+> 用于在对数尺度上生成等比（几何）序列的函数
+>
+> 常用于需要指数级变化的场景，如频率扫描、学习率衰减、对数坐标轴等
 
 ```python
 np.logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None)
@@ -420,14 +447,13 @@ np.logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None)
 | `base`     | 对数 log 的底数。                                            |
 | `dtype`    | `ndarray` 的数据类型                                         |
 
-##### numpy 切片和索引
+#### numpy切片和索引
 
 ```python
 import numpy as np
  
-a = np.arange(10)  
-# 分隔切片参数 start:stop:step
-b = a[2:7:2]   # 从索引 2 开始到索引 7 停止，间隔为 2
+a = np.arange(10)
+b = a[2:7:2]
 print(b)
 ```
 
@@ -439,8 +465,6 @@ import numpy as np
 x = np.array([[1,  2],  [3,  4],  [5,  6]]) 
 y = x[[0,1,2],  [0,1,0]]  
 print (y)
-
-# [1  4  5]
 ```
 
 ###### 布尔索引
@@ -452,23 +476,31 @@ x = np.array([[  0,  1,  2],[  3,  4,  5],[  6,  7,  8],[  9,  10,  11]])
 print ('我们的数组是：')
 print (x)
 print ('\n')
-# 现在我们会打印出大于 5 的元素  
+
 print  ('大于 5 的元素是：')
 print (x[x >  5])
 ```
 
 ###### np.isnan
 
-**~**（取补运算符）来过滤 NaN
+> **~**（取补运算符）来过滤 NaN
+>
+> 用于检测数组元素是否为NaN（Not a Number）的函数
+>
+> 在数据清洗、科学计算和机器学习中非常常用，因为 NaN 值会干扰统计计算、模型训练等过程
 
 ```python
 import numpy as np 
- 
+
 a = np.array([np.nan,  1,2,np.nan,3,4,5])  
 print (a[~np.isnan(a)])
 ```
 
 ###### np.iscomplex
+
+> 用于检测数组元素是否为复数（complex）类型的函数
+>
+> 返回一个布尔数组，标识每个元素是否具有非零虚部
 
 ```python
 import numpy as np 
@@ -484,8 +516,8 @@ import numpy as np
  
 x=np.arange(32).reshape((8,4))
 print(x)
-# 二维数组读取指定下标对应的行
-print("-------读取下标对应的行-------")
+
+print("读取下标对应的行")
 print (x[[4,2,1,7]])
 ```
 
@@ -498,7 +530,7 @@ x=np.arange(32).reshape((8,4))
 print (x[[-4,-2,-1,-7]])
 ```
 
-##### NumPy 广播
+#### NumPy 广播
 
 当运算中的 2 个数组的形状不同时，numpy 将自动触发广播机制
 
@@ -517,6 +549,10 @@ print(a + b)
 
 ###### numpy.nditer
 
+> 一个高效、灵活的多维数组迭代器对象
+>
+> 对**内存布局、数据类型转换、读写控制、多数组广播迭代**等高级功能的支持，特别适合需要高性能或复杂迭代逻辑的场景
+
 ```python
 numpy.nditer(op, flags=None, op_flags=None, op_dtypes=None, order='K', ...)
 ```
@@ -531,16 +567,10 @@ numpy.nditer(op, flags=None, op_flags=None, op_dtypes=None, order='K', ...)
 
 ```python
 import numpy as np
- 
-a = np.arange(6).reshape(2,3)
-print ('原始数组是：')
-print (a)
-print ('\n')
 
-print ('迭代输出元素：')
-for x in np.nditer(a):
-    print (x, end=", " )
-print ('\n')
+arr = np.array([[1, 2], [3, 4]])
+for x in np.nditer(arr):
+    print(x, end=' ')
 ```
 
 - `for x in np.nditer(a, order='F'):`Fortran order，即是列序优先；
@@ -555,30 +585,42 @@ print ('原始数组是：')
 print (a) 
 print ('\n') 
 print ('原始数组的转置是：') 
-b = a.T 
-print (b) 
+
+b = a.T
+print (b)
 print ('\n') 
 print ('以 C 风格顺序排序：') 
 c = b.copy(order='C')  
 print (c)
+
 for x in np.nditer(c):  
     print (x, end=", " )
 print  ('\n') 
 print  ('以 F 风格顺序排序：')
 c = b.copy(order='F')  
 print (c)
+
 for x in np.nditer(c):  
-    print (x, end=", " )
+    print (x, end=", ")
 ```
 
-##### Numpy 数组操作
+#### Numpy 数组操作
 
 ###### numpy.reshape
+
+> 是 NumPy 中用于改变数组形状（shape）而不改变其数据的核心函数
+>
+> 它返回一个具有新形状的视图（view）（如果可能），而非副本，因此非常高效
+
 ```python
 numpy.reshape(arr, newshape, order='C')
 ```
-arr：要修改形状的数组
-newshape：
+| 参数       | 说明                                                         |
+| ---------- | ------------------------------------------------------------ |
+| `a`        | 输入数组（`ndarray`）                                        |
+| `newshape` | 新形状：整数或整数元组（如 `(2, 3)`）。元素总数必须与原数组相同 |
+| `order`    | 内存读取/写入顺序： • `'C'`：C 风格（行优先，默认） • `'F'`：Fortran 风格（列优先） • `'A'`：若原数组是 F 连续且非 C 连续，则用 `'F'`，否则用 `'C'` |
+
 ```python
 import numpy as np
  
@@ -586,56 +628,67 @@ a = np.arange(8)
 print ('原始数组：')
 print (a)
 print ('\n')
- 
+
 b = a.reshape(4,2)
 print ('修改后的数组：')
 print (b)
-
 ```
-###### numpy.ndarray.flat
-numpy.ndarray.flat 是一个数组元素迭代器
+###### numpy.flat
+> 是 NumPy 数组的一个属性，它返回一个 **`numpy.flatiter` **对象
+>
+> 该对象提供了一种**高效、内存友好**的方式来遍历数组的所有元素
+
 ```python
 import numpy as np
- 
+
 a = np.arange(9).reshape(3,3) 
 print ('原始数组：')
 for row in a:
     print (row)
- 
-#对数组中每个元素都进行处理，可以使用flat属性，该属性是一个数组元素迭代器：
+
 print ('迭代后的数组：')
 for element in a.flat:
     print (element)
 ```
-###### numpy.ndarray.flatten
-返回一份数组拷贝，对拷贝所做的修改不会影响原始数组，格式如下：
+###### numpy.flatten
+
+> 用于将多维数组展平为一维数组
+>
+> flatten() 总是返回一个全新的副本，修改展平后的数组不会影响原始数据
+
 ```python
 ndarray.flatten(order='C')
 ```
-例子
+| 参数    | 默认值 | 说明                                                         |
+| ------- | ------ | ------------------------------------------------------------ |
+| `order` | `'C'`  | 元素读取顺序： • `'C'`：C 风格（行优先） • `'F'`：Fortran 风格（列优先） • `'A'`：若原数组是 F 连续则用 `'F'`，否则 `'C'` • `'K'`：按内存中实际存储顺序 |
+
 ```python
 import numpy as np
- 
+
 a = np.arange(8).reshape(2,4)
  
 print ('原数组：')
 print (a)
 print ('\n')
-# 默认按行
- 
+
 print ('展开的数组：')
 print (a.flatten())
 print ('\n')
- 
+
 print ('以 F 风格顺序展开的数组：')
 print (a.flatten(order = 'F'))
 ```
 ###### numpy.ravel
-numpy.ravel() 展平的数组元素，顺序通常是"C风格"，返回的是数组视图
+> numpy.ravel()展平的数组元素，顺序通常是"C风格"，返回的是数组视图
+
 ```python
 numpy.ravel(a, order='C')
 ```
-示例
+| 参数    | 默认值 | 说明                                                         |
+| ------- | ------ | ------------------------------------------------------------ |
+| `order` | `'C'`  | 元素读取顺序： • `'C'`：C 风格（行优先） • `'F'`：Fortran 风格（列优先） • `'A'`：若原数组是 F 连续则用 `'F'`，否则 `'C'` • `'K'`：按内存中实际存储顺序 |
+
 ```python
 import numpy as np
  
@@ -652,92 +705,81 @@ print ('\n')
 print ('以 F 风格顺序调用 ravel 函数之后：')
 print (a.ravel(order = 'F'))
 ```
-翻转数组
-函数	描述
-transpose	对换数组的维度
-ndarray.T	和 self.transpose() 相同
-rollaxis	向后滚动指定的轴
-swapaxes	对换数组的两个轴
 ###### numpy.transpose
-对换数组的维度
+> 用于交换数组轴（维度）顺序的核心函数
+
 ```
-numpy.transpose(arr, axes)
+numpy.transpose(arr, axes=None)
 ```
-例子
+| 参数   | 说明                                                         |
+| ------ | ------------------------------------------------------------ |
+| `a`    | 输入数组（`ndarray`）                                        |
+| `axes` | 可选，指定新轴的顺序： • `None`（默认）：反转所有轴（如 `(0,1,2)` → `(2,1,0)`） • 元组：如 `(2, 0, 1)` 表示原第2轴→新第0轴，原第0轴→新第1轴，等等 |
+
 ```python
 import numpy as np
- 
+
 a = np.arange(12).reshape(3,4)
- 
+
 print ('原数组：')
 print (a )
 print ('\n')
- 
+
 print ('对换数组：')
 print (np.transpose(a))
 ```
 ###### numpy.rollaxis
 
+> 用于将指定轴“滚动”到新位置的函数
+
+```python
+numpy.rollaxis(arr, axis, start=0)
 ```
-numpy.rollaxis(arr, axis, start)
-```
+| 参数    | 说明                                                         |
+| ------- | ------------------------------------------------------------ |
+| `a`     | 输入数组（`ndarray`）                                        |
+| `axis`  | 要移动的轴（整数，可为负数）                                 |
+| `start` | 目标位置（默认 `0`）： • 移动后的 `axis` 将位于 `start` 之前 • 若 `start <= axis`，则 `axis` 插入到 `start` 位置 • 若 `start > axis`，则 `axis` 插入到 `start - 1` 位置 |
 
 ```python
 import numpy as np
- 
-# 创建了三维的 ndarray
-a = np.arange(8).reshape(2,2,2)
- 
-print ('原数组：')
-print (a)
-print ('获取数组中一个值：')
-print(np.where(a==6))   
-print(a[1,1,0])  # 为 6
-print ('\n')
- 
- 
-# 将轴 2 滚动到轴 0（宽度到深度）
- 
-print ('调用 rollaxis 函数：')
-b = np.rollaxis(a,2,0)
-print (b)
-# 查看元素 a[1,1,0]，即 6 的坐标，变成 [0, 1, 1]
-# 最后一个 0 移动到最前面
-print(np.where(b==6))   
-print ('\n')
- 
-# 将轴 2 滚动到轴 1：（宽度到高度）
- 
-print ('调用 rollaxis 函数：')
-c = np.rollaxis(a,2,1)
-print (c)
-# 查看元素 a[1,1,0]，即 6 的坐标，变成 [1, 0, 1]
-# 最后的 0 和 它前面的 1 对换位置
-print(np.where(c==6))   
-print ('\n')
+
+arr = np.random.rand(2, 3, 4)
+
+b = np.rollaxis(arr, axis=2, start=0)
+print(b.shape)
 ```
 ###### numpy.swapaxes
+
+> 用于交换数组的两个轴（维度） 的函数
+
 ```
 numpy.swapaxes(arr, axis1, axis2)
 ```
-- arr：输入的数组
-- axis1：对应第一个轴的整数
-- axis2：对应第二个轴的整数
+| 参数    | 说明                               |
+| ------- | ---------------------------------- |
+| `a`     | 输入数组（`ndarray`）              |
+| `axis1` | 第一个要交换的轴（整数，可为负数） |
+| `axis2` | 第二个要交换的轴（整数，可为负数） |
+
 ```python
 import numpy as np
- 
-# 创建了三维的 ndarray
+
 a = np.arange(8).reshape(2,2,2)
  
 print ('原数组：')
 print (a)
 print ('\n')
-# 现在交换轴 0（深度方向）到轴 2（宽度方向）
- 
+
 print ('调用 swapaxes 函数后的数组：')
 print (np.swapaxes(a, 2, 0))
 ```
 ###### numpy.broadcast
+
+```python
+numpy.broadcast(*args)
+```
+
 用于模仿广播的对象，它返回一个对象，该对象封装了将一个数组广播到另一个数组的结果。
 ```python
 import numpy as np
@@ -779,65 +821,89 @@ print ('x 与 y 的和：')
 print (x + y)
 ```
 ###### numpy.broadcast_to
-广播到新形状
+> 用于将数组广播（broadcast）到指定新形状的函数
+>
+> 常用于在不实际复制数据的情况下扩展数组维度以匹配目标形状
+
 ```
-numpy.broadcast_to(array, shape, subok)
+numpy.broadcast_to(array, shape, subok=False)
 ```
-1
+| 参数    | 说明                                                         |
+| ------- | ------------------------------------------------------------ |
+| `array` | 输入数组（`ndarray` 或可转换对象）                           |
+| `shape` | 目标形状（整数或整数元组）                                   |
+| `subok` | 若为 `True`，允许子类通过；默认 `False`（返回基类 `ndarray`） |
+
 ```python
 import numpy as np
- 
+
 a = np.arange(4).reshape(1,4)
- 
+
 print ('原数组：')
 print (a)
 print ('\n')
- 
+
 print ('调用 broadcast_to 函数之后：')
 print (np.broadcast_to(a,(4,4)))
 ```
 ###### numpy.expand_dims
+
+> NumPy 中用于在指定位置插入一个长度为 1 的新轴（维度） 的函数
+
 ```
  numpy.expand_dims(arr, axis)
 ```
-1
+| 参数   | 说明                                                         |
+| ------ | ------------------------------------------------------------ |
+| `a`    | 输入数组（`ndarray`）                                        |
+| `axis` | 插入新轴的位置（整数或整数列表）： • 正数：从前往后索引（0 表示最前） • 负数：从后往前索引（-1 表示最后） |
+
 ```python
 import numpy as np
  
 x = np.array(([1,2],[3,4]))
- 
+
 print ('数组 x：')
 print (x)
 print ('\n')
 y = np.expand_dims(x, axis = 0)
- 
+
 print ('数组 y：')
 print (y)
 print ('\n')
- 
+
 print ('数组 x 和 y 的形状：')
 print (x.shape, y.shape)
 print ('\n')
-# 在位置 1 插入轴
+
 y = np.expand_dims(x, axis = 1)
- 
+
 print ('在位置 1 插入轴之后的数组 y：')
 print (y)
 print ('\n')
- 
+
 print ('x.ndim 和 y.ndim：')
 print (x.ndim,y.ndim)
 print ('\n')
- 
+
 print ('x.shape 和 y.shape：')
 print (x.shape, y.shape)
 ```
 ###### numpy.squeeze
+
+> 用于移除数组中长度为 1 的轴（维度） 的函数
+>
+> 处理深度学习输出、广播结果或从文件加载的数据时非常有用，可以简化数组形状，使其更符合预期
+
 numpy.squeeze 函数从给定数组的形状中删除一维的条目
 ```
-numpy.squeeze(arr, axis)
+numpy.squeeze(arr, axis=None)
 ```
-1
+| 参数   | 说明                                                         |
+| ------ | ------------------------------------------------------------ |
+| `a`    | 输入数组（`ndarray`）                                        |
+| `axis` | 可选，指定要移除的轴： • `None`（默认）：移除所有长度为 1 的轴 • 整数或整数元组：仅移除指定的轴（必须长度为 1） |
+
 ```python
 import numpy as np
  
@@ -855,12 +921,25 @@ print ('\n')
 print ('数组 x 和 y 的形状：')
 print (x.shape, y.shape)
 ```
-**连接数组**
+##### 连接数组
+
 ###### numpy.concatenate
+
+> 沿指定轴连接（拼接）多个数组的核心函数
+>
+> 处理数组合并、批量数据组装、特征拼接
+
+```python
+numpy.concatenate(arrays, axis=0, out=None, dtype=None, casting="same_kind")
 ```
-numpy.concatenate((a1, a2, ...), axis)
-```
-参数
+| 参数      | 默认值        | 说明                                                         |
+| --------- | ------------- | ------------------------------------------------------------ |
+| `arrays`  | —             | 数组序列（如列表或元组），所有数组必须具有兼容的形状（除拼接轴外，其他维度必须一致） |
+| `axis`    | `0`           | 拼接的轴（整数，可为负数）；若为 `None`，则先展平所有数组再拼接 |
+| `out`     | `None`        | 可选，指定输出数组（需预分配正确形状）                       |
+| `dtype`   | `None`        | 输出数组的数据类型（NumPy ≥1.20）                            |
+| `casting` | `"same_kind"` | 数据类型转换规则                                             |
+
 ```python
 import numpy as np
  
@@ -874,8 +953,7 @@ b = np.array([[5,6],[7,8]])
 print ('第二个数组：')
 print (b)
 print ('\n')
-# 两个数组的维度相同
- 
+
 print ('沿轴 0 连接两个数组：')
 print (np.concatenate((a,b)))
 print ('\n')
@@ -884,10 +962,24 @@ print ('沿轴 1 连接两个数组：')
 print (np.concatenate((a,b),axis = 1))
 ```
 ###### numpy.stack
+
+> 用于沿新轴（新增维度）堆叠数组的函数
+>
+> 创建一个全新的维度，并将输入数组作为该维度上的“切片”
+>
+> 
+
 ```
-numpy.stack(arrays, axis)
+numpy.stack(arrays, axis=0, out=None, dtype=None, casting="same_kind")
 ```
-折叠
+| 参数      | 默认值        | 说明                                            |
+| --------- | ------------- | ----------------------------------------------- |
+| `arrays`  | —             | 数组序列（列表/元组），所有数组必须形状完全相同 |
+| `axis`    | `0`           | 新轴插入的位置（整数，可为负数）                |
+| `out`     | `None`        | 可选，指定输出数组                              |
+| `dtype`   | `None`        | 输出数据类型（NumPy ≥1.20）                     |
+| `casting` | `"same_kind"` | 数据类型转换规则                                |
+
 ```python
 import numpy as np
  
@@ -910,7 +1002,15 @@ print ('沿轴 1 堆叠两个数组：')
 print (np.stack((a,b),1))
 ```
 ###### numpy.hstack
-numpy.hstack 是 numpy.stack 函数的变体，它通过水平堆叠来生成数组。
+
+> numpy.hstack 是 numpy.stack 函数的变体，它通过水平堆叠来生成数组
+
+```python
+numpy.hstack(tup)
+# tup：要拼接的数组序列（如列表或元组）
+```
+
+返回新数组（不修改原数组）
 ```python
 import numpy as np
  
@@ -932,6 +1032,10 @@ print ('\n')
 ```
 ###### numpy.vstack
 
+> 用于沿垂直方向（行方向）拼接数组的便捷函数
+>
+> 根据输入自动处理维度，常用于将多个向量堆叠成矩阵、合并数据行
+
 ```python
 import numpy as np
  
@@ -950,12 +1054,23 @@ print ('竖直堆叠：')
 c = np.vstack((a,b))
 print (c)
 ```
-**分割数组**
+##### 分割数组
+
 ###### numpy.split
+
+> 用于**将数组沿指定轴分割成多个子数组**的函数
+>
+> 支持**等分**或**按指定位置切分**
+
 ```
 numpy.split(ary, indices_or_sections, axis)
 ```
-例子
+| 参数                  | 说明                                                         |
+| --------------------- | ------------------------------------------------------------ |
+| `ary`                 | 输入数组（`ndarray`）                                        |
+| `indices_or_sections` | 分割方式： • 整数 N：将轴等分为 N 份（必须整除） • 索引列表：在指定位置切分（如 `[2, 5]` 表示在索引 2 和 5 处切） |
+| `axis`                | 分割的轴（默认 `0`，可为负数）                               |
+
 ```python
 import numpy as np
  
@@ -975,7 +1090,18 @@ b = np.split(a,[4,7])
 print (b)
 ```
 ###### numpy.hsplit
-numpy.hsplit 函数用于水平分割数组，通过指定要返回的相同形状的数组数量来拆分原数组
+
+> 用于沿水平方向（列方向）将数组分割成多个子数组的便捷函数
+
+```python
+numpy.hsplit(ary, indices_or_sections)
+```
+
+| 参数                  | 说明                                                         |
+| --------------------- | ------------------------------------------------------------ |
+| `ary`                 | 输入数组（必须是 1D 或 ≥2D）                                 |
+| `indices_or_sections` | 分割方式： • 整数 N：将列轴等分为 N 份（必须整除） • 索引列表：在指定列位置切分（如 `[2, 5]` 表示在第 2 列和第 5 列后切） |
+
 ```python
 import numpy as np
  
@@ -987,7 +1113,8 @@ print ('拆分后：')
 print(np.hsplit(harr, 3))
 ```
 ###### numpy.vsplit
-numpy.vsplit 沿着垂直轴分割，其分割方式与hsplit用法相同
+> numpy.vsplit 沿着垂直轴分割，其分割方式与hsplit用法相同
+
 ```python
 import numpy as np
  
@@ -1001,7 +1128,8 @@ print ('竖直分割：')
 b = np.vsplit(a,2)
 print (b)
 ```
-**数组元素的添加与删除**
+##### 数组元素的添加与删除
+
 ###### numpy.resize
 numpy.resize 函数返回指定大小的新数组
 ```
@@ -1032,8 +1160,7 @@ print ('\n')
 print ('第二个数组的形状：')
 print (b.shape)
 print ('\n')
-# 要注意 a 的第一行在 b 中重复出现，因为尺寸变大了
- 
+
 print ('修改第二个数组的大小：')
 b = np.resize(a,(3,3))
 print (b)
@@ -2021,6 +2148,8 @@ print(r["sin_array"]) # 数组 c
 ```
 
 ###### savetxt()
+
+> 
 
 ```
 np.loadtxt(FILENAME, dtype=int, delimiter=' ')
