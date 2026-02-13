@@ -1113,7 +1113,19 @@ print ('拆分后：')
 print(np.hsplit(harr, 3))
 ```
 ###### numpy.vsplit
-> numpy.vsplit 沿着垂直轴分割，其分割方式与hsplit用法相同
+
+> 用于沿垂直方向（行方向）将数组分割成多个子数组的便捷函数
+>
+> 它是 np.split() 在 axis=0 上的特化版本，常用于按行拆分数据集、图像或矩阵
+
+```python
+numpy.vsplit(ary, indices_or_sections)
+```
+
+| 参数                  | 说明                                                         |
+| --------------------- | ------------------------------------------------------------ |
+| `ary`                 | 输入数组（必须是 ≥2D，1D 数组会报错）                        |
+| `indices_or_sections` | 分割方式： • 整数 N：将行轴等分为 N 份（必须整除） • 索引列表：在指定行位置切分（如 `[2, 5]` 表示在第 2 行和第 5 行后切） |
 
 ```python
 import numpy as np
@@ -1131,13 +1143,17 @@ print (b)
 ##### 数组元素的添加与删除
 
 ###### numpy.resize
-numpy.resize 函数返回指定大小的新数组
-```
+
+> numpy.resize 函数返回指定大小的新数组
+
+```python
 numpy.resize(arr, shape)
 ```
 
-- `arr`：要修改大小的数组
-- `shape`：返回数组的新形状
+| 参数    | 说明     |
+| ------- | -------- |
+| `ary`   | 输入数组 |
+| `shape` | 形状     |
 
 ```python
 import numpy as np
@@ -1168,11 +1184,19 @@ print (b)
 
 ###### numpy.append
 
+>  NumPy 中用于在数组末尾添加元素或子数组的函数
+>
+> 返回一个新数组
+
 ```
 numpy.append(arr, values, axis=None)
 ```
 
-示例
+| 参数     | 说明                                                         |
+| -------- | ------------------------------------------------------------ |
+| `arr`    | 输入数组（将被“追加到”的数组）                               |
+| `values` | 要添加的值（数组或标量）                                     |
+| `axis`   | 指定轴（默认 `None`）： • `None`：先展平所有输入，再拼接 • 整数：沿指定轴拼接（要求形状兼容） |
 
 ```python
 import numpy as np
@@ -1197,14 +1221,20 @@ print (np.append(a, [[5,5,5],[7,8,9]],axis = 1))
 
 ###### numpy.insert
 
-```
-numpy.insert(arr, obj, values, axis)
+> 用于在指定位置插入元素或子数组的函数
+>
+> 返回一个新数组
+
+```python
+numpy.insert(arr, obj, values, axis=None)
 ```
 
-- `arr`：输入数组
-- `obj`：在其之前插入值的索引
-- `values`：要插入的值
-- `axis`：沿着它插入的轴，如果未提供，则输入数组会被展开
+| 参数     | 说明                                                         |
+| -------- | ------------------------------------------------------------ |
+| `arr`    | 输入数组                                                     |
+| `obj`    | 插入位置： • 整数（如 `2`） • 列表/数组（如 `[1, 3]`） • 切片（如 `slice(1, 4)`） |
+| `values` | 要插入的值（标量、列表或数组） • 若沿轴插入，需匹配目标形状  |
+| `axis`   | 插入的轴（默认 `None`）： • `None`：先展平数组，再插入 • 整数：沿指定轴插入 |
 
 ```python
 import numpy as np
@@ -1230,15 +1260,21 @@ print (np.insert(a,1,11,axis = 1))
 
 ###### numpy.delete
 
+> 用于**从数组中删除指定元素或子数组**的函数
+>
+> 
+
 函数返回从输入数组中删除指定子数组的新数组
 
 ```
-Numpy.delete(arr, obj, axis)
+numpy.delete(arr, obj, axis=None)
 ```
 
-- `arr`：输入数组
-- `obj`：可以被切片，整数或者整数数组，表明要从输入数组删除的子数组
-- `axis`：沿着它删除给定子数组的轴，如果未提供，则输入数组会被展开
+| 参数   | 说明                                                         |
+| ------ | ------------------------------------------------------------ |
+| `arr`  | 输入数组                                                     |
+| `obj`  | 要删除的位置： • 整数（如 `2`） • 列表/数组（如 `[1, 3]`） • 切片（如 `slice(1, 4)` 或 `1:4`） |
+| `axis` | 删除的轴（默认 `None`）： • `None`：先展平数组，再删除 • 整数：沿指定轴删除 |
 
 ```python
 import numpy as np
@@ -1264,14 +1300,24 @@ print (np.delete(a, np.s_[::2]))
 
 ###### numpy.unique
 
+> 用于**找出数组中的唯一值**（去重）的函数
+>
+> 可以返回唯一元素
+>
+> 提供**索引、逆映射和计数**等丰富信息，是数据清洗、类别分析和集合操作的核心工具
+
 ```
-numpy.unique(arr, return_index, return_inverse, return_counts)
+numpy.unique(ar, return_index=False, return_inverse=False, return_counts=False, axis=None, equal_nan=True)
 ```
 
-- `arr`：输入数组，如果不是一维数组则会展开
-- `return_index`：如果为`true`，返回新列表元素在旧列表中的位置（下标），并以列表形式储
-- `return_inverse`：如果为`true`，返回旧列表元素在新列表中的位置（下标），并以列表形式储
-- `return_counts`：如果为`true`，返回去重数组中的元素在原数组中的出现次数
+| 参数             | 默认值  | 说明                                                         |
+| ---------------- | ------- | ------------------------------------------------------------ |
+| `ar`             | —       | 输入数组                                                     |
+| `return_index`   | `False` | 是否返回唯一值在原数组中首次出现的索引                       |
+| `return_inverse` | `False` | 是否返回重构原数组所需的逆映射索引                           |
+| `return_counts`  | `False` | 是否返回每个唯一值的出现次数                                 |
+| `axis`           | `None`  | 指定去重的轴： • `None`：展平后去重 • 整数：沿指定轴去重（如 `axis=0` 去重行） |
+| `equal_nan`      | `True`  | 是否将所有 `NaN` 视为相等（NumPy ≥1.20）                     |
 
 ```python
 import numpy as np
@@ -1328,7 +1374,15 @@ print (indices)
 
 ###### numpy.bitwise_and
 
-函数对数组中整数的二进制形式执行位与运算
+> 用于**对数组元素执行逐位“与”（bitwise AND）操作**的函数
+>
+> 适用于整数类型（包括布尔值），常用于掩码操作、标志位检查、图像处理
+
+```
+numpy.bitwise_and(x1, x2, /, out=None, *, where=True, casting='same_kind', order='K', dtype=None, subok=True[, signature, extobj])
+```
+
+
 
 ```python
 import numpy as np 
@@ -1342,40 +1396,57 @@ print ('13 和 17 的位与：')
 print (np.bitwise_and(13, 17))
 ```
 
-###### bitwise_or
+###### numpy.bitwise_or
+
+> NumPy 中用于**对数组元素执行逐位“或”（bitwise OR）操作**的函数
+>
+> 作用于整数或布尔类型的数组，常用于掩码合并、标志位设置、图像合成等场景
 
 ```python
 import numpy as np 
- 
+
 a,b = 13,17 
 print ('13 和 17 的二进制形式：')
 print (bin(a), bin(b))
- 
+
 print ('13 和 17 的位或：')
 print (np.bitwise_or(13, 17))
 ```
 
-###### invert
+###### numpy.invert
 
-invert() 函数对数组中整数进行位取反运算，即 0 变成 1，1 变成 0
+```python
+numpy.invert(x, /, out=None, *, where=True, casting='same_kind', order='K', dtype=None, subok=True[, signature, extobj])
+```
+
+> invert() 函数对数组中整数进行位取反运算，即 0 变成 1，1 变成 0
 
 ```python
 import numpy as np 
- 
+
 print ('13 的位反转，其中 ndarray 的 dtype 是 uint8：')
 print (np.invert(np.array([13], dtype = np.uint8)))
 print ('\n')
-# 比较 13 和 242 的二进制表示，我们发现了位的反转
- 
+
 print ('13 的二进制表示：')
 print (np.binary_repr(13, width = 8))
 print ('\n')
- 
+
 print ('242 的二进制表示：')
 print (np.binary_repr(242, width = 8))
 ```
 
-###### left_shift
+###### numpy.left_shift
+
+> 对数组元素执行逐位左移（bitwise left shift）操作的函数
+>
+> 它等价于 x << n，常用于快速乘以 2 的幂、位打包、掩码生成等场景
+
+```python
+numpy.left_shift(x1, x2, /, out=None, *, where=True, casting='same_kind', order='K', dtype=None, subok=True[, signature, extobj])
+```
+
+
 
 ```python
 import numpy as np 
@@ -1394,6 +1465,16 @@ print (np.binary_repr(40, width = 8))
 ```
 
 ###### numpy.right_shift
+
+> 用于对数组元素执行逐位右移（bitwise right shift）操作的函数
+>
+> 常用于快速除以 2 的幂、提取高位、数据压缩等场景
+
+```python
+numpy.right_shift(x1, x2, /, out=None, *, where=True, casting='same_kind', order='K', dtype=None, subok=True[, signature, extobj])
+```
+
+
 
 ```python
 import numpy as np 
@@ -1414,7 +1495,18 @@ print (np.binary_repr(10, width = 8))
 ##### NumPy 字符串函数
 
 ###### numpy.char.add()
-依次对两个数组的元素进行字符串连接
+> 依次对两个数组的元素进行字符串连接
+>
+> 用于**对字符串数组执行逐元素连接（拼接）操作**的函数
+
+```python
+numpy.char.add(x1, x2)
+```
+
+| 参数       | 说明                                                         |
+| ---------- | ------------------------------------------------------------ |
+| `x1`, `x2` | 输入数组或标量（字符串类型） • 支持广播（broadcasting） • 可以是 Python 字符串、字节串或字符串数组 |
+
 ```python
 import numpy as np 
  
@@ -1426,13 +1518,35 @@ print ('连接示例：')
 print (np.char.add(['hello', 'hi'],[' abc', ' xyz']))
 ```
 ###### numpy.char.multiply()
-执行多重连接
+
+> 用于对字符串数组执行逐元素重复（乘法）操作的函数
+>
+> 高效处理字符串数组的重复操作而设计
+
+```python
+numpy.char.multiply(a, i)
+```
+
+| 参数 | 说明                                                  |
+| ---- | ----------------------------------------------------- |
+| `a`  | 输入字符串数组或标量（字符串/字节串）                 |
+| `i`  | 重复次数（整数或整数数组） • 支持广播（broadcasting） |
+
 ```python
 import numpy as np 
  
 print (np.char.multiply('Runoob ',3))
 ```
 ###### numpy.char.center()
+
+> 用于**对字符串数组中的每个元素进行居中对齐**的函数
+>
+> 专为高效处理字符串数组的格式化对齐操作而设计
+
+```python
+numpy.char.center(a, width, fillchar=' ')
+```
+
 用于将字符串居中，并使用指定字符在左侧和右侧进行填充
 ```python
 import numpy as np 
@@ -1442,21 +1556,35 @@ import numpy as np
 print (np.char.center('Runoob', 20,fillchar = '*'))
 ```
 ###### numpy.char.capitalize()
-函数将字符串的第一个字母转换为大写
+
+> 函数将字符串的第一个字母转换为大写
+>
+> 用于对字符串数组中的每个元素执行首字母大写操作的函数
+
+```python
+numpy.char.capitalize(a)
+```
+
+| 参数 | 说明                                                |
+| ---- | --------------------------------------------------- |
+| `a`  | 输入字符串数组或标量（支持 Unicode 字符串和字节串） |
+
 ```python
 import numpy as np 
- 
+
 print (np.char.capitalize('runoob'))
 ```
 ###### numpy.char.title()
-函数将字符串的每个单词的第一个字母转换为大写
+> 函数将字符串的每个单词的第一个字母转换为大写
+
 ```python
 import numpy as np
  
 print (np.char.title('i like runoob'))
 ```
 ###### numpy.char.lower()
-函数对数组的每个元素转换为小写。它对每个元素调用 str.lower
+> 函数对数组的每个元素转换为小写。它对每个元素调用 str.lower
+
 ```python
 import numpy as np 
  
@@ -1467,7 +1595,8 @@ print (np.char.lower(['RUNOOB','GOOGLE']))
 print (np.char.lower('RUNOOB'))
 ```
 ###### numpy.char.upper()
-函数对数组的每个元素转换为大写。它对每个元素调用 str.upper
+> 函数对数组的每个元素转换为大写。它对每个元素调用 str.upper
+
 ```python
 import numpy as np 
  
@@ -1478,7 +1607,8 @@ print (np.char.upper(['runoob','google']))
 print (np.char.upper('runoob'))
 ```
 ###### numpy.char.split()
-通过指定分隔符对字符串进行分割，并返回数组。默认情况下，分隔符为空格
+> 通过指定分隔符对字符串进行分割，并返回数组。默认情况下，分隔符为空格
+
 ```python
 import numpy as np 
  
@@ -1488,7 +1618,8 @@ print (np.char.split ('i like runoob?'))
 print (np.char.split ('www.runoob.com', sep = '.'))
 ```
 ###### numpy.char.splitlines()
-函数以换行符作为分隔符来分割字符串，并返回数组
+> 函数以换行符作为分隔符来分割字符串，并返回数组
+
 ```python
 import numpy as np 
  
@@ -1497,7 +1628,8 @@ print (np.char.splitlines('i\nlike runoob?'))
 print (np.char.splitlines('i\rlike runoob?'))
 ```
 ###### numpy.char.strip()
-函数用于移除开头或结尾处的特定字符
+> 函数用于移除开头或结尾处的特定字符
+
 ```python
 import numpy as np 
  
@@ -1508,7 +1640,8 @@ print (np.char.strip('ashok arunooba','a'))
 print (np.char.strip(['arunooba','admin','java'],'a'))
 ```
 ###### numpy.char.join()
-函数通过指定分隔符来连接数组中的元素或字符串
+> 函数通过指定分隔符来连接数组中的元素或字符串
+
 ```python
 import numpy as np 
  
@@ -1519,14 +1652,16 @@ print (np.char.join(':','runoob'))
 print (np.char.join([':','-'],['runoob','google']))
 ```
 ###### numpy.char.replace()
-函数使用新字符串替换字符串中的所有子字符串
+> 函数使用新字符串替换字符串中的所有子字符串
+
 ```python
 import numpy as np 
  
 print (np.char.replace ('i like runoob', 'oo', 'cc'))
 ```
 ###### numpy.char.encode()
-函数对数组中的每个元素调用 str.encode 函数。 默认编码是 utf-8，可以使用标准 Python 库中的编解码器
+> 函数对数组中的每个元素调用 str.encode 函数。 默认编码是 utf-8，可以使用标准 Python 库中的编解码器
+
 ```python
 import numpy as np 
  
@@ -1534,7 +1669,8 @@ a = np.char.encode('runoob', 'cp500')
 print (a)
 ```
 ###### numpy.char.decode()
-函数对编码的元素进行 str.decode() 解码
+> 函数对编码的元素进行 str.decode() 解码
+
 ```python
 import numpy as np 
  
@@ -1542,8 +1678,16 @@ a = np.char.encode('runoob', 'cp500')
 print (a)
 print (np.char.decode(a,'cp500'))
 ```
-##### NumPy 数学函数
-###### 三角函数
+#### NumPy 数学函数
+
+##### 三角函数
+
+###### numpy.sin()
+
+###### numpy.cos()
+
+###### numpy.tan()
+
 NumPy 提供了标准的三角函数：sin()、cos()、tan()。
 ```python
 import numpy as np
@@ -1560,11 +1704,21 @@ print ('数组中角度的正切值：')
 print (np.tan(a*np.pi/180))
 ```
 
-###### 舍入函数
+###### numpy.around()
+
+> 用于**对数组元素进行四舍五入**的函数
+>
+> 提供了灵活的精度控制，是数值计算、数据展示和精度处理中的常用工具
+
 ```
-numpy.around(a,decimals)
+numpy.around(a, decimals=0, out=None)
 ```
-示例
+| 参数       | 默认值 | 说明                                                         |
+| ---------- | ------ | ------------------------------------------------------------ |
+| `a`        | —      | 输入数组或标量                                               |
+| `decimals` | `0`    | 保留的小数位数： • 正数：小数点后位数 • `0`：整数 • 负数：小数点前位数（十位、百位等） |
+| `out`      | `None` | 可选输出数组（就地操作）                                     |
+
 ```python
 import numpy as np
  
@@ -1578,6 +1732,15 @@ print (np.around(a, decimals =  1))
 print (np.around(a, decimals =  -1))
 ```
 ###### numpy.floor()
+
+```python
+numpy.floor(x, /, out=None, *, where=True, casting='same_kind', order='K', dtype=None, subok=True[, signature, extobj])
+```
+
+> 用于对数组元素执行向下取整（floor）操作的函数
+>
+> 将每个元素替换为不大于该元素的最大整数，是数值处理、离散化和数学计算中的基础工具
+
 返回小于或者等于指定表达式的最大整数，即向下取整
 ```python
 import numpy as np
@@ -1590,6 +1753,15 @@ print ('修改后的数组：')
 print (np.floor(a))
 ```
 ###### numpy.ceil()
+
+> 用于对数组元素执行向上取整（ceiling）操作的函数
+>
+> 将每个元素替换为不小于该元素的最小整数，是数值处理、离散化和数学计算中的基础工具
+
+```python
+numpy.ceil(x, /, out=None, *, where=True, casting='same_kind', order='K', dtype=None, subok=True[, signature, extobj])
+```
+
 返回大于或者等于指定表达式的最小整数，即向上取整
 ```python
 import numpy as np
@@ -1602,6 +1774,43 @@ print ('修改后的数组：')
 print (np.ceil(a))
 ```
 ##### NumPy 算术函数
+
+###### numpy.add()
+
+```python
+numpy.add(x1, x2, /, out=None, *, where=True, casting='same_kind', order='K', dtype=None, subok=True[, signature, extobj])
+```
+
+###### numpy.subtract()
+
+> 用于**对两个数组（或标量）执行逐元素减法操作**的通用函数（ufunc）
+>
+> 它等价于使用 `-` 运算符，但在需要显式函数调用或高级控制时非常有用
+
+```python
+numpy.subtract(x1, x2, /, out=None, *, where=True, casting='same_kind', order='K', dtype=None, subok=True[, signature, extobj])
+```
+
+###### numpy.multiply()
+
+> 用于**对两个数组（或标量）执行逐元素乘法操作**的通用函数
+>
+> 它等价于使用 `*` 运算符，是数值计算中最基础且高频使用的函数之一
+
+```python
+numpy.multiply(x1, x2, /, out=None, *, where=True, casting='same_kind', order='K', dtype=None, subok=True[, signature, extobj])
+```
+
+###### numpy.divide()
+
+> 用于**对两个数组（或标量）执行逐元素真除法（true division）操作**的通用函数
+>
+> 它等价于使用 `/` 运算符，始终返回浮点结果（即使输入是整数），是数值计算中的基础工具
+
+```python
+numpy.divide(x1, x2, /, out=None, *, where=True, casting='same_kind', order='K', dtype=None, subok=True[, signature, extobj])
+```
+
 包含简单的加减乘除: add()，subtract()，multiply() 和 divide()
 ```python
 import numpy as np 
@@ -1627,10 +1836,17 @@ print ('两个数组相除：')
 print (np.divide(a,b))
 ```
 ###### numpy.reciprocal()
+
+> 用于计算数组中每个元素的倒数
+
+```python
+numpy.reciprocal(x, /, out=None, *, where=True, casting='same_kind', order='K', dtype=None, subok=True[, signature, extobj])
+```
+
 函数返回参数逐元素的倒数。如 1/4 倒数为 4/1。
 ```python
-import numpy as np 
- 
+import numpy as np
+
 a = np.array([0.25,  1.33,  1,  100])  
 print ('我们的数组是：')
 print (a)
@@ -1639,10 +1855,18 @@ print ('调用 reciprocal 函数：')
 print (np.reciprocal(a))
 ```
 ###### numpy.power()
-函数将第一个输入数组中的元素作为底数，计算它与第二个输入数组中相应元素的幂
+
+```python
+numpy.power(x1, x2, /, out=None, *, where=True, dtype=None, **kwargs)
+```
+
+> 函数将第一个输入数组中的元素作为底数
+>
+> 计算它与第二个输入数组中相应元素的幂
+
 ```python
 import numpy as np 
- 
+
 a = np.array([10,100,1000])  
 print ('我们的数组是；')
 print (a)
@@ -1651,6 +1875,7 @@ print ('调用 power 函数：')
 print (np.power(a,2))
 print ('\n')
 print ('第二个数组：')
+
 b = np.array([1,2,3])  
 print (b)
 print ('\n')
@@ -1658,7 +1883,15 @@ print ('再次调用 power 函数：')
 print (np.power(a,b))
 ```
 ###### numpy.mod()
-计算输入数组中相应元素的相除后的余数。 函数 numpy.remainder() 也产生相同的结果
+
+```python
+numpy.mod(x1, x2, /, out=None, *, where=True, dtype=None, **kwargs)
+```
+
+> 计算输入数组中相应元素的相除后的余数
+>
+> 函数numpy.remainder() 也产生相同的结果
+
 ```python
 import numpy as np
  
@@ -1670,24 +1903,31 @@ print ('\n')
 print ('第二个数组：')
 print (b)
 print ('\n')
+
 print ('调用 mod() 函数：')
 print (np.mod(a,b))
 print ('\n')
 print ('调用 remainder() 函数：')
 print (np.remainder(a,b))
 ```
-##### NumPy 统计函数
+#### NumPy统计函数
 提供了很多统计函数，用于从数组中查找最小元素，最大元素，百分位标准差和方差等
-##### numpy.amin() 和 numpy.amax()
-numpy.amin() 用于计算数组中的元素沿指定轴的最小值
-```
+###### numpy.amin()
+
+> numpy.amin() 用于计算数组中的元素沿指定轴的最小值
+
+```python
 numpy.amin(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)
 ```
-numpy.amax() 用于计算数组中的元素沿指定轴的最大值
-```
+
+###### numpy.amax()
+
+> numpy.amax() 用于计算数组中的元素沿指定轴的最大值
+
+```python
 numpy.amax(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)
 ```
-示例
+
 ```python
 import numpy as np 
  
@@ -1708,11 +1948,13 @@ print ('再次调用 amax() 函数：')
 print (np.amax(a, axis =  0))
 ```
 ###### numpy.ptp()
-函数计算数组中元素最大值与最小值的差（最大值 - 最小值）
+
+> 函数计算数组中元素最大值与最小值的差（最大值 - 最小值）
+
 ```python
 numpy.ptp(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)
 ```
-示例
+
 ```python
 import numpy as np 
  
@@ -1729,9 +1971,13 @@ print ('\n')
 print ('沿轴 0 调用 ptp() 函数：')
 print (np.ptp(a, axis =  0))
 ```
-##### numpy.percentile()
-位数是统计中使用的度量，表示小于这个值的观察值的百分比。 函数numpy.percentile()接受以下参数
-```
+###### numpy.percentile()
+
+> 位数是统计中使用的度量，表示小于这个值的观察值的百分比。
+>
+> 函数numpy.percentile()接受以下参数
+
+```python
 numpy.percentile(a, q, axis)
 ```
 示例
@@ -1743,20 +1989,17 @@ print ('我们的数组是：')
 print (a)
  
 print ('调用 percentile() 函数：')
-# 50% 的分位数，就是 a 里排序之后的中位数
 print (np.percentile(a, 50)) 
- 
-# axis 为 0，在纵列上求
+
 print (np.percentile(a, 50, axis=0)) 
- 
-# axis 为 1，在横行上求
+
 print (np.percentile(a, 50, axis=1)) 
- 
-# 保持维度不变
+
 print (np.percentile(a, 50, axis=1, keepdims=True))
 ```
 ###### numpy.median()
-numpy.median() 函数用于计算数组 a 中元素的中位数（中值）
+> numpy.median() 函数用于计算数组 a 中元素的中位数（中值）
+
 ```
 numpy.median(a, axis=None, out=None, overwrite_input=False, keepdims=<no value>)
 ```
@@ -1777,7 +2020,8 @@ print ('沿轴 1 调用 median() 函数：')
 print (np.median(a, axis =  1))
 ```
 ###### numpy.mean()
-函数返回数组中元素的算术平均值，如果提供了轴，则沿其计算
+> 函数返回数组中元素的算术平均值，如果提供了轴，则沿其计算
+
 ```python
 numpy.mean(a, axis=None, dtype=None, out=None, keepdims=<no value>)
 ```
@@ -1801,7 +2045,8 @@ print (np.mean(a, axis =  1))
 
 ######  numpy.average()
 
-函数根据在另一个数组中给出的各自的权重计算数组中元素的加权平均值
+> 函数根据在另一个数组中给出的各自的权重计算数组中元素的加权平均值
+>
 
 ```
 numpy.average(a, axis=None, weights=None, returned=False)
@@ -1834,9 +2079,8 @@ print (np.average([1,2,3,  4],weights =  [4,3,2,1], returned =  True))
 
 ###### numpy.std()
 
-###### 标准差
-
-标准差是一组数据平均值分散程度的一种度量
+> 标准差是一组数据平均值分散程度的一种度量
+>
 
 ```
 std = sqrt(mean((x - x.mean())**2))
@@ -1852,7 +2096,8 @@ print (np.std([1,2,3,4]))
 
 ###### numpy.var()
 
-方差
+> 方差
+>
 
 ```python
 import numpy as np
@@ -1860,7 +2105,7 @@ import numpy as np
 print (np.var([1,2,3,4]))
 ```
 
-##### NumPy 字节交换
+#### NumPy 字节交换
 ###### numpy.ndarray.byteswap()
 函数将 ndarray 中每个元素中的字节进行大小端转换
 ```python
@@ -1879,9 +2124,12 @@ print (map(hex,a))
 # 我们可以看到字节已经交换了
 ```
 ##### NumPy 副本和视图
-副本是一个数据的完整的拷贝，如果我们对副本进行修改，它不会影响到原始数据，物理内存不在同一位置。
+- 副本是一个数据的完整的拷贝，如果我们对副本进行修改，它不会影响到原始数据，物理内存不在同一位置。
 
-视图是数据的一个别称或引用，通过该别称或引用亦便可访问、操作原有数据，但原有数据不会产生拷贝。如果我们对视图进行修改，它会影响到原始数据，物理内存在同一位置
+- 视图是数据的一个别称或引用，通过该别称或引用亦便可访问、操作原有数据，但原有数据不会产生拷贝。
+
+如果我们对视图进行修改，它会影响到原始数据，物理内存在同一位置
+
 ###### 无复制
 简单的赋值不会创建数组对象的副本。 相反，它使用原始数组的相同id()来访问它。 
 ```python
@@ -2041,8 +2289,8 @@ i=np.martix(＇1,2;3,4＇)
 print(i)
 
 ```
-表格
-##### NumPy 线性代数
+#### NumPy 线性代数
+
 NumPy 提供了线性代数函数库 linalg，该库包含了线性代数所需的所有功能
 ###### numpy.dot()
 对于两个一维的数组，计算的是这两个数组对应下标元素的乘积和
@@ -2056,7 +2304,7 @@ a = np.array([[1,2],[3,4]])
 b = np.array([[11,12],[13,14]])
 print(np.dot(a,b))
 ```
-##### numpy.vdot()
+###### numpy.vdot()
 numpy.vdot() 函数是两个向量的点积
 ```python
 import numpy as np 
@@ -2067,7 +2315,7 @@ b = np.array([[11,12],[13,14]])
 # vdot 将数组展开计算内积
 print (np.vdot(a,b))
 ```
-##### numpy.inner()
+###### numpy.inner()
 numpy.inner() 函数返回一维数组的向量内积。对于更高的维度，它返回最后一个轴上的和的乘积
 ```python
 import numpy as np 
@@ -2122,7 +2370,7 @@ b = np.load('outfile.npy')
 print (b)
 ```
 
-###### np.savez()
+###### numpy.savez()
 
 ```
 numpy.savez(file, *args, **kwds)
@@ -2147,7 +2395,7 @@ print(r["arr_1"]) # 数组 b
 print(r["sin_array"]) # 数组 c
 ```
 
-###### savetxt()
+###### numpy.savetxt()
 
 > 
 
