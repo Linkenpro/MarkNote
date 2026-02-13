@@ -1,54 +1,120 @@
-CSV(Comma-Separated Values, 逗号分割值)是存储表格数据的常用文件格式，
+# CSV
 
-它每一行都用一个换行符分隔，列与列之间用逗号分隔。
+电子表格和数据库中最常见的输入、输出文件格式
 
-Python的csv库可以非常简单地修改csv文件，甚至从零开始创建一个csv文件。
+###### csv.reader(）
 
 ```python
-import csv
-csvFile = open("../files/test.csv",'w+')
-try:
-    writer = csv.writer(csvFile)
-    writer.writerow(('number','number plus 2','number times 2'))
-    for i in range(10):
-        writer.writerow((i,i+2,i*2))
-finally:
-    csvFile.close()
+csv.reader(iterable, dialect='excel', **fmtparams)
 ```
 
-##### 构建csv替换文本，程序
+| 参数        | 类型                                               | 默认值    | 说明                                                         |
+| ----------- | -------------------------------------------------- | --------- | ------------------------------------------------------------ |
+| `iterable`  | 文件对象或可迭代对象（如 `open()` 返回的文件句柄） | —         | 必须提供。通常是一个以文本模式（如 `'r'`）打开的文件。       |
+| `dialect`   | str 或 Dialect 子类                                | `'excel'` | 指定 CSV 格式的“方言”，预定义包括 `'excel'`、`'excel-tab'` 等，用于统一设置分隔符、引号等规则。 |
+| `fmtparams` | 关键字参数                                         | —         | 可覆盖 `dialect` 中的特定格式参数，常用包括： • `delimiter`：字段分隔符（默认 `','`） • `quotechar`：引用字符（默认 `'"'`） • `quoting`：引用规则 • `skipinitialspace`：是否跳过分隔符后的空格 |
 
 ```python
 import csv
 
-sum_rows = 100      # 要生成的行数
-num_columns = 9     # 每行的数字数量
-start_num = 115532  # 起始数字
+with open('data.csv', 'r', encoding='utf-8') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        print(row)
+```
 
-# 生成数据
-data = [['num1', 'num2', 'num3', 'num4', 'num5', 'num6', 'num7', 'num8', 'num9']]
-for i in range(sum_rows):
-    row = list(range(i * num_columns + start_num, (i + 1) * num_columns + start_num))
-    data.append(row)
+###### csv.writer(）
 
-# 指定要创建的CSV文件的名称
-csv_file = "number8.csv"
+> 将数据写入 CSV（逗号分隔值）文件或类文件对象
+>
+> 自动处理字段中的特殊字符（如逗号、换行符、引号），确保生成的 CSV 格式正确
 
-# 打开CSV文件并写入数据
-with open(csv_file, mode="w", newline="") as file:
-    writer = csv.writer(file)
-    writer.writerows(data)
+```python
+csv.writer(fileobj, dialect='excel', **fmtparams)
+```
 
-print(f"{csv_file} 创建已并写入成功")
+| 参数        | 类型                | 默认值    | 说明                                                         |
+| ----------- | ------------------- | --------- | ------------------------------------------------------------ |
+| `fileobj`   | 文件对象（可写）    | —         | 必须提供。通常是以文本模式（如 `'w'` 或 `'a'`）打开的文件。  |
+| `dialect`   | str 或 Dialect 子类 | `'excel'` | 指定 CSV 输出格式的“方言”，如 `'excel'`（默认）、`'excel-tab'` 等。 |
+| `fmtparams` | 关键字参数          | —         | 可覆盖 `dialect` 中的格式设置，常用包括： • `delimiter`：字段分隔符（默认 `','`） • `quotechar`：引用字符（默认 `'"'`） • `quoting`：何时加引号（见下方说明） • `lineterminator`：行结束符（默认 `'\r\n'`，但建议显式设为 `'\n'`） |
+
+```python
 
 ```
 
-```
-DA_P
-BINANAC
-b$YYop609
-EP#EPIC@f,$AH:4f*DNYNta
-G——go
 
-```
 
+###### csv.register_dialect(）
+
+###### csv.unregister_dialect()
+
+###### csv.get_dialect()
+
+###### csv.list_dialects()
+
+###### csv.field_size_limit()
+
+###### csv.DictWriter()
+
+###### csv.Dialect()
+
+###### csv.excel
+
+###### csv.excel_tab
+
+###### csv.unix_dialect
+
+###### csv.Sniffer
+
+###### csv.QUOTE_ALL
+
+###### csv.QUOTE_MINIMAL
+
+###### csv.QUOTE_NONNUMERIC
+
+###### csv.QUOTE_NONE
+
+###### csv.QUOTE_NOTNULL
+
+###### csv.QUOTE_STRINGS
+
+###### csv.Error
+
+#### Dialect
+
+###### Dialect.delimiter
+
+###### Dialect.doublequote
+
+###### Dialect.escapechar
+
+###### Dialect.lineterminator
+
+###### Dialect.quotechar
+
+###### Dialect.quoting
+
+###### Dialect.skipinitialspace
+
+###### Dialect.strict
+
+#### Reader对象
+
+###### `reader.__next__()`
+
+###### reader.dialect()
+
+###### reader.line_num()
+
+###### reader.fieldnames()
+
+#### Writer对象
+
+###### writer.writerow()
+
+###### writer.writerows()
+
+###### writer.dialect()
+
+###### Writer.writeheader()

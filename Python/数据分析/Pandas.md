@@ -92,39 +92,129 @@ print(myvar)
 
 ##### Series 方法
 
-| **方法名称**                 | **功能描述**                                           |
-| :--------------------------- | :----------------------------------------------------- |
-| `index`                      | 获取 Series 的索引                                     |
-| `values`                     | 获取 Series 的数据部分（返回 NumPy 数组）              |
-| `head(n)`                    | 返回 Series 的前 n 行（默认为 5）                      |
-| `tail(n)`                    | 返回 Series 的后 n 行（默认为 5）                      |
-| `dtype`                      | 返回 Series 中数据的类型                               |
-| `shape`                      | 返回 Series 的形状（行数）                             |
-| `describe()`                 | 返回 Series 的统计描述（如均值、标准差、最小值等）     |
-| `isnull()`                   | 返回一个布尔 Series，表示每个元素是否为 NaN            |
-| `notnull()`                  | 返回一个布尔 Series，表示每个元素是否不是 NaN          |
-| `unique()`                   | 返回 Series 中的唯一值（去重）                         |
-| `value_counts()`             | 返回 Series 中每个唯一值的出现次数                     |
-| `map(func)`                  | 将指定函数应用于 Series 中的每个元素                   |
-| `apply(func)`                | 将指定函数应用于 Series 中的每个元素，常用于自定义操作 |
-| `astype(dtype)`              | 将 Series 转换为指定的类型                             |
-| `sort_values()`              | 对 Series 中的元素进行排序（按值排序）                 |
-| `sort_index()`               | 对 Series 的索引进行排序                               |
-| `dropna()`                   | 删除 Series 中的缺失值（NaN）                          |
-| `fillna(value)`              | 填充 Series 中的缺失值（NaN）                          |
-| `replace(to_replace, value)` | 替换 Series 中指定的值                                 |
-| `cumsum()`                   | 返回 Series 的累计求和                                 |
-| `cumprod()`                  | 返回 Series 的累计乘积                                 |
-| `shift(periods)`             | 将 Series 中的元素按指定的步数进行位移                 |
-| `rank()`                     | 返回 Series 中元素的排名                               |
-| `corr(other)`                | 计算 Series 与另一个 Series 的相关性（皮尔逊相关系数） |
-| `cov(other)`                 | 计算 Series 与另一个 Series 的协方差                   |
-| `to_list()`                  | 将 Series 转换为 Python 列表                           |
-| `to_frame()`                 | 将 Series 转换为 DataFrame                             |
-| `iloc[]`                     | 通过位置索引来选择数据                                 |
-| `loc[]`                      | 通过标签索引来选择数据                                 |
+###### Series.heads()
 
+返回 Series 的前 n 行（默认为 5）
 
+###### Series.tail()
+
+返回 Series 的后 n 行（默认为 5）
+
+###### Series.dtype()
+
+返回 Series 中数据的类型
+
+###### Series.Shape()
+
+返回 Series 的形状（行数）
+
+###### Series.describe()
+
+返回 Series 的统计描述（如均值、标准差、最小值等）
+
+###### Series.isnull()
+
+返回一个布尔 Series，表示每个元素是否为 NaN
+
+###### Series.notnull()
+
+返回一个布尔 Series，表示每个元素是否不是 NaN
+
+###### Series.unique()
+
+返回 Series 中的唯一值（去重）
+
+###### Series.value_counts()
+
+返回 Series 中每个唯一值的出现次数
+
+###### Series.map()
+
+将指定函数应用于 Series 中的每个元素
+
+###### Series.apply()
+
+将指定函数应用于 Series 中的每个元素，常用于自定义操作
+
+###### Series.astype()
+
+将 Series 转换为指定的类型
+
+###### Series.sort_values()
+
+对 Series 中的元素进行排序（按值排序）
+
+###### Series.sort_index()
+
+对 Series 的索引进行排序
+
+###### Series.dropna()
+
+删除 Series 中的缺失值（NaN）
+
+###### Series.fillna()
+
+填充 Series 中的缺失值（NaN）
+
+###### Series.replace()
+
+替换 Series 中指定的值
+
+###### Series.cumsum()
+
+返回 Series 的累计求和
+
+###### Series.cumprod()
+
+返回 Series 的累计乘积
+
+###### Series.shift()
+
+将 Series 中的元素按指定的步数进行位移
+
+###### Series.rank()
+
+返回 Series 中元素的排名
+
+###### Series.corr()
+
+计算 Series 与另一个 Series 的相关性（皮尔逊相关系数）
+
+###### Series.cov()
+
+计算 Series 与另一个 Series 的协方差
+
+###### Series.to_list()
+
+将 Series 转换为 Python 列表
+
+###### Series.to_frame()
+
+将 Series 转换为 DataFrame
+
+###### Series.iloc[]
+
+> 通过位置索引来选择数据
+
+###### Series.loc[]
+
+> 通过标签索引来选择数据
+
+```
+
+```
+
+###### Series.index()
+
+> 获取 Series 的索引
+
+```
+
+```
+
+###### Series.values()
+
+> 获取 Series 的数据部分（返回 NumPy 数组）
 
 方法使用实例
 
@@ -267,7 +357,7 @@ print(s.max())   # 最大值
 - 索引可以是唯一的，但不是必须的。
 - 数据可以是标量、列表、NumPy 数组等。
 
-## 数据结构 DataFrame
+## 数据结构DataFrame
 
 类似于一个二维表格，它是 Pandas 中最重要的数据结构。DataFrame 可以看作是由多个 Series 按列排列构成的表格，它既有行索引也有列索引，因此可以方便地进行行列选择、过滤、合并等操作。
 
@@ -1760,7 +1850,7 @@ plt.show()
 
 ## Pandas 高级功能
 
-###### merge()
+###### pandas.merge()
 
  数据库风格的连接
 
@@ -1786,7 +1876,7 @@ result = pd.merge(left, right, on='ID', how='inner')
 print(result)
 ```
 
-###### concat()
+###### pandas.concat()
 
 沿轴连接
 
@@ -1809,7 +1899,7 @@ result = pd.concat([df1, df2], axis=0, ignore_index=True)
 print(result)
 ```
 
-###### join()
+###### pandas.join()
 
 `join()` 方法是 Pandas 中的简化连接操作，通常用于基于索引将多个 DataFrame 连接。
 
@@ -1831,7 +1921,7 @@ result = left.join(right, how='inner')
 print(result)
 ```
 
-###### pivot_table()
+###### pandas.pivot_table()
 
 创建透视表
 
@@ -1858,7 +1948,7 @@ pivot_table = pd.pivot_table(df, values='Sales', index='Date', columns='Category
 print(pivot_table)
 ```
 
-###### crosstab()
+###### pandas.crosstab()
 
 创建交叉表
 
@@ -1882,7 +1972,7 @@ cross_table = pd.crosstab(df['Category'], df['Region'])
 print(cross_table)
 ```
 
-###### apply()
+###### pandas.apply()
 
 应用函数到 DataFrame 或 Series 上
 
@@ -1908,7 +1998,7 @@ df['A'] = df['A'].apply(custom_func)
 print(df)
 ```
 
-###### applymap()
+###### pandas.applymap()
 
 在整个 DataFrame 上应用函数
 
@@ -1925,7 +2015,7 @@ df = df.applymap(lambda x: x ** 2)
 print(df)
 ```
 
-###### map()
+###### pandas.map()
 
 应用函数到 Series 上
 
@@ -1940,7 +2030,7 @@ df['A'] = df['A'].map({'cat': 'kitten', 'dog': 'puppy'})
 print(df)
 ```
 
-###### agg()
+###### pandas.agg()
 
 `agg()` 用于执行复杂的聚合操作，可以传入多个函数来同时计算多个聚合值
 
@@ -1960,7 +2050,7 @@ print(grouped)
 
 ##### 时间序列处理
 
-###### `date_range()`
+###### `pandas.date_range()`
 
 生成时间序列
 
@@ -1979,7 +2069,7 @@ date_range = pd.date_range(start='2024-01-01', periods=5, freq='D')
 print(date_range)
 ```
 
-###### pd.Timedelta() 
+###### pandas.Timedelta() 
 
 ```python
 import pandas as pd
@@ -1990,14 +2080,14 @@ new_date = date + pd.Timedelta(days=10)
 print(new_date)
 ```
 
-###### rolling()
+###### pandas.rolling()
 
 | **方法**      | **说明**                           |
 | :------------ | :--------------------------------- |
 | `rolling()`   | 计算滚动窗口操作，常用于移动平均等 |
 | `expanding()` | 计算扩展窗口操作，累计值           |
 
-###### expanding()
+###### pandas.expanding()
 
 ##### 缺失值处理
 
@@ -2016,7 +2106,7 @@ print(new_date)
 
 ###### pd.MultiIndex.from_product()
 
-###### set_index()
+###### dataframe.set_index()
 
 `set_index()` 方法可以将 DataFrame 的列转换为多重索引，适用于从已有的数据创建多重索引
 
@@ -2037,7 +2127,7 @@ df.set_index(['Letter', 'Number'], inplace=True)
 print(df)
 ```
 
-###### xs()
+###### dataframe.xs()
 
 获取交叉数据
 
@@ -2046,7 +2136,7 @@ print(df)
 print(df.xs(1, level='Number'))
 ```
 
-###### sort_index()
+###### dataframe.sort_index()
 
 支持对多重索引进行排序
 
@@ -2056,7 +2146,7 @@ df_sorted = df.sort_index(level=['Letter', 'Number'], ascending=[True, False])
 print(df_sorted)
 ```
 
-###### reset_index()
+###### dataframe.reset_index()
 
 将多重索引重置为普通的列
 
@@ -2066,7 +2156,7 @@ df_reset = df.reset_index()
 print(df_reset)
 ```
 
-###### fillna()
+###### dataframe.fillna()
 
 ```python
 # 示例数据中引入缺失值
