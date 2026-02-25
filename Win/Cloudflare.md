@@ -71,8 +71,12 @@ hugo new content posts/my-first-quant-strategy.md
 
 ```
 Get-Content C:\Users\源恒\.ssh\id_rsa.pub
+Get-Content C:\Users\Elin\.ssh\id_rsa.pub
 
 ssh -i C:\Users\源恒\.ssh\id_rsa root@154.36.183.45
+ssh -i C:\Users\Elin\.ssh\id_rsa root@154.36.183.45
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDGIWMJ2BcB63k22uZ+Kc6nqS557oQ/uMP2D69JP76dKlfva7Uoo5bljYlT9Jy3aqaoofjwWWnUGzv+UJOaQEFZ6E/Ip/Y3M2PJKg2bW5+ccP3WgQLV2AMQ69o1To4JBxocubjjfG5Zp+trjygjStm+qsqTqtK3Zas3KshztMxlr2/ogclx0zCwXNvwRgC9xzxCcfM9EgScczOlLGuDnYF3p0Mj7XezYGLuC0J688XoR7GOZzZaPYsO9l4y6IYxpCVFFpMdSQP7Ox6sGp7TFmg873nHp4QTzwWj8SrKmSkyeWizc7cepY5Jj8VsnMW7LLw63bOURilLdxSfMejNEicuYRnpWOaxB+8tuboWtAr+jezom6LNSrjBVTpXmP3be+MEyczbhSOtOxacNFKkoNFt9RgvqB11VkM3ddfJNcMnYwDhpdSoCOijz3CD08nZU8PRs2yBdD6cyRClx9fZiBj9ynH4bW2eRugOGf62YG2zCCA8cLFVkMt+UPA/StL+JjufqMlbXF0oZDzuhvuDCTfpLdUUE1uh4r58ZcjWseK2xPGV/e1yk8vUKJCXJYr9cs9p1AKwY1eaW14vuG95r+fQM7JV4x3nBC938pKoHji7CyjPXAG8uiBj1NKXT5aaQnIftJZ3peRxyqeK1ZRgVV5jEZa5M0lXru6fu37uBerGsQ== 2421814924@qq.com
 ```
 
 ```
