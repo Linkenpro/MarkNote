@@ -75,8 +75,6 @@ Get-Content C:\Users\Elin\.ssh\id_rsa.pub
 
 ssh -i C:\Users\源恒\.ssh\id_rsa root@154.36.183.45
 ssh -i C:\Users\Elin\.ssh\id_rsa root@154.36.183.45
-
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDGIWMJ2BcB63k22uZ+Kc6nqS557oQ/uMP2D69JP76dKlfva7Uoo5bljYlT9Jy3aqaoofjwWWnUGzv+UJOaQEFZ6E/Ip/Y3M2PJKg2bW5+ccP3WgQLV2AMQ69o1To4JBxocubjjfG5Zp+trjygjStm+qsqTqtK3Zas3KshztMxlr2/ogclx0zCwXNvwRgC9xzxCcfM9EgScczOlLGuDnYF3p0Mj7XezYGLuC0J688XoR7GOZzZaPYsO9l4y6IYxpCVFFpMdSQP7Ox6sGp7TFmg873nHp4QTzwWj8SrKmSkyeWizc7cepY5Jj8VsnMW7LLw63bOURilLdxSfMejNEicuYRnpWOaxB+8tuboWtAr+jezom6LNSrjBVTpXmP3be+MEyczbhSOtOxacNFKkoNFt9RgvqB11VkM3ddfJNcMnYwDhpdSoCOijz3CD08nZU8PRs2yBdD6cyRClx9fZiBj9ynH4bW2eRugOGf62YG2zCCA8cLFVkMt+UPA/StL+JjufqMlbXF0oZDzuhvuDCTfpLdUUE1uh4r58ZcjWseK2xPGV/e1yk8vUKJCXJYr9cs9p1AKwY1eaW14vuG95r+fQM7JV4x3nBC938pKoHji7CyjPXAG8uiBj1NKXT5aaQnIftJZ3peRxyqeK1ZRgVV5jEZa5M0lXru6fu37uBerGsQ== 2421814924@qq.com
 ```
 
 ```
@@ -125,5 +123,190 @@ ufw enable
 
 ```
 timedatectl set-timezone Asia/Shanghai
+```
+
+###### 设置root密码
+
+```
+passwd
+```
+
+```
+ssh root@154.36.183.45
+```
+
+###### 禁用密码登录
+
+只保留密钥
+
+```
+sudo nano /etc/ssh/sshd_config
+
+找到 PasswordAuthentication 这一行
+PasswordAuthentication no
+```
+
+删除root密码
+
+```
+sudo passwd -l root
+```
+
+###### 设置第二个ssh
+
+```
+nano /root/.ssh/authorized_keys
+```
+
+检查权限
+
+```
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/authorized_keys
+```
+
+##### Nginx
+
+```
+软件包列表更新
+sudo apt update
+
+软件仓库直接安装
+sudo apt install nginx -y
+```
+
+###### 启动并设置开机自启
+
+```
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+设置防火墙
+
+```
+sudo ufw allow 'Nginx Full'
+
+或直接允许 80 端口
+sudo ufw allow 80
+sudo ufw allow 443
+```
+
+###### 安装Certbot
+
+```
+sudo apt install certbot python3-certbot-nginx -y
+```
+
+###### 配置https证书
+
+将域名替换为你自己的
+
+```
+sudo certbot --nginx -d server.moonode.uk -d moonode.uk
+```
+
+###### 文件夹结构查看
+
+```
+tree
+
+sudo apt update && sudo apt install tree -y
+
+cd /
+
+mkdir /root/binance_quant
+
+网页文件整理
+mkdir /root/proxy/config
+
+# 创建网站子目录
+mkdir -p /root/website/{html,assets,backup}
+```
+
+
+
+```
+scp "C:\Users\源恒\Desktop\website\images\ldm.svg" root@154.36.183.45:/var/www/html/images/logo.svg
+
+```
+
+
+
+##### 量化
+
+###### 虚拟环境
+
+```
+python3 -m venv venv
+```
+
+###### 激活虚拟环境
+
+```
+source venv/bin/activate
+```
+
+###### scp上传py文件
+
+```
+scp "C:\Users\源恒\Desktop\binance_ccxt.py" root@154.36.183.45:/root/binance_quant/
+
+scp "C:\Users\源恒\Desktop\数据库\crypto_data.db" root@154.36.183.45:/root/binance_quant/
+```
+
+运行py文件
+
+```
+python binance_ccxt.py
+```
+
+###### 定时运行采集数据
+
+```
+timedatectl
+```
+
+配置 Crontab 定时任务
+
+```
+crontab -e
+```
+
+推荐选 nano
+
+```
+# 每天北京时间 08:30 运行量化脚本
+30 8 * * * cd /root/binance_quant && source venv/bin/activate && python binance_ccxtSQL.py >> /root/binance_quant/logs/cron.log 2>&1
+```
+
+验证任务添加是否成功
+
+```
+crontab -l
+```
+
+确保定时任务守护进程正在运行
+
+```
+sudo systemctl status cron
+```
+
+查看日志文件
+
+```
+tail -n 10 /root/binance_quant/logs/cron.log
+```
+
+###### 退出venv环境
+
+```
+deactivate
+```
+
+###### 查看完整日志内容
+
+```
+cat data_fetcher.log
 ```
 
