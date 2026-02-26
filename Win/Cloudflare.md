@@ -83,7 +83,7 @@ IP:
 Port:
 5943
 Password:
--khwKgeOH
+-khwKgeOH$
 ```
 
 ###### 更新系统软件包
