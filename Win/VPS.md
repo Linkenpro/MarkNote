@@ -161,6 +161,7 @@ mkdir -p /root/website/{html,assets,backup}
 ```
 scp "C:\Users\源恒\Desktop\website\images\ldm.svg" root@154.36.183.45:/var/www/html/images/logo.svg
 
+scp "C:\Users\Elin\Downloads\website\images\light_background.webp" admin@154.36.183.45:/var/www/html/images/light_background.webp
 ```
 
 ###### 网站站点配置
@@ -168,8 +169,6 @@ scp "C:\Users\源恒\Desktop\website\images\ldm.svg" root@154.36.183.45:/var/www
 ```
 sudo nano /etc/nginx/sites-available/default
 ```
-
-
 
 ###### 错误日志
 
