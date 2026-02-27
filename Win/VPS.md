@@ -6,6 +6,7 @@ Get-Content C:\Users\Elin\.ssh\id_rsa.pub
 
 ssh -i C:\Users\源恒\.ssh\id_rsa root@154.36.183.45
 ssh -i C:\Users\Elin\.ssh\id_rsa root@154.36.183.45
+ssh -i C:\Users\Elin\.ssh\id_rsa admin@154.36.183.45
 ```
 
 ```
@@ -162,6 +163,14 @@ scp "C:\Users\源恒\Desktop\website\images\ldm.svg" root@154.36.183.45:/var/www
 
 ```
 
+###### 网站站点配置
+
+```
+sudo nano /etc/nginx/sites-available/default
+```
+
+
+
 ###### 错误日志
 
 ```
@@ -228,6 +237,64 @@ https://moonode.uk/images/logo.svg?v=test1
 > 浏览器缓存：你的浏览器之前缓存了一个错误的 404 响应，并且死死地抓着不放，即使你后来修好了服务器，它依然直接返回缓存的 404，根本不去服务器请求。
 >
 > Ctrl + Shift + R
+
+###### 利用 Nginx 静态文件服务
+
+```
+sudo nano /etc/nginx/sites-available/default
+```
+
+修改
+
+```
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    # 其他配置...
+
+    # --- 新增的日志访问配置 ---
+    location /my-logs/ {
+        alias /path/to/your/quant/logs/; # 注意：这里必须是绝对路径，且末尾要有斜杠
+        autoindex on; # 可选：开启目录浏览，可以看到有哪些日志文件
+        # 为了安全，可以设置简单的账号密码（htpasswd）
+    }
+}
+```
+
+```
+alias /root/binance_quant/logs;
+```
+
+前端网页读取（JavaScript）
+
+```
+<!DOCTYPE html>
+<div>
+    <h2>量化程序实时日志</h2>
+    <!-- 使用 pre 标签保持日志的格式，code 标签高亮 -->
+    <pre><code id="log-output">正在连接...</code></pre>
+</div>
+
+<script>
+    // 每隔 3 秒刷新一次日志
+    setInterval(async () => {
+        try {
+            // 请求你刚刚配置的那个路径下的具体日志文件
+            const response = await fetch('/my-logs/app.log');
+            const text = await response.text();
+            
+            // 获取最后 50 行（防止日志太长卡死浏览器）
+            const lines = text.split('\n').slice(-50);
+            document.getElementById('log-output').textContent = lines.join('\n');
+        } catch (e) {
+            document.getElementById('log-output').textContent = '读取失败: ' + e;
+        }
+    }, 3000);
+</script>
+```
+
+
 
 ##### 量化
 
@@ -309,6 +376,8 @@ deactivate
 
 ```
 cat data_fetcher.log
+
+cat cron.log
 ```
 
 ###### 设置环境变量保存API
