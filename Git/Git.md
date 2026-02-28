@@ -17,20 +17,7 @@ ssh-keygen -t rsa -b 4096 -C "cocanadalope@gmail.com"
 ```
 Your identification has been saved in C:\Users\源恒/.ssh/id_rsa
 Your public key has been saved in C:\Users\源恒/.ssh/id_rsa.pub
-The key fingerprint is:
-SHA256:M3MWENV8EFohdgw/8cJcNVowKwUXCA2+oe4Fi3SGRbw cocanadalope@gmail.com
-The key's randomart image is:
-+---[RSA 4096]----+
-|      ..o=O*XX++.|
-|      ...o @*+* .|
-|       ..oo.*+.  |
-|      oE. o..o   |
-|     o =S.o      |
-|    . = o*       |
-|     . o .       |
-|      . .        |
-|       .         |
-+----[SHA256]-----+
+
 ```
 
 ###### 启动SSH代理并添加密钥
