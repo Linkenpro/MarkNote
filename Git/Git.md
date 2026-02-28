@@ -51,8 +51,6 @@ cat ~/.ssh/id_rsa.pub
 ssh -T git@github.com
 ```
 
-
-
 ```
 git clone git@github.com:Linkenpro/MarkNote.git
 ```
@@ -154,3 +152,20 @@ Port 443
 :wq
 
 > 按ESC键切换到下面输入，按I切换上页输入
+
+###### 自动提交脚本
+
+> 日常使用状态下
+>
+> git add .
+>
+> git commit -m '提交的信息'
+>
+> git push
+
+bat脚本自动化
+
+```
+
+```
+
