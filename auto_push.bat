@@ -1,20 +1,13 @@
 @echo off
-:: 1. 设置编码为 UTF-8，防止中文乱码
+:: 设置编码为 UTF-8，确保中文正常显示
 chcp 65001 > nul
 
-:: 2. 获取当前时间并格式化为 YYYY-MM-DD HH:MM
-:: 使用 WMIC 获取标准时间，避免系统区域设置影响
-for /f "tokens=2 delims==" %%a in ('wmic OS Get localdatetime /value') do set "dt=%%a"
-
-:: 截取年(4)、月(2)、日(2)、时(2)、分(2)
-set "YY=%dt:~0,4%"
-set "MM=%dt:~4,2%"
-set "DD=%dt:~6,2%"
-set "HH=%dt:~8,2%"
-set "Min=%dt:~10,2%"
-
-:: 组合成目标格式：2026-02-28 09:05
-set "COMMIT_MSG=%YY%-%MM%-%DD% %HH%:%Min%"
+:: ==========================================
+:: 1. 获取时间 (使用 PowerShell，兼容所有新版 Windows)
+:: ==========================================
+for /f "delims=" %%i in ('powershell -NoProfile -Command "Get-Date -Format 'yyyy-MM-dd HH:mm'"') do (
+    set "COMMIT_MSG=%%i"
+)
 
 echo ==========================================
 echo 正在执行自动提交流程...
@@ -22,47 +15,71 @@ echo 提交信息将设为：[%COMMIT_MSG%]
 echo ==========================================
 echo.
 
-:: 3. 执行核心逻辑
-:: 注意：这里直接调用 git 命令，因为我们在 .bat 中运行，Git Bash 的环境变量通常已加载
-:: 如果提示 'git' 不是内部或外部命令，说明需要配置环境变量或使用完整路径
+:: 检查 Git 是否可用
+git --version > nul 2>&1
+if errorlevel 1 (
+    echo [错误] 未找到 Git 命令。请确认已安装 Git 并配置好环境变量。
+    pause
+    exit /b 1
+)
 
-echo [1/3] 正在添加文件 (git add .)...
+:: ==========================================
+:: 2. 执行 Git 流程
+:: ==========================================
+
+echo [步骤 1/3] 正在添加文件 (git add .)...
 git add .
-if errorlevel 1 goto error
+if errorlevel 1 goto error_end
 
-echo [2/3] 正在提交代码 (git commit -m "...")...
+echo [步骤 2/3] 正在检查并提交代码...
+:: 先检查是否有文件变动
+git diff-index --quiet HEAD --
+if %errorlevel% equ 0 (
+    echo.
+    echo [提示] 工作区是干净的，没有检测到文件变化，无需提交。
+    echo.
+    goto success_end
+)
+
+:: 如果有变动，则执行提交
 git commit -m "%COMMIT_MSG%"
-if errorlevel 1 goto error_commit_warning
+if errorlevel 1 (
+    echo.
+    echo [警告] 提交命令执行异常，请检查上方输出。
+    goto error_end
+)
 
-echo [3/3] 正在推送到远程 (git push)...
+echo [步骤 3/3] 正在推送到远程 (git push)...
 git push
-if errorlevel 1 goto error
+if errorlevel 1 goto error_end
 
+:: ==========================================
+:: 3. 成功结束
+:: ==========================================
+:success_end
 echo.
 echo ==========================================
-echo ✅ 操作全部成功完成！
+echo [成功] 操作已全部完成！
 echo ==========================================
 echo.
-goto end
+goto wait_close
 
-:error_commit_warning
+:: ==========================================
+:: 4. 错误处理
+:: ==========================================
+:error_end
 echo.
-echo ⚠️ 警告：没有需要提交的变化 (Nothing to commit)。
-echo 可能是文件没有变动，或者刚才已经提交过了。
-echo.
-goto end
-
-:error
-echo.
-echo ❌ 发生错误！请检查上面的红色报错信息。
+echo ==========================================
+echo [失败] 操作过程中遇到错误，请检查上方红色信息。
 echo 常见原因：
-echo 1. 网络连接问题 (push 失败)
-echo 2. 远程仓库有更新，需要先 pull
-echo 3. 文件名包含特殊字符
+echo 1. 网络断开或 SSH 密钥未配置
+echo 2. 远程仓库有更新，请先拉取 (git pull)
+echo ==========================================
 echo.
 
-:end
-:: 4. 关键修改：暂停，等待用户按回车键
-echo.
+:: ==========================================
+:: 5. 等待用户按回车关闭
+:: ==========================================
+:wait_close
 echo 按 [回车键] 关闭窗口...
 pause > nul
