@@ -165,7 +165,37 @@ Port 443
 
 bat脚本自动化
 
-```
-代码
+```bash
+@echo off
+:: 放弃 UTF-8，回归原生中文编码以解决命令识别错误
+chcp 936 >nul
+
+:: 1. 强制使用短路径格式 (PROGRA~1 这种逻辑) 
+:: 这里的 C:\Users\源恒 对应的短路径通常可以直接用绝对字符串
+set "KEY=C:/Users/源恒/.ssh/id_rsa"
+
+:: 2. 告诉 Git 使用指定的 SSH 钥匙，并禁止它去写 known_hosts
+set GIT_SSH_COMMAND=ssh -i "%KEY%" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+
+:: 3. 执行同步
+cd /d "D:\MarkNote"
+
+echo [1/3] Adding files...
+git add .
+
+echo [2/3] Committing...
+git commit -m "Auto-sync %date% %time%"
+
+echo [3/3] Pushing to GitHub...
+:: 直接推送，不再打印带中文的提示信息，防止脚本崩溃
+git push
+
+if %errorlevel% equ 0 (
+    echo Sync Success!
+) else (
+    echo Sync Failed. Check your SSH Key on GitHub.
+)
+
+pause >nul
 ```
 
