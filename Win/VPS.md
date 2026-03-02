@@ -410,7 +410,7 @@ API_KEY = os.environ.get('BINANCE_API_KEY')
 API_SECRET = os.environ.get('BINANCE_API_SECRET')
 
 if not API_KEY or not API_SECRET:
-    raise ValueError("❌ 错误：未找到环境变量 BINANCE_API_KEY 或 BINANCE_API_SECRET")
+    raise ValueError("错误：未找到 BINANCE_API_KEY 或 BINANCE_API_SECRET !")
 
 exchange = ccxt.binance({
     'apiKey': API_KEY,
@@ -418,7 +418,7 @@ exchange = ccxt.binance({
     'timeout': 10000, # 超时设置为10秒
     'enableRateLimit': True, # 必须开启，遵守速率限制，防止被封IP
     'options': {
-        'defaultType': 'future',  # 指定为 'future' (合约/期货)
+        'defaultType': 'future',  # 指定为合约
     }
 })
 
@@ -460,3 +460,8 @@ except Exception as e:
 auto
 ```
 
+##### 代理
+
+Sing-box 或 Xray (Vless + Reality)
+
+> 

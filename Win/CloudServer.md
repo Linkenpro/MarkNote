@@ -205,7 +205,7 @@ pip install shadowsocks
 vim /etc/shadowsocks.json
 ```
 
-
+###### TradingView指标
 
 ```js
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
@@ -776,10 +776,16 @@ if showTradeStats
 利用 K-近邻算法 (K-Nearest Neighbors, KNN) 结合 洛伦兹距离 (Lorentzian Distance) 来预测未来 4 根 K 线的价格走向
 
 - **传统问题**：传统的 KNN 算法通常使用**欧几里得距离 (Euclidean Distance)**。但在金融市场中，重大事件（如美联储会议、黑天鹅事件）会导致市场结构发生扭曲，就像大质量物体扭曲时空一样。欧几里得距离在这种“扭曲”的市场数据中表现不佳，容易受异常值（Outliers）影响。
+
 - 解决方案：洛伦兹距离 (Lorentzian Distance)
   - 它基于洛伦兹几何，能够更好地处理这种“价格 - 时间”的扭曲。
+  
   - **数学公式体现**：代码中的 `get_lorentzian_distance` 函数使用了 `math.log(1 + math.abs(...))`。这种对数计算方式使得距离的增长速度变慢，从而**降低了异常值和噪声的权重**，让模型更关注整体趋势而非极端的瞬间波动。
+  
   - **效果**：在洛伦兹空间中，两点之间最短的距离不一定是直线，而是一条测地线曲线，这更符合金融市场的非线性特征。
+  
+    
+###### python复现
 
 ```py
 import numpy as np
