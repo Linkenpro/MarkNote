@@ -1,18 +1,6 @@
 ##### 阿里云
 
-```
-登录：root +++ A$ecret-001
-```
-
-###### 系统更新
-
-```
-sudo apt update && sudo apt upgrade -y
-
-系统重启
-sudo reboot
-
-```
+###### 
 
 ```
 Tab键切换至OK
