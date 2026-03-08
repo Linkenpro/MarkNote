@@ -859,3 +859,24 @@ Mac：
 
 安卓：V2rayNG
 
+###### Nginx文件配置
+
+```
+
+```
+
+
+
+```
+location /v2ray/ {
+    proxy_redirect off;
+    proxy_pass http://127.0.0.1:12345; # 对应 x-ui 节点端口
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+}
+```
+
+##### 面板其他配置
+
