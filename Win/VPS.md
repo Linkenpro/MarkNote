@@ -675,6 +675,10 @@ bash <(curl -Ls https://raw.githubusercontent.com/MHSanaei/3x-ui/master/install.
 
 脚本会询问是否确认安装，输入 `y`
 
+询问是否给面板分配随机端口
+
+> yes
+
 设置账号密码：安装最后会要求你设置面板的 用户名、密码 和 端口（默认 2053）
 
 ```
@@ -705,225 +709,153 @@ ufw allow 54321/tcp
 ufw reload
 ```
 
+#### 3X-UI面板使用
+
+```
+x-ui
+```
+
+开启面板BBR
+
+```
+23
+
+1
+```
+
 ##### 入站列表
 
-###### 推荐配置 (VLESS + Reality)
+- 协议
+- 传输
+- 安全 Reality和TLS
 
-1. 点击左侧 **“入站列表” (Inbounds)** -> **“添加入站” (Add Inbound)**。
+###### 第一种：Vless+XHTTP+Reality
 
-2. 基本设置:
+1. 备注：随便填
 
-   - **备注 (Remark)**: 随便填，例如 `My-VLESS-Reality`。
-   - **协议 (Protocol)**: 选择 `VLESS`。
-   - **端口 (Port)**: 填写一个未被占用的端口（例如 `443` 或其他随机高位端口，**注意去安全组放行该端口**）。*建议不要用 54321，那是面板端口。*
-   - **传输协议 (Transport)**: 选择 `Reality`。
+2. 协议：选择vless
 
-3. Reality 设置:
+3. 端口：随机分配
 
-   - **目标网站 (Dest)**: 填写一个国外的大型网站，如 `www.microsoft.com:443` 或 `www.apple.com:443` (作为伪装)。
+4. 传输：选择XHTTP
 
-   - **私钥 (Private Key)**: 点击旁边的 **“生成” (Generate)** 按钮自动生成。
+5. 路径：填写正斜杠+随机字符
 
-     ```
-     5lEremOipQStSuigDleyikd2peJoc-8AHtMFgVg_UgE
-     ```
+   ```
+   /abc
+   ```
 
-     ```
-     uDPj5lkgewc2l_ANI_H-Sr5RzaLMkk90FQRaNOVtp2I
-     ```
+6. 安全选Reality
 
-   - **短 ID (Short ID)**: 点击 **“生成”** 自动生成。
+   Target：填写
 
-     ```
-     8cd216db6485,9c,f0856d39,8e7c,1966e055edf22bdf,d0b6f0b458,d9ee89,7b9ed21969cb2c
-     ```
+   SNI:
 
-   - **Xver**: 保持默认 `0`。
+   ```
+   microsoft.com
+   apple.com
+   tesla.com
+   ```
 
-4. 用户设置:
+7. 点击创建公钥和私钥
 
-   - 点击 **“添加用户”**，生成一个 **UUID** (也可以手动复制一个)。
+8. 点击创建
 
-5. 点击底部的 **“确定” (OK)** 保存。
+9. 点击左侧加号，点击二维码，用V2ray，小火箭，Clash扫码添加节点
 
-###### VMess + WS + TLS（需要域名）
+   点击二维码图片自动复制链接
 
-1. 点击 **“添加入站”**。
-2. 基本设置:
-   - **协议**: `VMess`。
-   - **端口**: `443` (或者其他端口)。
-   - **传输协议**: `WS` (WebSocket)。
-3. WS 设置:
-   - **路径 (Path)**: 填写一个随机路径，例如 `/mysecretroad` (客户端也要填一样的)。
-4. TLS 设置:
-   - 开启 **TLS** 开关。
-   - **域名**: 填写 `moonode.uk`。
-   - **证书/私钥**: 同面板设置，填入之前的 `.cer` 和 `.key` 路径，或者选择“自动”（如果脚本已配置好）。
-5. **用户设置**: 添加用户，生成 UUID。
-6. 点击 **“确定”**。
+###### 第二种：Vless+TCP+Reality
 
-##### Nginx 反向代理
+1. 传输选择TCP
 
-Nginx 统一管理流量，甚至可以让 3x-ui 的面板隐藏在你的二级目录或特定域名下，增加安全性
+2. 安全选Reality
 
-> **端口 80/443**：由 Nginx 监听（个人网页）。
->
-> **127.0.0.1:2053**：3x-ui 面板（限制仅本地访问，通过 Nginx 转发，更安全）。
->
-> **量化程序端口**：保持独立，或通过 Nginx 监控其 API 状态
+3. Target：填写
 
-修改 3x-ui 面板监听地址
+   SNI:
 
-> 在 3x-ui 的“面板设置”中，将监听 IP 从 0.0.0.0 改为 127.0.0.1。
->
-> 这样别人就无法通过 IP:2053 直接访问你的面板，必须通过你的 Nginx 域名转发才能进入
+   ```
+   microsoft.com
+   apple.com
+   tesla.com
+   ```
 
-Nginx 配置示例
+4. 点击创建公钥和私钥
+
+##### 用域名搭建节点
+
+1. 准备一个域名
+2. 托管到Cloudflare
+
+###### 添加解析记录
 
 ```
-server {
-    listen 443 ssl;
-    server_name yourdomain.com; # 你的域名
-
-    # 你的个人网页配置
-    location / {
-        root /var/www/html;
-        index index.html;
-    }
-
-    # 3x-ui 面板的反向代理
-    location /mysecureadmin/ {
-        proxy_pass http://127.0.0.1:54321;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-}
+A记录
+名称填test
+ip地址vps的ip，关闭代理
+点击保存
 ```
 
-**SSL 证书共用**： 由于 Nginx 已经占用了 80/443，3x-ui 就不要再尝试去申请 80 端口的证书了（会冲突导致 Nginx 启动失败）。建议让 Nginx 处理所有证书，或者 3x-ui 使用 **Reality 协议**（不需要证书，也不占 443 端口）。
-
-**防火墙策略（关键）**： 因为 Nginx 在前台，你只需要在 VPS 防火墙（ufw/iptables）开启：
-
-- `80/443` (Nginx)
-- `你的代理协议端口` (比如 Reality 用的 40000+)
-- **关闭** `2053` (面板端口)，因为它已经通过 Nginx 转发了，没必要暴露在公网被扫。
-
-**资源限制**： 量化程序最怕交换内存（Swap）导致的毫秒级延迟。
-
-- 运行 `top` 或 `htop` 观察内存。
-- 如果内存吃紧，建议给 3x-ui 限制日志记录大小，防止日志塞满硬盘影响量化程序的数据库写入。
-
-###### 子域名反向代理
-
-**添加一条 A 记录**
-
-- **主机记录 (Host/Name)**: `panel` (或者你想要的任何前缀，如 `admin`, `xui`)
-- **记录值 (Value/IP)**: 你的 **VPS 公网 IP**
-- **TTL**: 自动或默认
-- **代理状态 (Cloudflare)**: 建议先设为 **灰色 (DNS Only)**。如果后续需要 CDN 加速或隐藏 IP，再开启橙色云朵（但开启橙色云朵可能需要额外配置 WebSocket 支持）。
-
-**申请子域名的 SSL 证书**
-
-x-ui 面板强制要求 HTTPS
-
-安装了 acme.sh，ssh中
+ping刚才的域名
 
 ```
-# 停止 Nginx 以释放 80 端口 (防止冲突)
-sudo systemctl stop nginx
-
-# 申请证书 (将 panel.moonode.uk 替换为你实际的子域名)
-~/.acme.sh/acme.sh --issue -d panel.moonode.uk --standalone
-
-# 申请成功后，重新启动 Nginx
-sudo systemctl start nginx
+ping 域名
 ```
 
-> 如果提示证书已存在或需要强制重新申请，可以加 --force 参数
+##### vps操作
 
-记住证书路径（通常如下）：
-
-- 全链证书：`/root/.acme.sh/panel.moonode.uk_ecc/fullchain.cer`
-- 私钥：`/root/.acme.sh/panel.moonode.uk_ecc/panel.moonode.uk.key`
-
-创建一个新的 Nginx 配置文件专门用于这个子域名
+###### 安装ssl证书
 
 ```
-sudo nano /etc/nginx/sites-available/panel.moonode.uk
+18
+
+1 获得ssl证书
+
+填写自己的域名
+panel.moonode.uk
+
+填写一个端口54300
+
+ACEM脚本：
+选择n
+
+对面板安装证书：y
+
+保存至记事本
 ```
 
-填入以下配置
+###### 第三种节点Vmess+WS+TLS
 
-```
-server {
-    listen 80;
-    server_name panel.moonode.uk;
-    # 强制将所有 HTTP 请求重定向到 HTTPS
-    return 301 https://$host$request_uri;
-}
+1. 名称随便填
 
-server {
-    listen 443 ssl http2;
-    server_name panel.moonode.uk;
+2. 协议：vmess
 
-    # --- SSL 证书路径 (替换为你刚才申请的子域名证书路径) ---
-    ssl_certificate /root/.acme.sh/panel.moonode.uk_ecc/fullchain.cer;
-    ssl_certificate_key /root/.acme.sh/panel.moonode.uk_ecc/panel.moonode.uk.key;
+3. 传输选Websocket
 
-    # --- SSL 优化配置 (推荐) ---
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-    ssl_prefer_server_ciphers on;
+4. 主机：填自己的域名
 
-    location / {
-        # --- 反向代理到 x-ui 面板内部端口 (默认是 54321，如果你改过请修改这里) ---
-        proxy_pass http://127.0.0.1:54321;
+   ```
+   panel.moonode.uk
+   ```
 
-        # --- 必要的 Header 设置 (保持连接和获取真实 IP) ---
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+5. 路径：/abb
 
-        # --- WebSocket 支持 (x-ui 面板可能用到 WS) ---
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        
-        # 增加超时时间，防止长时间操作断开
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
-    }
-}
-```
+6. 安全选TLS
 
-启用配置：
-创建软链接到 sites-enabled 目录
+   建议端口：443、2053、2083、2087、2096、8443
 
-```
-sudo ln -s /etc/nginx/sites-available/panel.moonode.uk /etc/nginx/sites-enabled/
-```
+7. SNI：填自己的域名
 
-检查并重载 Nginx
+8. 公钥私钥：从面板设置证书
 
-```
-# 1. 检查语法
-sudo nginx -t
+9. 点击创建
 
-# 2. 如果语法正确，重载服务
-sudo systemctl reload nginx
-```
+###### 软件
 
-**调整 x-ui 面板设置** (可选但推荐)
+Windows：V2rayN
 
-1. 暂时通过 IP:端口 (`https://IP:54321`) 登录面板。
-2. 进入 **“面板设置”**。
-3. 确保 **“面板 URL 根路径”** 是空的（即为 `/`）。如果你在 Nginx 里配置的是 `location /`，这里必须为空。
-4. 保存。
+Mac：
 
-**测试访问**
+安卓：V2rayNG
 
-打开浏览器访问：
-**`https://panel.moonode.uk`**
