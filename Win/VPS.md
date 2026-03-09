@@ -404,7 +404,6 @@ nano /var/www/html/index.html
 
 ```
 https://moonode.uk/images/logo.svg?v=test1
-
 ```
 
 > 浏览器缓存：你的浏览器之前缓存了一个错误的 404 响应，并且死死地抓着不放，即使你后来修好了服务器，它依然直接返回缓存的 404，根本不去服务器请求。
@@ -485,7 +484,19 @@ alias /root/binance_quant/logs;
 </script>
 ```
 
+###### nginx配置文件位置查询
 
+该命令用于测试 Nginx 配置文件的语法是否正确，
+
+执行时**会直接显示主配置文件的路径**
+
+```
+sudo nginx -t
+```
+
+```
+/etc/nginx/nginx.conf
+```
 
 ##### 量化
 
@@ -799,6 +810,15 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 }
+```
+
+```
+location / {
+        proxy_pass http://127.0.0.1:54321;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
 ```
 
 **SSL 证书共用**： 由于 Nginx 已经占用了 80/443，3x-ui 就不要再尝试去申请 80 端口的证书了（会冲突导致 Nginx 启动失败）。建议让 Nginx 处理所有证书，或者 3x-ui 使用 **Reality 协议**（不需要证书，也不占 443 端口）。
