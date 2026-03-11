@@ -891,4 +891,55 @@ location /v2ray/ {
 
 ##### 面板其他配置
 
+#### 网站操作
+
+###### 拉取文件
+
+```
+scp -r root@154.36.183.45:/var/www/html/* "C:/Users/源恒/Desktop/file/"
+```
+
+###### 回传文件
+
+```
+scp -r "C:/Users/源恒/Desktop/website/*" admin@154.36.183.45:/var/www/html/
+```
+
+```
+scp "C:\Users\源恒\Desktop\311-1\js\sb-forms-latest.js" root@154.36.183.45:/var/www/html/js/
+```
+
+```
+scp "C:\Users\源恒\Desktop\311-1\index.html" root@154.36.183.45:/var/www/html/
+```
+
+上传文件夹
+
+```
+scp "C:\Users\源恒\Desktop\311-1\index.html" root@154.36.183.45:/var/www/html/
+```
+
+code上传
+
+```
+scp -r "C:/Users/源恒/Desktop/311-1/code" root@154.36.183.45:/var/www/html/
+```
+
+css上传
+
+```
+scp -r "C:/Users/源恒/Desktop/311-1/work" root@154.36.183.45:/var/www/html/
+```
+
+```
+scp -r "C:/Users/源恒/Desktop/311-1/assets" root@154.36.183.45:/var/www/html/
+```
+
+权限修改命令
+
+```
+chown -R www-data:www-data /var/www/html
+find /var/www/html -type d -exec chmod 755 {} \;
+find /var/www/html -type f -exec chmod 644 {} \;
+```
 

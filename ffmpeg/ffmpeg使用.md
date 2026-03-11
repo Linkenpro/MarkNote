@@ -183,3 +183,13 @@ ffmpeg -i wfypfa3ha_2K_Albedo.jpg -vf "scale=1024:1024" wfypfa3ha_1K_Albedo.jpg
 ffmpeg -i wfypfa3ha_2K_Translucency.jpg -vf "scale=1024:1024" wfypfa3ha_1K_Translucency.jpg
 ```
 
+###### 缩放图片至指定分辨率
+
+```
+ffmpeg -i input.jpg -vf "scale=200:200" -q:v 2 output.jpg
+```
+
+```
+ffmpeg -i 2.jpg -vf "scale=200:200" -q:v 2 output.jpg
+```
+
