@@ -902,7 +902,7 @@ scp -r root@154.36.183.45:/var/www/html/* "C:/Users/源恒/Desktop/file/"
 ###### 回传文件
 
 ```
-scp -r "C:/Users/源恒/Desktop/website/*" admin@154.36.183.45:/var/www/html/
+scp -r "C:/Users/源恒/Desktop/312/*" admin@154.36.183.45:/var/www/html/
 ```
 
 ```
@@ -916,7 +916,7 @@ scp "C:\Users\源恒\Desktop\311-1\index.html" root@154.36.183.45:/var/www/html/
 上传文件夹
 
 ```
-scp "C:\Users\源恒\Desktop\311-1\index.html" root@154.36.183.45:/var/www/html/
+scp "C:\Users\源恒\Desktop\312\index.html" root@154.36.183.45:/var/www/html/
 ```
 
 code上传
@@ -933,6 +933,10 @@ scp -r "C:/Users/源恒/Desktop/311-1/work" root@154.36.183.45:/var/www/html/
 
 ```
 scp -r "C:/Users/源恒/Desktop/311-1/assets" root@154.36.183.45:/var/www/html/
+```
+
+```
+scp -r "C:/Users/源恒/Desktop/312/assets" root@154.36.183.45:/var/www/html/
 ```
 
 权限修改命令
