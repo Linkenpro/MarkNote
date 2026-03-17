@@ -1,3 +1,31 @@
+##### SCP命令
+
+###### 基本语法
+
+```
+scp -r root@154.36.183.45:/var/www/html/* "C:/Users/源恒/Desktop/file/"
+```
+
+移除vps的所有文件
+
+```
+rm -rf /var/www/html/*
+```
+
+回传文件
+
+```
+scp -r "C:/Users/源恒/Desktop/0315/*" root@154.36.183.45:/var/www/html/
+```
+
+权限修复三件套
+
+```
+chown -R www-data:www-data /var/www/html
+find /var/www/html -type d -exec chmod 755 {} \;
+find /var/www/html -type f -exec chmod 644 {} \;
+```
+
 ##### 连接ZgoCloud
 
 ###### 获取ssh信息
@@ -343,6 +371,14 @@ scp "C:\Users\Elin\Downloads\website\images\light_background.webp" admin@154.36.
 ```
 sudo nano /etc/nginx/sites-available/default
 ```
+
+查看配置
+
+```
+cat /etc/nginx/sites-available/default
+```
+
+
 
 ###### 错误日志
 
@@ -939,11 +975,32 @@ scp -r "C:/Users/源恒/Desktop/311-1/assets" root@154.36.183.45:/var/www/html/
 scp -r "C:/Users/源恒/Desktop/312/assets" root@154.36.183.45:/var/www/html/
 ```
 
-权限修改命令
+##### 数据库
+
+###### 安装数据库以支持登录功能
+
+一键安装命令
 
 ```
-chown -R www-data:www-data /var/www/html
-find /var/www/html -type d -exec chmod 755 {} \;
-find /var/www/html -type f -exec chmod 644 {} \;
+sudo apt update && sudo apt install mariadb-server -y
 ```
 
+检查状态
+
+```
+sudo systemctl status mariadb
+```
+
+###### 安全初始化
+
+```
+sudo mysql_secure_installation
+```
+
+- 提示 `Enter current password for root`: 直接按 **Enter** (初始没有密码)。
+- `Switch to unix_socket authentication`: 输入 **n** (否)。
+- `Change the root password?`: 输入 **y** (是)，然后设置一个强密码（请记好，后面配置 PHP 要用）。`·96$ecret`
+- `Remove anonymous users?`: **y**
+- `Disallow root login remotely?`: **y**
+- `Remove test database and access to it?`: **y**
+- `Reload privilege tables now?`: **y**
