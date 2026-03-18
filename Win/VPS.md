@@ -347,11 +347,11 @@ chown user:group <file_or_dir>
 
 #### Nginx
 
+###### 安装nginx
+
 ```
-软件包列表更新
 sudo apt update
 
-软件仓库直接安装
 sudo apt install nginx -y
 ```
 
@@ -402,12 +402,6 @@ mkdir /root/proxy/config
 
 # 创建网站子目录
 mkdir -p /root/website/{html,assets,backup}
-```
-
-```
-scp "C:\Users\源恒\Desktop\website\images\ldm.svg" root@154.36.183.45:/var/www/html/images/logo.svg
-
-scp "C:\Users\Elin\Downloads\website\images\light_background.webp" admin@154.36.183.45:/var/www/html/images/light_background.webp
 ```
 
 ###### 网站站点配置
