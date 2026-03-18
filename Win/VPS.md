@@ -1,6 +1,4 @@
-##### SCP命令
-
-###### 基本语法
+##### 更新网页文件
 
 ```
 scp -r root@154.36.183.45:/var/www/html/* "C:/Users/源恒/Desktop/file/"
@@ -24,6 +22,50 @@ scp -r "C:/Users/源恒/Desktop/0315/*" root@154.36.183.45:/var/www/html/
 chown -R www-data:www-data /var/www/html
 find /var/www/html -type d -exec chmod 755 {} \;
 find /var/www/html -type f -exec chmod 644 {} \;
+```
+
+##### 网路防火墙
+
+###### 查看正在监听的端口
+
+> 此命令更实用
+
+```
+sudo ss -tulpn
+```
+
+###### ufw简化防火墙
+
+> ufw当前详细状态
+
+```
+sudo ufw status verbose
+```
+
+###### 启用防火墙
+
+```
+sudo ufw enable
+```
+
+###### ufw放行端口
+
+```
+# 1. 允许SSH
+sudo ufw allow 22/tcp
+
+# 2. 允许Web服务 (Nginx)
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+# 3. 允许Xray代理端口
+sudo ufw allow 12345/tcp
+```
+
+###### 服务重新启动
+
+```
+ufw reload
 ```
 
 ##### 连接ZgoCloud
@@ -699,22 +741,21 @@ except Exception as e:
 auto
 ```
 
-#### vps代理搭建
+#### vps代理
 
-###### 更新系统软件包
+- 更新系统软件包
 
 ```
-# Debian
 apt update && apt upgrade -y
 ```
 
-###### 安装必要依赖
+- 安装必要依赖
 
 ```
 apt install curl socat -y
 ```
 
-###### 一键安装3x-ui面板
+- 一键安装3x-ui面板
 
 ```
 bash <(curl -Ls https://raw.githubusercontent.com/MHSanaei/3x-ui/master/install.sh)
@@ -925,7 +966,33 @@ location /v2ray/ {
 }
 ```
 
-##### 面板其他配置
+##### 防火墙端口
+
+```
+
+    location /v2ray/ {
+        if ($http_upgrade != "websocket") { 
+            return 404; #如果不是WS请求，直接返回404
+        }
+        proxy_redirect off;
+        proxy_pass http://127.0.0.1:12345; #转发至3x-ui端口
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        # 传递真实 IP，方便你在面板看日志
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+```
+
+###### 端口测试
+
+```
+https://ping.pe/
+```
+
+
 
 #### 网站操作
 
