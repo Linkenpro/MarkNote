@@ -84,3 +84,31 @@ Mux多路复用:false
 TLS底层传输安全:tls
 ```
 
+##### ssh配置
+
+###### 生成 SSH 密钥
+
+```
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+```
+
+###### 获取ssh信息
+
+> PowerShell中运行
+
+```
+Get-Content C:\Users\用户名\.ssh\id_rsa.pub
+```
+
+###### 初始化连接
+
+```
+ssh -i C:\Users\用户名\.ssh\id_rsa root@服务器IP地址192.16.80.54
+```
+
+###### 日常连接
+
+```
+ssh root@服务器IP地址192.16.80.54
+```
+

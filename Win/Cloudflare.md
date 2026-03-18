@@ -129,8 +129,6 @@ crontab -e
 0 9 * * * /bin/bash -c "cd /root/binance_quant && tar -czf backup-\$(date +\%F).tar.gz crypto_data.db logs/cron.log && rclone copy backup-\$(date +\%F).tar.gz r2:moonode-backups/backups/\$(date +\%Y)/\$(date +\%m)/ && find . -name 'backup-*.tar.gz' -mtime +7 -delete" >> /root/binance_quant/logs/cron.log 2>&1
 ```
 
-
-
 ##### 静态页面
 
 静态网站生成器 (Static Site Generator) + Cloudflare Pages

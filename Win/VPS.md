@@ -62,32 +62,38 @@ sudo ufw allow 443/tcp
 sudo ufw allow 12345/tcp
 ```
 
-###### 服务重新启动
+##### 服务器ssh
+
+###### 在服务器上配置
 
 ```
-ufw reload
+Get-Content C:\Users\你的用户名\.ssh\id_rsa.pub
 ```
 
-##### 连接ZgoCloud
-
-###### 获取ssh信息
+登录远程服务器
 
 ```
-Get-Content C:\Users\源恒\.ssh\id_rsa.pub
-Get-Content C:\Users\Elin\.ssh\id_rsa.pub
-
-ssh -i C:\Users\源恒\.ssh\id_rsa root@154.36.183.45
-ssh -i C:\Users\Elin\.ssh\id_rsa root@154.36.183.45
-ssh -i C:\Users\Elin\.ssh\id_rsa admin@154.36.183.45
+ssh root@服务器IP
 ```
 
+创建 .ssh 目录
+
 ```
-IP:
-154.36.183.1
-Port:
-5943
-PS:
-R-khwKgeOH$
+mkdir -p ~/.ssh
+```
+
+将公钥写入`authorized_keys`文件
+
+```
+nano ~/.ssh/authorized_keys
+```
+
+设置正确的权限
+
+```
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+chown -R $USER:$USER ~/.ssh
 ```
 
 ###### 更新系统软件包
@@ -339,8 +345,6 @@ chmod 755 <file_or_dir>
 chown user:group <file_or_dir>
 ```
 
-
-
 #### Nginx
 
 ```
@@ -400,8 +404,6 @@ mkdir /root/proxy/config
 mkdir -p /root/website/{html,assets,backup}
 ```
 
-
-
 ```
 scp "C:\Users\源恒\Desktop\website\images\ldm.svg" root@154.36.183.45:/var/www/html/images/logo.svg
 
@@ -419,8 +421,6 @@ sudo nano /etc/nginx/sites-available/default
 ```
 cat /etc/nginx/sites-available/default
 ```
-
-
 
 ###### 错误日志
 
@@ -508,9 +508,7 @@ sudo systemctl reload nginx
 
 再次检查服务状态
 
-```
 
-```
 
 修改
 
@@ -534,34 +532,6 @@ server {
 alias /root/binance_quant/logs;
 ```
 
-前端网页读取（JavaScript）
-
-```
-<!DOCTYPE html>
-<div>
-    <h2>量化程序实时日志</h2>
-    <!-- 使用 pre 标签保持日志的格式，code 标签高亮 -->
-    <pre><code id="log-output">正在连接...</code></pre>
-</div>
-
-<script>
-    // 每隔 3 秒刷新一次日志
-    setInterval(async () => {
-        try {
-            // 请求你刚刚配置的那个路径下的具体日志文件
-            const response = await fetch('/my-logs/app.log');
-            const text = await response.text();
-            
-            // 获取最后 50 行（防止日志太长卡死浏览器）
-            const lines = text.split('\n').slice(-50);
-            document.getElementById('log-output').textContent = lines.join('\n');
-        } catch (e) {
-            document.getElementById('log-output').textContent = '读取失败: ' + e;
-        }
-    }, 3000);
-</script>
-```
-
 ###### nginx配置文件位置查询
 
 该命令用于测试 Nginx 配置文件的语法是否正确，
@@ -576,6 +546,26 @@ sudo nginx -t
 /etc/nginx/nginx.conf
 ```
 
+###### 检查nginx本地日志
+
+```
+tail -n 20 /var/log/nginx/access.log
+```
+
+###### 隐藏nginx版本号
+
+修改Nginx 配置隐藏版本号
+
+```
+nano /etc/nginx/nginx.conf
+```
+
+为了让扫描器觉得你的服务器“不好下口”，建议在 nginx.conf 的 http 块中加入：
+
+```
+server_tokens off;
+```
+
 ##### 量化
 
 ###### 虚拟环境
@@ -588,19 +578,6 @@ python3 -m venv venv
 
 ```
 source venv/bin/activate
-```
-
-###### scp上传py文件
-
-```
-scp "C:\Users\源恒\Desktop\binance_ccxt.py" root@154.36.183.45:/root/binance_quant/
-
-scp "C:\Users\源恒\Desktop\数据库\crypto_data.db" root@154.36.183.45:/root/binance_quant/
-
-scp "C:\Users\源恒\Desktop\binance_test1.py" root@154.36.183.45:/root/binance_quant/
-
-scp -r "C:\Users\源恒\Downloads\website\index.html" root@154.36.183.45:/var/www/html/
-scp "C:\Users\源恒\Downloads\website\index.html" root@154.36.183.45:/var/www/html/
 ```
 
 运行py文件
@@ -670,8 +647,8 @@ nano ~/.bashrc
 
 ```
 # Binance API
-export BINANCE_API_KEY="EWCgJWvOqRhnlgcYTyePlBnfVAABo2mq9PdZ6Lai2PacHyjhNM6q9k813plFtX5eq"
-export BINANCE_API_SECRET="FfvRD02X1nXW3V5iNS8fFkTbwHEcriwghtSLCFPKD7ZMYJ2D66IGymTb5d7yewz2f"
+export BINANCE_API_KEY="EWC"
+export BINANCE_API_SECRET="Ffv"
 ```
 
 生效
@@ -986,7 +963,7 @@ location /v2ray/ {
     }
 ```
 
-###### 端口测试
+###### 端口连接-延迟测试
 
 ```
 https://ping.pe/
@@ -994,55 +971,7 @@ https://ping.pe/
 
 
 
-#### 网站操作
-
-###### 拉取文件
-
-```
-scp -r root@154.36.183.45:/var/www/html/* "C:/Users/源恒/Desktop/file/"
-```
-
-###### 回传文件
-
-```
-scp -r "C:/Users/源恒/Desktop/312/*" admin@154.36.183.45:/var/www/html/
-```
-
-```
-scp "C:\Users\源恒\Desktop\311-1\js\sb-forms-latest.js" root@154.36.183.45:/var/www/html/js/
-```
-
-```
-scp "C:\Users\源恒\Desktop\311-1\index.html" root@154.36.183.45:/var/www/html/
-```
-
-上传文件夹
-
-```
-scp "C:\Users\源恒\Desktop\312\index.html" root@154.36.183.45:/var/www/html/
-```
-
-code上传
-
-```
-scp -r "C:/Users/源恒/Desktop/311-1/code" root@154.36.183.45:/var/www/html/
-```
-
-css上传
-
-```
-scp -r "C:/Users/源恒/Desktop/311-1/work" root@154.36.183.45:/var/www/html/
-```
-
-```
-scp -r "C:/Users/源恒/Desktop/311-1/assets" root@154.36.183.45:/var/www/html/
-```
-
-```
-scp -r "C:/Users/源恒/Desktop/312/assets" root@154.36.183.45:/var/www/html/
-```
-
-##### 数据库
+##### 数据库配置
 
 ###### 安装数据库以支持登录功能
 
