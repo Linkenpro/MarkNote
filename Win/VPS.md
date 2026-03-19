@@ -2,6 +2,7 @@
 
 ```
 scp -r root@154.36.183.45:/var/www/html/* "C:/Users/源恒/Desktop/file/"
+scp -r root@154.36.183.45:/root/binance_quant/crypto_data.db "C:/Users/源恒/Desktop/data/"
 ```
 
 移除vps的所有文件

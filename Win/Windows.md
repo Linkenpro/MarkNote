@@ -40,6 +40,18 @@ Get-AppxPackage -allusers | foreach {Add-AppxPackage -register "$($_.InstallLoca
 
 ```
 
+###### 传输文件夹
+
+```
+scp -r root@154.36.183.45:/root/binance_quant/* "C:/Users/源恒/Desktop/data/"
+```
+
+实例:上传单个py文件
+
+```
+scp "C:\Users\源恒\Desktop\0319\quant\data_app.py" root@154.36.183.45:/root/binance_quant/
+```
+
 ###### Win11右键修改
 
 - win键 + X
