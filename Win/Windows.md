@@ -124,3 +124,16 @@ ssh -i C:\Users\用户名\.ssh\id_rsa root@服务器IP地址192.16.80.54
 ssh root@服务器IP地址192.16.80.54
 ```
 
+##### DNS刷新
+
+```
+# 刷新本地 DNS 解析缓存
+ipconfig /flushdns
+
+# 释放当前的 IP 租约（可选，增加成功率）
+ipconfig /release
+
+# 重新获取解析
+ipconfig /renew
+```
+

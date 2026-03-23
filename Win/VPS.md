@@ -1,28 +1,360 @@
+#### 个人网页服务
+
 ##### 更新网页文件
+
+###### 从服务器拉取
 
 ```
 scp -r root@154.36.183.45:/var/www/html/* "C:/Users/源恒/Desktop/file/"
-scp -r root@154.36.183.45:/root/binance_quant/crypto_data.db "C:/Users/源恒/Desktop/data/"
 ```
 
-移除vps的所有文件
+```
+scp -r root@154.36.183.45:/var/www/html/* "C:/Users/Elin/Desktop/file/"
+```
+
+###### 移除vps的所有文件
 
 ```
 rm -rf /var/www/html/*
 ```
 
-回传文件
+###### 回传文件
 
 ```
-scp -r "C:/Users/源恒/Desktop/0315/*" root@154.36.183.45:/var/www/html/
+scp -r "C:/Users/源恒/Desktop/0322/*" root@154.36.183.45:/var/www/html/
 ```
 
-权限修复三件套
+```
+scp -r "C:/Users/Elin/Desktop/0315/*" root@154.36.183.45:/var/www/html/
+```
+
+###### 权限修复三件套
 
 ```
 chown -R www-data:www-data /var/www/html
 find /var/www/html -type d -exec chmod 755 {} \;
 find /var/www/html -type f -exec chmod 644 {} \;
+```
+
+确认
+
+```
+cd /var/www/html
+```
+
+##### Nginx安装配置
+
+###### 安装nginx
+
+```
+sudo apt update
+
+sudo apt install nginx -y
+```
+
+###### 启动并设置开机自启
+
+```
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+###### 设置Nginx的防火墙端口
+
+```
+sudo ufw allow 'Nginx Full'
+
+或直接允许 80 端口
+sudo ufw allow 80
+sudo ufw allow 443
+```
+
+###### 安装Certbot
+
+```
+sudo apt install certbot python3-certbot-nginx -y
+```
+
+###### 配置https证书
+
+将域名替换为你自己的
+
+```
+sudo certbot --nginx -d server.moonode.uk -d moonode.uk
+```
+
+文件夹结构查看
+
+```
+tree
+
+sudo apt update && sudo apt install tree -y
+
+cd /
+
+mkdir /root/binance_quant
+
+网页文件整理
+mkdir /root/proxy/config
+
+# 创建网站子目录
+mkdir -p /root/website/{html,assets,backup}
+```
+
+###### 网站个人配置
+
+```
+sudo nano /etc/nginx/sites-available/default
+```
+
+查看配置
+
+```
+cat /etc/nginx/sites-available/default
+```
+
+###### 错误日志
+
+```
+错误日志实时监控
+sudo tail -f /var/log/nginx/error.log
+```
+
+###### 网页图片问题
+
+```
+https://moonode.uk/images/logo.svg?v=test1
+```
+
+> 浏览器缓存：你的浏览器之前缓存了一个错误的 404 响应，并且死死地抓着不放，即使你后来修好了服务器，它依然直接返回缓存的 404，根本不去服务器请求。
+>
+> Ctrl + Shift + R
+
+###### 利用 Nginx 静态文件服务
+
+```
+sudo nano /etc/nginx/sites-available/default
+```
+
+更新配置文件
+
+```
+sudo nginx -t
+```
+
+重新加载服务
+
+```
+sudo systemctl reload nginx
+```
+
+再次检查服务状态
+
+
+
+修改
+
+```
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    # 其他配置...
+
+    # --- 新增的日志访问配置 ---
+    location /my-logs/ {
+        alias /path/to/your/quant/logs/; # 注意：这里必须是绝对路径，且末尾要有斜杠
+        autoindex on; # 可选：开启目录浏览，可以看到有哪些日志文件
+        # 为了安全，可以设置简单的账号密码（htpasswd）
+    }
+}
+```
+
+```
+alias /root/binance_quant/logs;
+```
+
+###### nginx配置文件位置查询
+
+该命令用于测试 Nginx 配置文件的语法是否正确，
+
+执行时**会直接显示主配置文件的路径**
+
+```
+sudo nginx -t
+```
+
+```
+/etc/nginx/nginx.conf
+```
+
+###### 检查nginx本地日志
+
+```
+tail -n 20 /var/log/nginx/access.log
+```
+
+###### 隐藏nginx版本号
+
+修改Nginx 配置隐藏版本号
+
+```
+nano /etc/nginx/nginx.conf
+```
+
+为了让扫描器觉得你的服务器“不好下口”，建议在 nginx.conf 的 http 块中加入：
+
+```
+server_tokens off;
+```
+
+##### 网页数据库配置
+
+###### 安装数据库以支持登录功能
+
+一键安装命令
+
+```
+sudo apt update && sudo apt install mariadb-server -y
+```
+
+检查状态
+
+```
+sudo systemctl status mariadb
+```
+
+###### 安全初始化
+
+```
+sudo mysql_secure_installation
+```
+
+- 提示 `Enter current password for root`: 直接按 **Enter** (初始没有密码)。
+- `Switch to unix_socket authentication`: 输入 **n** (否)。
+- `Change the root password?`: 输入 **y** (是)，然后设置一个强密码（请记好，后面配置 PHP 要用）。`·96$ecret`
+- `Remove anonymous users?`: **y**
+- `Disallow root login remotely?`: **y**
+- `Remove test database and access to it?`: **y**
+- `Reload privilege tables now?`: **y**
+
+##### Flask后端服务API
+
+###### 守护进程创建
+
+让 API 在后台稳定运行，断线也不停
+
+```
+sudo nano /etc/systemd/system/quant_api.service
+```
+
+填写内容
+
+```
+[Unit]
+Description=Binance Quant API Service
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/root/binance_quant
+# 确保使用虚拟环境的 python
+Environment="PATH=/root/binance_quant/venv/bin"
+ExecStart=/root/binance_quant/venv/bin/python app.py
+Restart=always
+RestartSec=5
+# 日志输出到 journalctl
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+```
+
+启动服务：
+
+```
+sudo systemctl daemon-reload
+sudo systemctl start quant_api
+sudo systemctl enable quant_api
+sudo systemctl status quant_api  # 确认状态为 active (running)
+```
+
+#### Debian服务器
+
+##### 用户管理
+
+###### 创建管理员用户
+
+```
+adduser admin
+```
+
+赋予 sudo 权限 (让他能执行管理员命令)
+
+```
+usermod -aG sudo admin
+```
+
+为admin创建ssh
+
+```
+mkdir -p /home/admin/.ssh
+```
+
+复制 root 的公钥给 admin
+
+```
+cat /root/.ssh/authorized_keys >> /home/admin/.ssh/authorized_keys
+```
+
+查看公钥列表
+
+```
+cat ~/.ssh/authorized_keys
+```
+
+###### admin用户切换root
+
+```
+sudo -i
+输入密码
+```
+
+##### 软件包管理 (APT)
+
+###### 更新软件源列表
+
+```
+sudo apt update
+```
+
+###### 升级已安装的软件包
+
+```
+sudo apt upgrade -y
+```
+
+###### 安装软件
+
+```
+sudo apt install <package_name>
+```
+
+###### 卸载软件
+
+```
+sudo apt remove <package_name>
+# 彻底卸载（包括配置文件）
+sudo apt purge <package_name>
+```
+
+###### 清理无用依赖和缓存
+
+```
+sudo apt autoremove -y
+sudo apt autoclean
 ```
 
 ##### 网路防火墙
@@ -62,6 +394,8 @@ sudo ufw allow 443/tcp
 # 3. 允许Xray代理端口
 sudo ufw allow 12345/tcp
 ```
+
+
 
 ##### 服务器ssh
 
@@ -237,43 +571,6 @@ ssh username@your_server_ip -p 2022
 
 禁用旧的22端口在确认通过新端口可以稳定连接后再次编辑 /etc/ssh/sshd_config 文件，将 Port 22 这一行删除或在前面加上 # 注释掉，然后再次重启SSH服务，以彻底关闭22端口的监听。
 
-#### Debian服务器
-
-软件包管理 (APT)
-
-###### 更新软件源列表
-
-```
-sudo apt update
-```
-
-###### 升级已安装的软件包
-
-```
-sudo apt upgrade -y
-```
-
-###### 安装软件
-
-```
-sudo apt install <package_name>
-```
-
-###### 卸载软件
-
-```
-sudo apt remove <package_name>
-# 彻底卸载（包括配置文件）
-sudo apt purge <package_name>
-```
-
-###### 清理无用依赖和缓存
-
-```
-sudo apt autoremove -y
-sudo apt autoclean
-```
-
 ##### 系统服务管理
 
 ###### 查看服务状态
@@ -346,222 +643,25 @@ chmod 755 <file_or_dir>
 chown user:group <file_or_dir>
 ```
 
-#### Nginx
-
-###### 安装nginx
+###### 关闭端口
 
 ```
-sudo apt update
-
-sudo apt install nginx -y
+sudo ufw delete allow 8443/tcp
 ```
 
-###### 启动并设置开机自启
+###### 开放端口
 
 ```
-sudo systemctl start nginx
-sudo systemctl enable nginx
+sudo ufw allow 2053/tcp
+
+# 重新加载防火墙规则
+sudo ufw reload
+
+# 确认修改结果
+sudo ufw status
 ```
 
-设置防火墙
-
-```
-sudo ufw allow 'Nginx Full'
-
-或直接允许 80 端口
-sudo ufw allow 80
-sudo ufw allow 443
-```
-
-###### 安装Certbot
-
-```
-sudo apt install certbot python3-certbot-nginx -y
-```
-
-###### 配置https证书
-
-将域名替换为你自己的
-
-```
-sudo certbot --nginx -d server.moonode.uk -d moonode.uk
-```
-
-###### 文件夹结构查看
-
-```
-tree
-
-sudo apt update && sudo apt install tree -y
-
-cd /
-
-mkdir /root/binance_quant
-
-网页文件整理
-mkdir /root/proxy/config
-
-# 创建网站子目录
-mkdir -p /root/website/{html,assets,backup}
-```
-
-###### 网站站点配置
-
-```
-sudo nano /etc/nginx/sites-available/default
-```
-
-查看配置
-
-```
-cat /etc/nginx/sites-available/default
-```
-
-###### 错误日志
-
-```
-错误日志实时监控
-sudo tail -f /var/log/nginx/error.log
-```
-
-###### 创建管理员用户
-
-```
-adduser admin
-```
-
-赋予 sudo 权限 (让他能执行管理员命令)
-
-```
-usermod -aG sudo admin
-```
-
-为admin创建ssh
-
-```
-mkdir -p /home/admin/.ssh
-```
-
-复制 root 的公钥给 admin
-
-```
-cat /root/.ssh/authorized_keys >> /home/admin/.ssh/authorized_keys
-```
-
-查看公钥列表
-
-```
-cat ~/.ssh/authorized_keys
-```
-
-###### admin用户切换root
-
-```
-sudo -i
-输入密码
-```
-
-###### admin用户传文件
-
-```
-scp -r "C:\Users\源恒\Downloads\website\*" admin@154.36.183.45:/var/www/html/
-
-scp -r "C:\Users\源恒\Downloads\website\index.html" admin@154.36.183.45:/var/www/html/
-
-nano /var/www/html/index.html
-```
-
-`\*`表示上传该文件夹下的所有内容，而不是把这个文件夹本身也传上去
-
-###### 网页图片问题
-
-```
-https://moonode.uk/images/logo.svg?v=test1
-```
-
-> 浏览器缓存：你的浏览器之前缓存了一个错误的 404 响应，并且死死地抓着不放，即使你后来修好了服务器，它依然直接返回缓存的 404，根本不去服务器请求。
->
-> Ctrl + Shift + R
-
-###### 利用 Nginx 静态文件服务
-
-```
-sudo nano /etc/nginx/sites-available/default
-```
-
-更新配置文件
-
-```
-sudo nginx -t
-```
-
-重新加载服务
-
-```
-sudo systemctl reload nginx
-```
-
-再次检查服务状态
-
-
-
-修改
-
-```
-server {
-    listen 80;
-    server_name your-domain.com;
-
-    # 其他配置...
-
-    # --- 新增的日志访问配置 ---
-    location /my-logs/ {
-        alias /path/to/your/quant/logs/; # 注意：这里必须是绝对路径，且末尾要有斜杠
-        autoindex on; # 可选：开启目录浏览，可以看到有哪些日志文件
-        # 为了安全，可以设置简单的账号密码（htpasswd）
-    }
-}
-```
-
-```
-alias /root/binance_quant/logs;
-```
-
-###### nginx配置文件位置查询
-
-该命令用于测试 Nginx 配置文件的语法是否正确，
-
-执行时**会直接显示主配置文件的路径**
-
-```
-sudo nginx -t
-```
-
-```
-/etc/nginx/nginx.conf
-```
-
-###### 检查nginx本地日志
-
-```
-tail -n 20 /var/log/nginx/access.log
-```
-
-###### 隐藏nginx版本号
-
-修改Nginx 配置隐藏版本号
-
-```
-nano /etc/nginx/nginx.conf
-```
-
-为了让扫描器觉得你的服务器“不好下口”，建议在 nginx.conf 的 http 块中加入：
-
-```
-server_tokens off;
-```
-
-##### 量化
+#### 量化项目
 
 ###### 虚拟环境
 
@@ -581,13 +681,9 @@ source venv/bin/activate
 python binance_ccxt.py
 ```
 
-###### 定时运行采集数据
+##### 项目一：定时采集
 
-```
-timedatectl
-```
-
-配置 Crontab 定时任务
+###### 配置 Crontab 定时任务
 
 ```
 crontab -e
@@ -618,21 +714,15 @@ sudo systemctl status cron
 tail -n 10 /root/binance_quant/logs/cron.log
 ```
 
-###### 退出venv环境
-
-```
-deactivate
-```
-
 ###### 查看完整日志内容
 
 ```
 cat data_fetcher.log
-
-cat cron.log
 ```
 
-###### 设置环境变量保存API
+###### API与密钥保存
+
+设置环境变量保存API
 
 ```
 nano ~/.bashrc
@@ -641,79 +731,53 @@ nano ~/.bashrc
 文件末尾加入
 
 ```
-# Binance API
-export BINANCE_API_KEY="EWC"
-export BINANCE_API_SECRET="Ffv"
-```
-
-生效
-
-```
 source ~/.bashrc
 ```
 
-测试py文件
-
-```py
-import ccxt
-import os
-
-# 从环境变量读取密钥
-API_KEY = os.environ.get('BINANCE_API_KEY')
-API_SECRET = os.environ.get('BINANCE_API_SECRET')
-
-if not API_KEY or not API_SECRET:
-    raise ValueError("错误：未找到 BINANCE_API_KEY 或 BINANCE_API_SECRET !")
-
-exchange = ccxt.binance({
-    'apiKey': API_KEY,
-    'secret': API_SECRET,
-    'timeout': 10000, # 超时设置为10秒
-    'enableRateLimit': True, # 必须开启，遵守速率限制，防止被封IP
-    'options': {
-        'defaultType': 'future',  # 指定为合约
-    }
-})
-
-try:
-    # 加载市场数据 (初始化)
-    markets = exchange.load_markets()
-    positions = exchange.fetch_positions('all') 
-
-    print(f"{'交易对':<10} {'方向':<8} {'数量':<12} {'开仓价':<12} {'未实现盈亏':<12}")
-    print("-" * 60)
-
-    for pos in positions:
-        symbol = pos['symbol']          # 交易对，例如 BTC/USDT
-        side = pos['side']              # 方向：long 或 short
-        amount = pos['contracts']       # 持仓数量 (合约张数)
-        entry_price = pos['entryPrice'] # 开仓价格
-        upl = pos['unrealizedPnl']      # 未实现盈亏
-
-        # 只显示有实际持仓的（数量大于0）
-        if amount > 0:
-            print(f"{symbol:<12} {side:<8} {amount:<12} {entry_price:<12} {upl:<12}")
-
-    # 5. 获取账户总体信息
-    balance = exchange.fetch_balance()
-    print(f"\n账户可用余额: {balance['USDT']['free']} USDT")
-    print(f"账户总权益: {balance['USDT']['total']} USDT")
-
-except ccxt.NetworkError as e:
-    print("网络错误:", e)
-except ccxt.ExchangeError as e:
-    print("交易所错误:", e)
-except Exception as e:
-    print("其他错误:", e)
-```
-
-自动脚本
+###### 拉取py程序
 
 ```
-auto
+scp -r root@154.36.183.45:/root/binance_quant/binance_ccxtSQL.py "C:/Users/源恒/Desktop/"
 ```
 
-#### vps代理
+```
+scp -r "C:/Users/源恒/Desktop/btc5min.py" root@154.36.183.45:/root/binance_quant/
+```
+
+##### 量化问题处理
+
+###### VPS系统时间与量化采集
+
+
+
+###### API权限与定时任务读取
+
+```
+nano .env
+```
+
+```
+BINANCE_API_KEY=你的真实API_KEY
+BINANCE_SECRET=你的真实API_SECRET
+```
+
+为了防止其他用户窃取你的密钥，必须限制该文件的权限，仅允许 root 读写：
+
+```
+chmod 600 /root/binance_quant/.env
+ls -l .env
+# 输出应该是: -rw------- 1 root root ... .env
+```
+
+使用 python-dotenv 库
+
+```
+pip install python-dotenv
+```
+
+1
+
+#### 代理加速
 
 - 更新系统软件包
 
@@ -769,7 +833,9 @@ ufw allow 54321/tcp
 ufw reload
 ```
 
-#### 3X-UI面板使用
+##### 3X-UI面板使用
+
+###### vps管理面板
 
 ```
 x-ui
@@ -964,34 +1030,28 @@ location /v2ray/ {
 https://ping.pe/
 ```
 
+##### 优选IP
 
+###### 寻找最优 IP
 
-##### 数据库配置
+> 目前最流行的是 CloudflareSpeedTest（开源项目）
 
-###### 安装数据库以支持登录功能
+解压后运行`CloudflareST.exe`
 
-一键安装命令
+工具会自动测试几千个 Cloudflare 的 IP，并按 延迟 和 下载速度 排序
 
-```
-sudo apt update && sudo apt install mariadb-server -y
-```
+测试结束后，你会得到一个列表。
 
-检查状态
+选一个延迟最低（比如 50-100ms）且下载速度最快的 IP（例如 162.159.x.x 或 104.x.x.x）。
 
-```
-sudo systemctl status mariadb
-```
+###### 修改代理客户端设置
 
-###### 安全初始化
+需要把“假 IP”填进去，但告诉服务器“真域名”
 
-```
-sudo mysql_secure_installation
-```
+地址 (Address)：填入你刚才优选出来的 IP（例如 104.16.123.45）。
 
-- 提示 `Enter current password for root`: 直接按 **Enter** (初始没有密码)。
-- `Switch to unix_socket authentication`: 输入 **n** (否)。
-- `Change the root password?`: 输入 **y** (是)，然后设置一个强密码（请记好，后面配置 PHP 要用）。`·96$ecret`
-- `Remove anonymous users?`: **y**
-- `Disallow root login remotely?`: **y**
-- `Remove test database and access to it?`: **y**
-- `Reload privilege tables now?`: **y**
+伪装域名 (Host / HTTP Host)：填入你的域名 panel.moonode.uk。
+
+SNI (Server Name Indication)：必须填 panel.moonode.uk。
+
+端口：依然是 443。
