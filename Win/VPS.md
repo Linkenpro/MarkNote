@@ -395,6 +395,12 @@ sudo ufw allow 443/tcp
 sudo ufw allow 12345/tcp
 ```
 
+###### 删除端口
+
+```
+sudo ufw delete allow 2053/tcp
+```
+
 
 
 ##### 服务器ssh
@@ -512,64 +518,91 @@ chmod 600 /root/.ssh/authorized_keys
 
 ###### 修改ssh的22端口
 
-- 修改端口前，强烈建议先开启一个新的SSH连接窗口，用于测试新端口是否生效
-
-请**不要立即关闭**当前正在操作的旧连接，以防配置错误导致无法连接服务器
-
-建议先备份SSH配置文件
+挑选一个“隐蔽”的端口
 
 ```
-sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config_backup
+sudo ufw allow 50501/tcp
 ```
 
-打开SSH服务的主配置文件
+检查状态
+
+```
+sudo ufw status
+```
+
+修改 SSH 配置文件
 
 ```
 sudo nano /etc/ssh/sshd_config
 ```
 
-查找并修改端口配置
+> 找到 `#Port 22` 这一行。
+>
+> 去掉前面的 `#` 号。
+>
+> 在下面紧接着添加一行 `Port 28443`（**先保留 22 端口，等测试成功再删**）
 
-> 在文件中找到以 `#Port 22` 开头的行。`#` 代表注释，需要先去掉
->
-> 如果该行被注释（前面有 `#`），请删除 `#`
->
-> 将后面的数字 `22` 修改为你想要的新端口号
->
-> 推荐选择一个 **1024 到 65535** 之间的未被占用的端口，例如 `2022`、`12345` 或 `54321`
-
-修改后，该行应类似于：
+按 `Ctrl + O` 保存，`Enter` 确认，`Ctrl + X` 退出
 
 ```
-Port 2022
+ssh -p 50501 root@154.36.183.45
 ```
 
-**重启SSH服务**
+彻底关掉 22 端口
+
+```
+sudo nano /etc/ssh/sshd_config
+```
+
+> 确保里面只有 Port 50501。
+>
+> 删除或注释掉（加 #） Port 22。
+>
+
+保存退出后重启服务
 
 ```
 sudo systemctl restart ssh
-
-旧的系统
-sudo service ssh restart
 ```
 
-**配置防火墙规则**
+执行 UFW 命令删掉旧规则
 
 ```
-# 允许新端口
-sudo ufw allow 2022/tcp
-
-# 在确认新端口连接正常后，可以删除对22端口的允许规则
 sudo ufw delete allow 22/tcp
 ```
 
-**测试新端口连接**
+彻底关门的正确命令
 
 ```
-ssh username@your_server_ip -p 2022
+# 删除基于应用配置的规则
+sudo ufw delete allow OpenSSH
 ```
 
-禁用旧的22端口在确认通过新端口可以稳定连接后再次编辑 /etc/ssh/sshd_config 文件，将 Port 22 这一行删除或在前面加上 # 注释掉，然后再次重启SSH服务，以彻底关闭22端口的监听。
+执行完后，再次查看状态验证
+
+```
+sudo ufw status verbose
+```
+
+端口攻击查看
+
+```
+tail -f /var/log/auth.log
+```
+
+###### ssh配置
+
+```
+cat /etc/ssh/sshd_config
+```
+
+ `PermitRootLogin yes` 允许 Root 直接通过密钥登录
+
+可以改为 `PermitRootLogin prohibit-password`。它的作用是显式声明：**允许 Root 登录，但绝对不允许用密码**
+
+```
+ssh -p 50501 root@154.36.183.45
+```
 
 ##### 系统服务管理
 
@@ -1055,3 +1088,67 @@ https://ping.pe/
 SNI (Server Name Indication)：必须填 panel.moonode.uk。
 
 端口：依然是 443。
+
+```
+日本服务器优选ip
+162.159.39.28
+162.159.44.234
+```
+
+##### ip测试
+
+###### ping检测
+
+```
+ping.pe
+```
+
+###### ip欺诈分
+
+```
+https://scamalytics.com/
+```
+
+#### Docker安装
+
+```
+# 1. 更新系统索引并安装必要的 HTTPS 传输组件
+sudo apt update && sudo apt install -y curl
+
+# 2. 下载并运行 Docker 官方安装脚本
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# 3. 启动并设置开机自启
+sudo systemctl enable --now docker
+```
+
+安装 Docker Compose (插件版)
+
+```
+sudo apt install -y docker-compose-plugin
+
+验证安装
+docker compose version
+```
+
+禁止自启动
+
+```
+sudo systemctl disable docker
+sudo systemctl disable docker.socket
+```
+
+临时停止服务
+
+```
+sudo systemctl stop docker
+sudo systemctl stop docker.socket
+```
+
+彻底“杀死”残留进程
+
+```
+sudo pkill -f docker && sudo pkill -f containerd
+```
+

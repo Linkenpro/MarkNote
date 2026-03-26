@@ -1,411 +1,214 @@
-# HTML
+#### 标签
 
-## 注释
+###### html
 
 ```html
-<!-- 这是一个注释 -->
+<html>
+</html>
 ```
 
-超文本标记语言
+包含head和body
+
+样式
+
+```html
+无样式
+```
+
+###### head
+
+```html
+<head>
+</head>
+```
+
+###### meta
+
+定义关于 HTML 文档的元数据，常见属性
+
+> charset：定义文档的字符编码
+> name：与 content 属性结合，用于描述网页的元数据名称
+> http-equiv：模拟 HTTP 响应头信息
+> content：指定元数据的值
+
+**字符编码声明**
+
+```html
+<meta charset="UTF-8">
+```
+
+**页面描述与关键词**
+
+```html
+<meta name="description" content="网页描述">
+```
+
+**视口设置**
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+```
+
+**浏览器行为控制**
+
+```html
+
+```
+
+
+
+###### link
+
+定义当前文档与外部资源之间关系的标签，核心属性：
+
+> rel：定义当前文档与被链接文档之间的关系，是必需属性
+>
+> - `stylesheet`：链接到外部样式表
+> - `icon`：链接到网站图标
+> - `prefetch`：规定应该对目标资源进行缓存
+> - `preload`：用于预加载当前页面必需的资源
+>
+> href：指定被链接文档的位置。
+> type：规定被链接文档的 MIME 类型。
+> media：规定被链接文档将在什么设备上显示
+
+**链接外部样式表**
+
+```html
+<link rel="stylesheet" href="styles.css">
+```
+
+**链接网站图标（favicon）**
+
+```html
+<link href = "//www.gstatic.com/images/branding/searchlogo/ico/favicon.ico" rel="icon">
+```
+
+**预加载资源**
+
+```html
+
+```
+
+> <link> 标签必须放在文档的 <head> 部分，且可以出现多次。为了确保资源优先加载，建议将 <link> 标签放在 <head> 中
+
+###### style
+
+用于定义文档样式信息（CSS）的标签,属性：
+
+1. **`type`**‌：
+   - 该属性用于指定样式表的 MIME 类型，通常设置为 `text/css`。
+   -  HTML5 中，此属性不再是必需的
+2. ‌**`media`**‌：
+   - 该属性用于指定样式表将应用于哪种媒体类型。
+   - 例如：`media="screen"` 表示样式表仅应用于屏幕显示，`media="print"` 表示样式表仅应用于打印输出。
+   - 可以指定多个媒体类型，用逗号分隔。
+3. ‌**`scoped`**‌：
+   - 这是 HTML5 中引入的一个属性，用于限制样式仅应用于 `<style>` 元素的父元素及其子元素。
+   - 该属性允许为文档的特定部分定义样式，而不是整个文档。
+   - 例如：`<style scoped>` 可以确保样式只影响当前 `<style>` 标签所在的元素及其后代元素。
+4. ‌**`disabled`**‌：
+   - 该属性用于禁用样式表，使其不生效。
+   - 例如：`<style disabled>` 会阻止样式表中的规则被应用到页面上。
+5. ‌**`title`**‌：
+   - 该属性用于为样式表提供一个标题，通常用于用户选择不同的样式表时的标识。
+   - 例如：`<style title="Alternative Stylesheet">` 可以帮助用户识别样式表的用途。
+
+```html
+<head>
+  <style>
+    /* CSS 规则 */
+  </style>
+</head>
+```
+
+> 嵌入式样式‌：在 HTML 文档的 <head> 部分使用 <style> 标签编写 CSS 规则，适用于样式较少且仅用于当前页面的情况。
+> ‌多 <style> 标签‌：一个文档可以包含多个 <style> 标签。
+
+###### title
+
+用于定义网页标题的标签
+
+1. **告诉访客文章或网站的主题**‌：标题标签告诉访问者该页面的内容主题。
+2. ‌**告诉搜索引擎索引**‌：标题标签告诉搜索引擎蜘蛛该页面是以什么内容为主题的。
+3. ‌**SEO 优化**‌：搜索引擎算法使用页面标题来决定在搜索结果中列出页面时的顺序。
+
+```html
+<head>
+  <title>HTML 参考手册</title>
+</head>
+```
+
+###### body
+
+> - **唯一性**‌：一个 HTML 文档中只能有一个 `<body>` 标签。
+> - ‌**内容容器**‌：包含所有可见内容，如文本、图像、链接、视频等。
+> - ‌**位置要求**‌：必须位于 `<html>` 标签内部，且紧跟在 `<head>` 标签之后。
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>菜鸟教程(runoob.com)</title>
+  <title>网页标题</title>
 </head>
 <body>
-    <h1>我的第一个标题</h1>
-    <p>我的第一个段落。</p>
+  <!-- 这里是网页的主体内容 -->
+  <h1>欢迎来到我的网站</h1>
+  <p>这是一个段落，描述了一些信息。</p>
+  <a href="https://www.example.com">访问示例网站</a>
 </body>
 </html>
-```
-
-- **<!DOCTYPE html>** 声明为 HTML5 文档,不区分
-- **<html>** 元素是 HTML 页面的根元素
-- **<head>** 元素包含了文档的元（meta）数据，如 **<meta charset="utf-8">** 定义网页编码格式为 **utf-8**。
-- **<title>** 元素描述了文档的标题
-- **<body>** 元素包含了可见的页面内容
-- **<h1>** 元素定义一个大标题
-- **<p>** 元素定义一个段落   
-
-##### body标签
-
-```html
-<body>
-<p>这是第一个段落。</p>
-</body>
-```
-
-##### head标签
-
-##### h标签
-
-```html
-<h1>1</h1>
-<h2>2</h2>
-<h3>3</h3>
-<h4>4</h4>
-<h5>5</h5>
-<h6>6</h6>
-```
-
-##### hr标签
-
-在 HTML 页面中创建水平线
-
-```html
-<p>这是一个段落。</p>
-<hr>
-<p>这是一个段落。</p>
-<hr>
-<p>这是一个段落。</p>
-```
-
-##### p标签
-
-```html
-<p>这是一个段落。</p>
-```
-
-##### br标签
-
-不产生一个新段落的情况下进行换行
-
-```
-<p>这个<br>段落<br>演示了分行的效果</p>
-```
-
-`<br />` 元素是一个空的 HTML 元素。由于关闭标签没有任何意义，因此它没有结束标签。
-
-##### b标签
-
-> 定义粗体文本
-
-```
-<b>
-```
-
-##### em标签
-
-> 定义着重文字
-
-```
-<em>
-```
-
-##### i标签
-
-> 定义斜体字
-
-```
-<i>
-```
-
-##### small标签
-
-> 定义小号字
-
-```
-<small>
-```
-
-##### strong标签
-
-> 定义加重语气
 
 ```
 
+默认样式：
+
+```css
+body {
+  display: block;
+  margin: 8px;
+}
 ```
 
-##### sub标签
+- `<body>` 标签必须位于 `<html>` 标签内部。
+- 如果 `<body>` 标签放在 `<html>` 标签之外，浏览器会自动将其移动到正确位置。
+- `<body>` 标签内可以包含几乎所有 HTML 元素。
 
-> 定义下标字
+###### h
 
-```
-<sub>
-```
-
-##### sup标签
-
-> 定义上标字
+标题标签 <h1> 到 <h6> 用于定义不同层级的标题
 
 ```
-<sup>
+<h1>：默认字体大小最大，通常为 2em（约 32px，基于默认字体大小 16px）。
+<h2>：默认字体大小次之，通常为 1.5em（约 24px）。
+<h3>：默认字体大小为 1.17em（约 18.72px）。
+<h4>：默认字体大小为 1em（约 16px）。
+<h5>：默认字体大小为 0.83em（约 13.28px）。
+<h6>：默认字体大小最小，通常为 0.67em（约 10.72px）。
 ```
 
-##### ins标签
+默认样式
 
-> 定义插入字
-
-```
-<ins>
-```
-
-##### del标签
-
-定义删除字
-
-```
-<del>
+```css
+h1 {
+  display: block;
+  font-size: 2em;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
+}
 ```
 
-##### a标签
-
-```html
-<a href="https://www.runoob.com">这是一个链接</a>
+```
+<h1>：默认上下外边距约为 0.67em。
+<h2>：默认上下外边距约为 0.83em。
+<h3>：默认上下外边距约为 1em。
+<h4>：默认上下外边距约为 1.33em。
+<h5>：默认上下外边距约为 1.67em。
+<h6>：默认上下外边距约为 2.33em。
 ```
 
-##### img标签
-
-```html
-<img src="/images/logo.png" width="258" height="39" />
-```
-
-- src：用于 `<img>`, `<script>`, `<iframe>` 等元素
-- alt：为图像提供替代文本
-
-##### code标签
-
-定义计算机代码
-
-##### kbd标签
-
-定义键盘码
-
-##### samp标签
-
-定义计算机代码样本
-
-##### var标签
-
-定义变量
-
-##### pre标签
-
-定义预格式文本
-
-##### abbr标签
-
-定义缩写
-
-##### address标签
-
-定义地址
-
-##### bdo标签
-
-定义文字方向
-
-##### blockquote标签
-
-定义长的引用
-
-##### q标签
-
-定义短的引用语
-
-##### cite标签
-
-定义引用、引证
-
-##### dfn标签
-
-定义一个定义项目
-
-| 属性名        | 适用元素                                          | 说明                                                         |
-| :------------ | :------------------------------------------------ | :----------------------------------------------------------- |
-| `id`          | 所有元素                                          | 为元素指定唯一的标识符。                                     |
-| `class`       | 所有元素                                          | 为元素指定一个或多个类名，用于 CSS 或 JavaScript 选择。      |
-| `style`       | 所有元素                                          | 直接在元素上应用 CSS 样式。                                  |
-| `title`       | 所有元素                                          | 为元素提供额外的提示信息，通常在鼠标悬停时显示。             |
-| `data-*`      | 所有元素                                          | 用于存储自定义数据，通常通过 JavaScript 访问。               |
-| `href`        | `<a>`, `<link>`                                   | 指定链接的目标 URL。                                         |
-| `src`         | `<img>`, `<script>`, `<iframe>`                   | 指定外部资源（如图片、脚本、框架）的 URL。                   |
-| `alt`         | `<img>`                                           | 为图像提供替代文本，当图像无法显示时显示。                   |
-| `type`        | `<input>`, `<button>`                             | 指定输入控件的类型（如 `text`, `password`, `checkbox` 等）。 |
-| `value`       | `<input>`, `<button>`, `<option>`                 | 指定元素的初始值。                                           |
-| `disabled`    | 表单元素                                          | 禁用元素，使其不可交互。                                     |
-| `checked`     | `<input type="checkbox">`, `<input type="radio">` | 指定复选框或单选按钮是否被选中。                             |
-| `placeholder` | `<input>`, `<textarea>`                           | 在输入框中显示提示文本。                                     |
-| `target`      | `<a>`, `<form>`                                   | 指定链接或表单提交的目标窗口或框架（如 `_blank` 表示新标签页）。 |
-| `readonly`    | 表单元素                                          | 使输入框只读。                                               |
-| `required`    | 表单元素                                          | 指定输入字段为必填项。                                       |
-| `autoplay`    | `<audio>`, `<video>`                              | 自动播放媒体。                                               |
-| `onclick`     | 所有元素                                          | 当用户点击元素时触发 JavaScript 事件。                       |
-| `onmouseover` | 所有元素                                          | 当用户将鼠标悬停在元素上时触发 JavaScript 事件。             |
-| `onchange`    | 表单元素                                          | 当元素的值发生变化时触发 JavaScript 事件。                   |
-
-#### 全局属性
-
-##### id
-
-全局属性是所有 HTML 元素都可以使用的属性。
-
-id：**为元素指定唯一的标识符**
-
-```html
-<div id="header">This is the header</div>
-```
-
-##### class
-
-为元素指定一个或多个类名，用于 CSS 或 JavaScript 选择
-
-```html
-<p class="text highlight">This is a highlighted text.</p>
-```
-
-##### style
-
-用于直接在元素上应用 CSS 样式
-
-```html
-<p style="color: blue; font-size: 14px;">This is a styled paragraph.</p>
-```
-
-##### title
-
-为元素提供额外的提示信息，通常在鼠标悬停时显示
-
-```html
-<abbr title="HyperText Markup Language">HTML</abbr>
-```
-
-**data-\***
-
-用于存储自定义数据，通常通过 JavaScript 访问。
-
-```html
-<div data-user-id="12345">User Info</div>
-```
-
-##### type
-
-用于 `<input>` 和 `<button>` 元素
-
-指定输入控件的类型
-
-```html
-<input type="text" placeholder="Enter your name">
-```
-
-##### value
-
-用于 `<input>`, `<button>`, `<option>` 等元素
-
-```html
-<input type="text" value="Default Value">
-```
-
-##### disabled
-
-（用于表单元素）：禁用元素，使其不可交互。
-
-```html
-<input type="text" disabled>
-```
-
-##### checked
-
-用于 `<input type="checkbox">` 和 `<input type="radio">`
-
-指定复选框或单选按钮是否被选中
-
-```html
-<input type="checkbox" checked>
-```
-
-##### placeholder
-
-用于 `<input>` 和 `<textarea>` 元素
-
-在输入框中显示提示文本
-
-```html
-<input type="text" placeholder="Enter your email">
-```
-
-##### target
-
-用于 `<a>` 和 `<form>` 元素
-
-指定链接或表单提交的目标窗口或框架
-
-```html
-<a href="https://www.example.com" target="_blank">Open in new tab</a>
-```
-
-#### 不需要值的属性
-
-###### disabled
-
-禁用元素
-
-```html
-<input type="text" disabled>z
-```
-
-###### readonly
-
-使输入框只读
-
-```html
-<input type="text" readonly>
-```
-
-###### required
-
-指定输入字段为必填项
-
-```html
-<input type="text" required>
-```
-
-###### autoplay
-
-用于 `<audio>` 和 `<video>` 元素
-
-自动播放媒体
-
-```html
-<video src="video.mp4" autoplay></video>
-```
-
-#### 自定义属性
-
-###### data-*
-
-用于存储自定义数据
-
-```html
-<div data-user-id="12345" data-role="admin">User Info</div>
-```
-
-#### 事件处理属性
-
-##### onclick
-
-当用户点击元素时触发
-
-```html
-<button onclick="alert('Button clicked!')">Click Me</button>
-```
-
-##### onmouseover
-
-当用户将鼠标悬停在元素上时触发
-
-```html
-<div onmouseover="this.style.backgroundColor='yellow'">Hover over me</div>
-```
-
-##### onchange
-
-当元素的值发生变化时触发
-
-```html
-<input type="text" onchange="alert('Value changed!')">
-```
+###### div
 
