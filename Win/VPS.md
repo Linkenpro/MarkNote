@@ -5,7 +5,7 @@
 ###### 从服务器拉取
 
 ```
-scp -r root@154.36.183.45:/var/www/html/* "C:/Users/源恒/Desktop/file/"
+scp -r -P 50501 root@154.36.183.45:/var/www/html/quant/* "C:/Users/源恒/Desktop/file/"
 ```
 
 ```
@@ -22,6 +22,7 @@ rm -rf /var/www/html/*
 
 ```
 scp -r "C:/Users/源恒/Desktop/0322/*" root@154.36.183.45:/var/www/html/
+scp -r -P 50501 "C:\Users\源恒\Downloads\index.html" root@154.36.183.45:/var/www/html/
 ```
 
 ```
@@ -34,11 +35,21 @@ scp -r "C:/Users/Elin/Desktop/0315/*" root@154.36.183.45:/var/www/html/
 chown -R www-data:www-data /var/www/html && find /var/www/html -type d -exec chmod 755 {} \; && find /var/www/html -type f -exec chmod 644 {} \;
 ```
 
-确认
+其他命令
 
 ```
 cd /var/www/html
 ```
+
+```
+cd /root/binance_quant && source venv/bin/activate
+```
+
+```
+cat /var/www/html/quant/logs/cron.log
+```
+
+
 
 ##### Nginx安装配置
 
@@ -691,6 +702,19 @@ sudo ufw reload
 # 确认修改结果
 sudo ufw status
 ```
+
+##### 系统清理
+
+清理系统无用缓存
+
+```
+# 清理已下载的软件包安装包
+apt-get clean
+# 卸载不再需要的依赖包
+apt-get autoremove -y
+```
+
+
 
 #### 量化项目
 
