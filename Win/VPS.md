@@ -31,9 +31,7 @@ scp -r "C:/Users/Elin/Desktop/0315/*" root@154.36.183.45:/var/www/html/
 ###### 权限修复三件套
 
 ```
-chown -R www-data:www-data /var/www/html
-find /var/www/html -type d -exec chmod 755 {} \;
-find /var/www/html -type f -exec chmod 644 {} \;
+chown -R www-data:www-data /var/www/html && find /var/www/html -type d -exec chmod 755 {} \; && find /var/www/html -type f -exec chmod 644 {} \;
 ```
 
 确认
