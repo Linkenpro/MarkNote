@@ -5,11 +5,42 @@
 ###### 从服务器拉取
 
 ```
-scp -r -P 50501 root@154.36.183.45:/var/www/html/quant/* "C:/Users/源恒/Desktop/file/"
+# 拉去quant文件夹
+scp -r -P 50501 root@154.36.183.45:/var/www/html/quant/* "C:/Users/Elin/Desktop/file/"
+
+# 获取数据库
+scp -r -P 50501 root@154.36.183.45:/root/binance_quant/binance_history.db "C:/Users/Elin/Desktop/file/"
+
+# 获取数据库
+scp -r -P 50501 root@154.36.183.45:/root/binance_quant/crypto_data.db "C:/Users/Elin/Desktop/"
+
+# 获取脚本py
+scp -r -P 50501 root@154.36.183.45:/root/binance_quant/market_json/market_json.py "C:/Users/Elin/Desktop/"
+scp -r -P 50501 root@154.36.183.45:/root/binance_quant/btc_trade2.py "C:/Users/Elin/Desktop/"
+scp -r -P 50501 "C:/Users/Elin/Desktop/market_json.py" root@154.36.183.45:/root/binance_quant/market_json/
+
+scp -r -P 50501 root@154.36.183.45:/root/binance_quant/klines/btc5min.py "C:/Users/Elin/Desktop/"
+
+# 拉取文件夹
+scp -r -P 50501 root@154.36.183.45:/root/binance_quant/klines/* "C:/Users/Elin/Desktop/"
+
+#
+scp -r -P 50501 root@154.36.183.45:/root/binance_quant/btc_trade/account_info.db "C:/Users/Elin/Desktop/"
 ```
 
 ```
 scp -r root@154.36.183.45:/var/www/html/* "C:/Users/Elin/Desktop/file/"
+```
+
+```
+nano /root/binance_quant/btc_trade/wallet_trade.py
+```
+
+拉取py文件
+
+```
+scp -r -P 50501 root@154.36.183.45:/root/binance_quant/app.py "C:/Users/Elin/Desktop/"
+scp -r -P 50501 root@154.36.183.45:/root/binance_quant/binance_trade.py "C:/Users/Elin/Desktop/"
 ```
 
 ###### 移除vps的所有文件
@@ -23,10 +54,16 @@ rm -rf /var/www/html/*
 ```
 scp -r "C:/Users/源恒/Desktop/0322/*" root@154.36.183.45:/var/www/html/
 scp -r -P 50501 "C:\Users\源恒\Downloads\index.html" root@154.36.183.45:/var/www/html/
-```
+scp -r -P 50501 "C:/Users/Elin/Desktop/0328/*" root@154.36.183.45:/var/www/html/quant/
+scp -r -P 50501 "C:/Users/Elin/Desktop/binance_trade.py" root@154.36.183.45:/root/binance_quant/
 
-```
-scp -r "C:/Users/Elin/Desktop/0315/*" root@154.36.183.45:/var/www/html/
+# 回传文件到quant文件夹
+scp -r -P 50501 "C:/Users/Elin/Desktop/file/*" root@154.36.183.45:/var/www/html/quant/
+
+#
+scp -r -P 50501 "C:/Users/Elin/Desktop/btc5min.py" root@154.36.183.45:/root/binance_quant/klines/
+# 传新闻的py程序
+scp -r -P 50501 "C:/Users/Elin/Desktop/fetch_news.py" root@154.36.183.45:/root/binance_quant/
 ```
 
 ###### 权限修复三件套
@@ -37,23 +74,25 @@ chown -R www-data:www-data /var/www/html && find /var/www/html -type d -exec chm
 
 其他命令
 
-```
-cd /var/www/html
-```
+###### 启动量化python环境
 
 ```
 cd /root/binance_quant && source venv/bin/activate
 ```
 
+###### 查看定时任务日志
+
 ```
 cat /var/www/html/quant/logs/cron.log
+rm -rf /var/www/html/quant/logs/cron.log
+
+# 查看json文件
+cat /var/www/html/quant/logs/wallet_trade.json
 ```
-
-
 
 ##### Nginx安装配置
 
-###### 安装nginx
+###### 安装 nginx
 
 ```
 sudo apt update
@@ -289,6 +328,37 @@ sudo systemctl start quant_api
 sudo systemctl enable quant_api
 sudo systemctl status quant_api  # 确认状态为 active (running)
 ```
+
+###### 守护进程清除
+
+停止并禁用服务
+
+```
+sudo systemctl stop quant_api
+sudo systemctl disable quant_api
+```
+
+删除服务配置文件
+
+> 系统服务的定义文件存放在 /etc/systemd/system/ 目录下，需要将其移除：
+
+```
+sudo rm /etc/systemd/system/quant_api.service
+```
+
+重载系统服务管理器
+
+```
+sudo systemctl daemon-reload && sudo systemctl reset-failed
+```
+
+清理程序文件
+
+```
+rm -rf 
+```
+
+
 
 #### Debian服务器
 
