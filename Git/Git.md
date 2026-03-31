@@ -199,3 +199,17 @@ if %errorlevel% equ 0 (
 pause >nul
 ```
 
+###### VS Code使用Github
+
+端口配置
+
+```cmd
+# 设置 HTTP 代理（推荐使用 HTTP 端口 2802）
+git config --global http.proxy http://127.0.0.1:2802
+git config --global https.proxy http://127.0.0.1:2802
+
+# 或者如果你偏好使用 Socks5 端口 2801
+git config --global http.proxy socks5://127.0.0.1:2801
+git config --global https.proxy socks5://127.0.0.1:2801
+```
+
