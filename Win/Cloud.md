@@ -1,48 +1,15 @@
 ##### 阿里云
 
-###### 
-
-```
-Tab键切换至OK
-Enter确认
-```
-
 量化
 
 ```
-# 检查 Python 3 版本
-python3 --version
-
-# 检查 pip 是否安装
-pip3 --version
-
 # 查看 Python 安装路径
 which python3
 ```
 
 ###### 本地代码需要上传
 
-**上传单个文件**
 
-```
-# 语法：scp [本地文件路径] [用户名]@[服务器IP]:[服务器目标路径]
-scp /path/to/local/code.py admin@172.19.24.169:~/myproject/
-
-# 上传整个文件夹（递归上传）
-# 加上 -r 参数
-scp -r /path/to/local/project_folder admin@172.19.24.169:~/myproject/
-
-# Windows PowerShell 示例：
-scp C:\Users\YourName\Code\myapp.py admin@<您的公网IP>:~/myproject/
-```
-
-示例
-
-```
-scp C:\Users\源恒\Desktop\test1.py admin@8.138.27.120:~/myproject/
-
-scp C:\Users\源恒\Desktop\binance_ccxt.py admin@8.138.27.120:~/myproject/
-```
 
 > 问题
 >
