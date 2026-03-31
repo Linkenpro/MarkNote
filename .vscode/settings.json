@@ -1,0 +1,13 @@
+{
+    "openInExternalApp.protocols": [
+    {
+        "extension": "md",
+        "apps": [
+            {
+                "title": "Typora",
+                "path": "C:\\Users\\源恒\\AppData\\Local\\Programs\\Typora\\Typora.exe" 
+            }
+        ]
+    }
+]
+}
