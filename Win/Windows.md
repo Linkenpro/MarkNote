@@ -139,3 +139,25 @@ ipconfig /release
 ipconfig /renew
 ```
 
+##### VS Code
+
+###### 安装Remote-SSH插件
+
+1. 在你的本地电脑安装 **VS Code**。
+
+2. 安装插件：**Remote - SSH**。
+
+3. 点击左下角的蓝色图标 `< >`，选择 **Connect to Host**。
+
+4. 输入 `root@你的日本VPS_IP`。
+
+5. 在 VS Code 左侧侧边栏点击 **“打开文件夹” (Open Folder)**。
+
+   在弹出的输入框中输入：`/var/www/html`。
+
+###### 使用内置终端
+
+按下 **`Ctrl + ~`** (Esc 下面那个键)，你会发现 VS Code 下方弹出了一个终端。
+
+这个终端**直接就是你的 VPS 命令行**。你不需要再开一个第三方 SSH 工具（如 Putty 或 Termius），在这里执行 `python3 quant_manager.py` 或查看 `tail -f /var/www/html/db/contact_submissions.json` 非常方便。
+
