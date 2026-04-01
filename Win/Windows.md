@@ -6,7 +6,7 @@ WIN+R
 regedit
 ```
 
-查找
+查找win10注册表，文件夹位置
 
 ```
 HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows Photo Viewer/Capabilities/FileAssociations
@@ -14,7 +14,9 @@ HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows Photo Viewer/Capabilities/FileAsso
 
 字符串值
 
-> 新建.png	.jpg	.jpeg	.gif	,值PhotoViewer.FileAssoc.Tiff
+> 新建.png	.jpg	.jpeg	.gif	
+>
+> 每个值填入值PhotoViewer.FileAssoc.Tiff
 
 ###### Windows预装软件安装
 
