@@ -113,6 +113,10 @@ print(f"DIF: {dif[-1]}, DEA: {dea[-1]}, Histogram: {hist[-1]}")
 
 统计学意义： 根据正态分布理论，约 95% 的价格变动都会落在这个“信道”之内。
 
+> 开口（Expansion）： 像喇叭一样打开，意味着能量释放，趋势开启。
+>
+> 收口（Contraction）： 轨道平行或收缩，意味着进入休整或盘整期。
+
 **Python 实现**
 
 ```py
@@ -132,6 +136,31 @@ current_price = close[-1]
 
 ###### RSI
 
+RSI（Relative Strength Index，相对强弱指数），衡量价格涨跌动能的最常用指标之一
+
+$$RSI = 100 - \frac{100}{1 + RS} \quad (RS = \frac{平均上涨幅度}{平均下跌幅度})$$
+
+> **RSI > 50**：说明上涨动力强于下跌动力，市场处于多头趋势。
+>
+> **RSI < 50**：说明下跌动力更强，市场处于空头趋势。
+
+**Python实现**
+
+```python
+import talib
+
+# 假设 close 是你从 crypto_data.db 取出的收盘价数组
+# timeperiod=14 是最常用的默认设置
+rsi = talib.RSI(close, timeperiod=14)
+
+# 获取最新的 RSI 数值
+current_rsi = rsi[-1]
+```
+
+
+
+
+
 ###### KDJ
 
 ##### 成交量型指标
@@ -143,3 +172,6 @@ current_price = close[-1]
 ##### 波动率与形态指标
 
 ###### ATR
+
+
+
