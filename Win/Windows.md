@@ -161,3 +161,29 @@ ipconfig /renew
 
 这个终端**直接就是你的 VPS 命令行**。你不需要再开一个第三方 SSH 工具（如 Putty 或 Termius），在这里执行 `python3 quant_manager.py` 或查看 `tail -f /var/www/html/db/contact_submissions.json` 非常方便。
 
+###### 输入与AI提示冲突
+
+修改 VS Code 核心设置（最有效）
+打开 VS Code 设置（Ctrl + ,），搜索并修改以下两项：
+
+> Editor: Accept Suggestion On Commit Character
+>
+> 操作： 取消勾选（Off）。
+>
+
+原因： 开启此项时，输入法上屏（按空格或数字）会被 VS Code 误判为确认代码补全，导致拼音直接变成英文字符。
+
+> Editor: Suggest On Trigger Characters
+>
+> 操作： 取消勾选（Off）。
+>
+> 原因： 防止在你输入特定符号时突然弹出补全框，干扰输入法。
+
+###### Chrome截取网页长图
+
+1. 打开想截图的网页;
+2. 按下 `F12`（或者 `Ctrl + Shift + I` / Mac 用 `Cmd + Option + I`）打开**开发者工具**;
+3. 按下组合键 `Ctrl + Shift + P`（Mac 用 `Cmd + Shift + P`）打开**指令菜单**;
+4. 在输入框中输入 `Capture`;
+5. 在下拉选项中找到 **`Capture full size screenshot`**，选中并回车;
+6. 浏览器会自动滚动并生成一张 `.png` 图片存入你的下载文件夹
