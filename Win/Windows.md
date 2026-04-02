@@ -1,54 +1,60 @@
-###### Win10/11-图片查看器
+###### 图片查看器安装
 
-WIN+R
+为Win10和Qin11系统，安装图片查看器
+
+- WIN+R，输入
+
+  ```
+  regedit
+  ```
+
+- 打开注册表，查找文件夹位置，如下：
+
+  ```
+  HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows Photo Viewer/Capabilities/FileAssociations
+  ```
+
+- 新建字符串值.png	.jpg	.jpeg	.gif
+
+  ```
+  PhotoViewer.FileAssoc.Tiff
+  ```
+
+###### Win10预装软件卸载
+
+- 以管理员身份，打开powershell
+- 输入以下命令（不卸载微软商店）
 
 ```
-regedit
+Get-AppxPackage -allusers | Where-Object {$_.Name -notlike "*Microsoft.WindowsStore*"} | Remove-AppxPackage
 ```
 
-查找win10注册表，文件夹位置
-
-```
-HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows Photo Viewer/Capabilities/FileAssociations
-```
-
-字符串值
-
-> 新建.png	.jpg	.jpeg	.gif	
->
-> 每个值填入值PhotoViewer.FileAssoc.Tiff
-
-###### Windows预装软件安装
-
-> powershell
+- 安装预装软件
 
 ```
 Get-AppxPackage -allusers | foreach {Add-AppxPackage -register "$($_.InstallLocation)\appxmanifest.xml" -DisableDevelopmentMode}
 ```
 
-###### win10预装软件卸载
-
-> powershell
-
-```
-
-```
-
 ###### scp命令
 
-基本语法
+**基本语法**
 
 ```
-
+scp [options] [[user@]host1:]file1 [[user@]host2:]file2
 ```
 
-###### 传输文件夹
+options:
+
+- -r:整个文件夹所有文件
+- -P：端口
+
+1.从服务器拉取文件
 
 ```
 scp -r root@154.36.183.45:/root/binance_quant/* "C:/Users/源恒/Desktop/data/"
 ```
 
-实例:上传单个py文件
+2.本地上传文件
 
 ```
 scp "C:\Users\源恒\Desktop\0319\quant\data_app.py" root@154.36.183.45:/root/binance_quant/
