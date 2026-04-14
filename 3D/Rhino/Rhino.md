@@ -56,7 +56,7 @@ S _Sweep1
 SS _Sweep2
 W revolve
 L loft
-ZZ _Move
+ZZ ! _Move
 O _BooleanSplit
 P patch
 U Blend curves
@@ -188,7 +188,7 @@ HOP '_InvertPt
 JN ! _NoEcho -_DocumentProperties _Mesh _Custom _Density=0.2 _MaxAngle=20 _AspectRatio=0 _MinEdgeLength=0 _MaxEdgeLength=0 _MaxEdgeSrf=0 _GridQuads=0 _Refine=_Yes _JaggedSeams=_No _SimplePlanes=_No _Enter _Enter _ShadedViewport
 QQQQ ! _Shell
 YX .x 0
-xy .y 0
+XY !_MultiPipe
 CZ ! _Line _Perpendicular
 CUU ! _Circle P V
 FZ ! _BackgroundBitmap _Place _Pause _Pause _Enter _Enter Gray=no
@@ -203,8 +203,62 @@ ZXC ! _CrvDeviation
 PM '_CPlane _3Point
 PlugInManager ! _OptionsPage _PlugIns
 AdvancedDisplay ! _OptionsPage _DisplayModes
-
+TN ToNURBS
+TM Mesh
+MN ! _UnifyMeshNormals
+ML ! _MeshFromLines
+MD ! _Subdivide
+MF ! _3DFace
+MP ! _MeshPlane
+MB ! _MeshBox
+MC ! _MeshCylinder
+MS ! _MeshSphere
+MT ! _MeshTorus
+XA _SelectionFilterVertices
+IN ! _Inset
+ES ! _ExtrudeSubD
+XS _SelectionFilterEdges
+XD _SelectionFilterFaces
+XF _SelectionFilterNone
+TG !_SubDFaceEdgeVertexToggle
+TNM ToSubD
+AD ! _InsertEdge
+SL ! _Slide
+AC ! _Crease
+BF ! _Bevel
+RC ! _RemoveCrease
+QUAD ! _QuadRemesh
+JS ! _Stitch
+OFF ! _OffsetSubD
+GXY ! _Reflect
+BR ! _Bridge
+ASD ! _InsertPoint
+XT !_SubDTorus
+XR !_SubDSphere
+XE !_SubDCylinder
+XQ ! _SubDPlane
+XW ! _SubDBox
+LL ! _SubDLoft
+FI ! _Fill
+SF _SelFaceLoop
+RS ! _RemoveSymmetry
+SV ! _SubDSweep2
+SI ! _SubDSweep1
+SED ! _SelDup
+SUB ! _Subdivide
+PKM PackageManager
+EXP Export
+VA '_SetView W A
+VT '_SetView W B
+VL '_SetView W L
+VV '_4View
+BLM BlockManager
+SBL SelBlockInstance
 ```
+
+> 更新标签
+>
+> 2026-04-14
 
 #### Rhino插件管理
 
@@ -215,3 +269,26 @@ C:\Users\用户名\AppData\Roaming\McNeel\Rhinoceros\版本号\Plug-ins
 ```
 
 删除指定文件夹
+
+#### 图块定义处理
+
+###### 查看块管理器
+
+> 命令行输入
+
+```
+BlockManager
+```
+
+- 打开“块管理器”
+- 寻找块名字
+- 查看块状态
+
+###### 清理未使用的图块
+
+```
+Purge
+```
+
+- 选择未使用的图块
+- 回车确认删除清理
