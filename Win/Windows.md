@@ -167,6 +167,10 @@ ipconfig /renew
 
 这个终端**直接就是你的 VPS 命令行**。你不需要再开一个第三方 SSH 工具（如 Putty 或 Termius），在这里执行 `python3 quant_manager.py` 或查看 `tail -f /var/www/html/db/contact_submissions.json` 非常方便。
 
+###### SSH配置修改
+
+> 
+
 ###### 输入与AI提示冲突
 
 修改 VS Code 核心设置（最有效）

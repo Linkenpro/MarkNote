@@ -937,11 +937,6 @@ Password:
 UmilnrjKjn
 Port:
 54321
-WebBasePath:
-fdowFIwF2GE5CHWs3o
-Access URL:
-https://moonode.uk:54321/fdowFIwF2GE5CHWs3o
-https://154.36.183.45:54321/fdowFIwF2GE5CHWs3o
 ```
 
 恢复nginx
