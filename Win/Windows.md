@@ -54,11 +54,21 @@ options:
 scp -r root@154.36.183.45:/root/binance_quant/* "C:/Users/源恒/Desktop/data/"
 ```
 
+```
+scp -r root@154.36.183.45:/var/www/html/work/data/bosszhipin_2026_04_18.json "C:/Users/Elin/Desktop/"
+```
+
 2.本地上传文件
 
 ```
 scp "C:\Users\源恒\Desktop\0319\quant\data_app.py" root@154.36.183.45:/root/binance_quant/
 ```
+
+```
+scp -r "C:/Users/Elin/Desktop/work" root@154.36.183.45:/var/www/html/
+```
+
+
 
 ###### Win11右键修改
 
@@ -197,3 +207,65 @@ ipconfig /renew
 4. 在输入框中输入 `Capture`;
 5. 在下拉选项中找到 **`Capture full size screenshot`**，选中并回车;
 6. 浏览器会自动滚动并生成一张 `.png` 图片存入你的下载文件夹
+
+##### Python自动SCP脚本
+
+本地电脑（Windows）已经配置好了 Git Bash 或者安装了 OpenSSH，你可以直接用 Python 调用系统的 scp 命令。
+
+- 优点：不需要安装额外的 Python 库，代码量少。
+- 缺点：依赖本地环境必须有 scp 命令。
+
+```python
+import subprocess
+import os
+
+def upload_via_scp(local_file, remote_path):
+    """
+    local_file: 本地文件路径，例如 'jobs.csv'
+    remote_path: 远程完整路径，例如 'root@1.2.3.4:/root/job_analysis/jobs.csv'
+    """
+    # 拼接命令
+    # 注意：Windows下如果是Git Bash环境可以直接用scp，否则可能需要指定全路径
+    command = f"scp {local_file} {remote_path}"
+    
+    print(f"🚀 正在上传: {local_file} ...")
+    try:
+        # shell=True 允许运行字符串形式的命令
+        result = subprocess.run(command, shell=True, check=True)
+        print("✅ 上传成功！")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ 上传失败: {e}")
+
+# 使用示例
+# 建议将 remote_path 写死在配置里
+REMOTE_USER = "root"
+REMOTE_IP = "你的VPS_IP"
+REMOTE_DIR = "/root/job_analysis/jobs.csv"
+
+# 爬虫跑完后执行
+# upload_via_scp("jobs.csv", f"{REMOTE_USER}@{REMOTE_IP}:{REMOTE_DIR}")
+```
+
+
+
+```python
+import subprocess
+
+cmd = "scp D:\\codes\\jobs.csv root@你的VPS_IP:/root/job_analysis/jobs.csv"
+
+print(f"🚀 正在唤起 PowerShell 执行: {cmd}")
+
+# shell=True 表示通过系统的 Shell (PowerShell) 来执行
+# capture_output=True 表示捕获输出结果（成功或失败的信息）
+# text=True 表示把输出结果当成文本处理（而不是乱码字节）
+result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+
+# 打印结果
+if result.returncode == 0:
+    print("✅ 上传成功！")
+    print(result.stdout) # 打印 PowerShell 的输出
+else:
+    print("❌ 出错了：")
+    print(result.stderr) # 打印错误信息
+```
+

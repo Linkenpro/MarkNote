@@ -358,6 +358,207 @@ sudo systemctl daemon-reload && sudo systemctl reset-failed
 rm -rf 
 ```
 
+##### NodeJS安装
+
+###### 安装 NVM 工具
+
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
+
+###### 激活环境
+
+```
+source ~/.bashrc
+```
+
+###### 安装 Node.js (LTS 版本)
+
+```
+nvm install --lts
+```
+
+###### 验证安装
+
+```
+node -v
+npm -v
+```
+
+###### 安装 PM2 (进程管理器)
+
+已经装了 Nginx， 用 PM2 来管理 Node.js 进程
+
+```
+npm install -g pm2
+```
+
+###### 启动你的网站
+
+> 假设你的网站入口文件是 `app.js` (在 `/var/www/html/work` 目录下)：
+
+```
+cd /var/www/html/work
+pm2 start app.js --name "my-website"
+```
+
+###### 设置开机自启
+
+> 即使 VPS 重启，你的网站也会自动运行：
+
+```
+pm2 startup
+pm2 save
+```
+
+- 执行 pm2 startup 后，终端可能会输出一行带 sudo 的命令，记得复制那行命令再执行一次。
+
+###### 网站任务部署——1
+
+需要安装一个轻量级的 HTML 解析库 cheerio（类似于服务器端的 jQuery），它能帮我们精准地提取 <title> 和 <meta> 内容。
+
+在你的项目根目录 (/var/www/html/work) 下执行：
+
+```
+npm install cheerio
+```
+
+编写 Node.js 脚本
+
+创建一个名为 update_portfolio.js 的文件：
+
+```js
+const fs = require('fs');
+const path = require('path');
+const cheerio = require('cheerio');
+
+// ================= 配置区域 =================
+const PORTFOLIO_DIR = './portfolio';  // 作品文件夹
+const TARGET_FILE = './works.html';   // 首页文件
+// ===========================================
+
+console.log('🔍 正在扫描 portfolio 文件夹...');
+
+// 1. 读取文件夹下所有文件
+fs.readdir(PORTFOLIO_DIR, (err, files) => {
+    if (err) {
+        console.error('❌ 读取文件夹失败:', err);
+        return;
+    }
+
+    // 2. 过滤出 .html 文件
+    const htmlFiles = files.filter(file => path.extname(file) === '.html');
+    
+    let projectsData = [];
+
+    // 3. 遍历文件提取信息
+    htmlFiles.forEach(file => {
+        const filePath = path.join(PORTFOLIO_DIR, file);
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        
+        // 使用 cheerio 加载 HTML 内容
+        const $ = cheerio.load(fileContent);
+        
+        // 提取标题
+        const title = $('title').text().trim();
+        
+        // 提取描述
+        const description = $('meta[name="description"]').attr('content') || '暂无简介';
+        
+        // 提取封面图 (如果没有配置 cover meta，这里可以写个默认图)
+        let cover = $('meta[name="cover"]').attr('content');
+        if (!cover) {
+            // 简单处理：如果没有 meta 标签，尝试找第一个 img 标签，或者给个默认值
+            // 这里为了简单，先给个默认占位，或者你可以强制要求加 meta 标签
+            cover = ''; 
+        }
+
+        projectsData.push({
+            filename: file,
+            title: title,
+            desc: description,
+            cover: cover
+        });
+    });
+
+    // 4. 排序：按文件名倒序 (002.html 排在 001.html 前面)
+    projectsData.sort((a, b) => b.filename.localeCompare(a.filename));
+
+    // 5. 生成 HTML 字符串
+    let htmlList = '';
+    projectsData.forEach(p => {
+        // 注意图片路径：因为 works.html 在根目录，图片在 portfolio/001/images/xxx.jpg
+        // 所以路径要写成 portfolio/001/...
+        // 如果 p.cover 是 ./images/xxx.jpg，我们需要把 ./ 替换成 portfolio/具体文件夹/
+        
+        // 这里为了演示简单，假设 cover 是相对路径 ./images/xxx.jpg
+        // 我们需要修正路径指向正确的作品目录
+        let finalImgSrc = '';
+        if(p.cover) {
+             // 简单的路径修正逻辑：把 ./images/... 变成 portfolio/001/images/...
+             // 注意：这里有个小逻辑漏洞，如果 cover 写的是绝对路径就不需要改
+             // 建议在你的 001.html 里 cover 写相对路径，比如 images/001-main.jpg (去掉前面的 ./)
+             finalImgSrc = `portfolio/${p.filename.replace('.html', '')}/${p.cover.replace('./', '')}`;
+        }
+
+        htmlList += `
+            <article class="article-card">
+                <a href="portfolio/${p.filename}" class="work-a">
+                    <div class="card-image-container">
+                        <img src="${finalImgSrc}" alt="${p.title}" class="card-image">
+                        <div class="tag">作品</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="meta">Posted on ${p.filename}</div>
+                        <h3>${p.title}</h3>
+                        <p>${p.desc}</p>
+                    </div>
+                </a>
+            </article>
+        `;
+    });
+
+    // 6. 读取 works.html 并进行替换
+    fs.readFile(TARGET_FILE, 'utf8', (err, data) => {
+        if (err) {
+            console.error('❌ 读取 works.html 失败:', err);
+            return;
+        }
+
+        // 定义替换的标记
+        const startMarker = '<!-- PORTFOLIO_LIST_START -->';
+        const endMarker = '<!-- PORTFOLIO_LIST_END -->';
+
+        const startIndex = data.indexOf(startMarker);
+        const endIndex = data.indexOf(endMarker);
+
+        if (startIndex !== -1 && endIndex !== -1) {
+            // 拼接新内容：标记前 + 新生成的列表 + 标记后
+            const newContent = data.slice(0, startIndex + startMarker.length) + 
+                               '\n' + htmlList + '\n' + 
+                               data.slice(endIndex);
+
+            // 写回文件
+            fs.writeFile(TARGET_FILE, newContent, 'utf8', (err) => {
+                if (err) {
+                    console.error('❌ 写入文件失败:', err);
+                } else {
+                    console.log(`✅ 成功更新 ${TARGET_FILE}，共生成 ${projectsData.length} 个作品卡片。`);
+                }
+            });
+        } else {
+            console.log('❌ 错误：在 works.html 中找不到注释标记。');
+        }
+    });
+});
+```
+
+运行脚本
+
+```
+node update_portfolio.js
+```
+
 
 
 #### Debian服务器
