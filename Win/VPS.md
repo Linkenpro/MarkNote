@@ -985,6 +985,70 @@ apt-get clean
 apt-get autoremove -y
 ```
 
+###### 清理 APT 缓存
+
+```
+apt-get clean
+apt-get autoremove --purge
+```
+
+###### 限制系统日志大小
+
+```
+# 只保留最近 3 天的日志
+journalctl --vacuum-time=3d
+```
+
+> 永久限制日志大小
+> 你可以修改 journald 的配置文件，限制它最大只占用 200MB。
+
+```
+# 修改配置文件
+sed -i 's/#SystemMaxUse=/SystemMaxUse=200M/' /etc/systemd/journald.conf
+# 重启日志服务使生效
+systemctl restart systemd-journald
+```
+
+##### 精准定位大文件
+
+```
+du -sh /* 2>/dev/null | sort -hr | head -n 5
+```
+
+###### 系统文件分析
+
+/usr——系统核心与依赖
+
+```
+apt-get autoremove
+```
+
+###### 检查目录文件大小
+
+/root——根目录
+
+```
+du -sh /root/{.[!.]*,*} | sort -hr | head -n 5
+```
+
+清理 VS Code 旧版本，删除所有缓存的 VS Code 服务端程序
+
+```
+rm -rf /root/.vscode-server/bin/*
+```
+
+清理pip缓存
+
+```
+rm -rf /root/.cache/pip
+```
+
+##### 检查系统硬盘空间
+
+```
+df -h
+```
+
 
 
 #### 量化项目
