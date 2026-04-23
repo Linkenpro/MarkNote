@@ -269,3 +269,30 @@ else:
     print(result.stderr) # 打印错误信息
 ```
 
+##### AutoDesk软件安装问题
+
+###### CAD软件安装出现报错
+
+> X：发生错误。
+> Error while touching
+> C:\ProgramData/Autodesk/ODIS/AdODISInstaller.run.lock
+
+安装CAD程序时报错
+
+文件夹内只有servicehost.ini
+
+> 名为 `ODIS` 的文件夹的权限修改（文件夹初始设置为所有账户和组织都不能修改）
+>
+> 强制将 `ODIS` 文件夹的所有权转交给你的管理员账户
+>
+> ```
+> takeown /f "C:\ProgramData\Autodesk\ODIS" /r /d y
+> ```
+>
+> 删除整个文件夹，至此可以运行`AdODIS-installer.exe`
+>
+> 最新的 ODIS 安装包：https://emsfs.autodesk.com/utility/odis/1/installer/latest/AdODIS-installer.exe
+>
+> **以管理员身份运行**安装
+>
+> 安装完成后，可以运行`CAD2025安装程序`
