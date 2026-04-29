@@ -269,3 +269,39 @@ h1 {
   >   font-size: clamp(24px, 5vw, 48px); /* 最小24px，随宽度缩放，最大48px */
   > }
   > ```
+
+###### 字体引入的两种方法
+
+**在HTML中引用**
+
+> 将生成的 `<link>` 代码放入你的 `index.html` 的 `<head>` 标签内。这种方式加载速度最快，因为浏览器可以并行下载字体。
+
+```html
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+```
+
+**在 CSS 中引用**
+
+> 直接在你的 `styles.css` 文件最顶部使用 `@import`。这会让 CSS 文件更整洁，但加载速度略慢于 `<link>`。
+
+```css
+/* styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+```
+
+###### 品牌logo滚动图
+
+> Infinite Logo Marquee——无限滚动跑马灯
+>
+> 纯 CSS 动画
