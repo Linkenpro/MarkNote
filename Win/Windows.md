@@ -1,291 +1,154 @@
-###### 图片查看器安装
+## 1. Windows 系统设置
 
-为Win10和Qin11系统，安装图片查看器
+### 1.1 图片查看器安装（Win10 / Win11）
 
-- WIN+R，输入
+为系统安装传统 Windows 照片查看器：
 
+1. `Win + R` 输入 `regedit` 打开注册表
+2. 定位到：
+   ```
+   HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows Photo Viewer/Capabilities/FileAssociations
+   ```
+3. 新建字符串值，名称分别为 `.png` `.jpg` `.jpeg` `.gif`，数值数据均填写：
+   ```
+   PhotoViewer.FileAssoc.Tiff
+   ```
+
+### 1.2 Win10 预装软件卸载
+
+以**管理员身份**运行 PowerShell：
+
+- **卸载所有非商店应用**（保留微软商店）：
+  ```powershell
+  Get-AppxPackage -allusers | Where-Object {$_.Name -notlike "*Microsoft.WindowsStore*"} | Remove-AppxPackage
   ```
-  regedit
+
+- **恢复所有预装软件**：
+  ```powershell
+  Get-AppxPackage -allusers | foreach {Add-AppxPackage -register "$($_.InstallLocation)\appxmanifest.xml" -DisableDevelopmentMode}
   ```
 
-- 打开注册表，查找文件夹位置，如下：
+### 1.3 Win11 右键菜单恢复经典样式
 
+- `Win + X` → 选择 **Windows 终端**
+- 执行命令：
+  ```cmd
+  reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
   ```
-  HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows Photo Viewer/Capabilities/FileAssociations
-  ```
+- 重启电脑生效
 
-- 新建字符串值.png	.jpg	.jpeg	.gif
+### 1.4 DNS 缓存刷新
 
-  ```
-  PhotoViewer.FileAssoc.Tiff
-  ```
-
-###### Win10预装软件卸载
-
-- 以管理员身份，打开powershell
-- 输入以下命令（不卸载微软商店）
-
+```cmd
+ipconfig /flushdns   # 刷新 DNS 缓存
+ipconfig /release    # 释放 IP 租约（可选）
+ipconfig /renew      # 重新获取 IP
 ```
-Get-AppxPackage -allusers | Where-Object {$_.Name -notlike "*Microsoft.WindowsStore*"} | Remove-AppxPackage
-```
 
-- 安装预装软件
+## 2. 网络工具与远程连接
 
-```
-Get-AppxPackage -allusers | foreach {Add-AppxPackage -register "$($_.InstallLocation)\appxmanifest.xml" -DisableDevelopmentMode}
-```
+### 2.1 SCP 命令（安全复制）
 
-###### scp命令
-
-**基本语法**
-
+**基本语法**：
 ```
 scp [options] [[user@]host1:]file1 [[user@]host2:]file2
 ```
+常用选项：
+- `-r`：复制整个文件夹
+- `-P`：指定端口（大写 P）
 
-options:
-
-- -r:整个文件夹所有文件
-- -P：端口
-
-1.从服务器拉取文件
-
-```
+**从服务器拉取文件**：
+```bash
 scp -r root@154.36.183.45:/root/binance_quant/* "C:/Users/源恒/Desktop/data/"
-```
-
-```
 scp -r root@154.36.183.45:/var/www/html/work/data/bosszhipin_2026_04_18.json "C:/Users/Elin/Desktop/"
 ```
 
-2.本地上传文件
-
-```
+**本地上传文件**：
+```bash
 scp "C:\Users\源恒\Desktop\0319\quant\data_app.py" root@154.36.183.45:/root/binance_quant/
-```
-
-```
 scp -r "C:/Users/Elin/Desktop/work" root@154.36.183.45:/var/www/html/
 ```
 
+### 2.2 SSH 配置
 
-
-###### Win11右键修改
-
-- win键 + X
-
-- Windows终端
-
-  ```
-  reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
-  ```
-
-- 回车
-
-##### Netch使用
-
-###### Slower订阅
-
-- 复制链接
-
-- 点开 `订阅` >>> `管理订阅链接`
-
-  将订阅地址粘贴到 `链接` 一栏
-
-  备注栏中输入 `Slower`, 点击 `添加`，关闭窗口返回
-
-  点开 `订阅` - `从订阅链接更新服务器`
-
-###### vmess服务器添加
-
-```
-备注：jp_vps
-地址：panel.moonode.uk：443
-用户ID：填写id
-额外ID：0
-加密方式：auto
-传输协议：ws
-伪装类型：none
-主机：panel.moonode.uk
-路径：/v2ray/
-QUIC加密方式:none
-QUIC加密密钥:
-Mux多路复用:false
-TLS底层传输安全:tls
-```
-
-##### ssh配置
-
-###### 生成 SSH 密钥
-
-```
+**生成 SSH 密钥**（在本地）：
+```bash
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ```
 
-###### 获取ssh信息
-
-> PowerShell中运行
-
-```
+**查看本地公钥**（PowerShell）：
+```powershell
 Get-Content C:\Users\用户名\.ssh\id_rsa.pub
 ```
 
-###### 初始化连接
-
-```
-ssh -i C:\Users\用户名\.ssh\id_rsa root@服务器IP地址192.16.80.54
-```
-
-###### 日常连接
-
-```
-ssh root@服务器IP地址192.16.80.54
+**首次连接**（使用密钥文件）：
+```bash
+ssh -i C:\Users\用户名\.ssh\id_rsa root@服务器IP
 ```
 
-##### DNS刷新
-
-```
-# 刷新本地 DNS 解析缓存
-ipconfig /flushdns
-
-# 释放当前的 IP 租约（可选，增加成功率）
-ipconfig /release
-
-# 重新获取解析
-ipconfig /renew
+**日常连接**（密钥已配置后）：
+```bash
+ssh root@服务器IP
 ```
 
-##### VS Code
+### 2.3 Netch 代理工具使用
 
-###### 安装Remote-SSH插件
+#### Slower 订阅更新
+1. 复制订阅链接
+2. 打开 Netch → **订阅** → **管理订阅链接**
+3. 粘贴链接，备注 `Slower`，点击添加
+4. 返回后点击 **订阅** → **从订阅链接更新服务器**
 
-1. 在你的本地电脑安装 **VS Code**。
+#### vmess 服务器手动添加
 
-2. 安装插件：**Remote - SSH**。
+| 字段            | 值                   |
+| --------------- | -------------------- |
+| 备注            | jp_vps               |
+| 地址            | panel.moonode.uk:443 |
+| 用户ID          | （填写你的 ID）      |
+| 额外ID          | 0                    |
+| 加密方式        | auto                 |
+| 传输协议        | ws                   |
+| 伪装类型        | none                 |
+| 主机            | panel.moonode.uk     |
+| 路径            | /v2ray/              |
+| QUIC加密方式    | none                 |
+| QUIC加密密钥    | （留空）             |
+| Mux多路复用     | false                |
+| TLS底层传输安全 | tls                  |
 
-3. 点击左下角的蓝色图标 `< >`，选择 **Connect to Host**。
+## 3. 开发环境配置
 
-4. 输入 `root@你的日本VPS_IP`。
+### 3.1 VS Code 插件与设置
 
-5. 在 VS Code 左侧侧边栏点击 **“打开文件夹” (Open Folder)**。
+#### Remote-SSH 插件（连接 VPS）
+1. 安装 **Remote - SSH** 插件
+2. 点击左下角蓝色图标 `< >` → **Connect to Host**
+3. 输入 `root@你的VPS_IP`
+4. 连接成功后，点击 **打开文件夹**，输入 `/var/www/html`
+5. 使用内置终端：`Ctrl + ~` 即可直接在 VPS 上执行命令
 
-   在弹出的输入框中输入：`/var/www/html`。
+#### 解决中文输入与 AI 补全冲突
+修改 VS Code 设置（`Ctrl + ,`）：
 
-###### 使用内置终端
+| 设置项                                          | 操作     | 原因                                 |
+| ----------------------------------------------- | -------- | ------------------------------------ |
+| `Editor: Accept Suggestion On Commit Character` | 取消勾选 | 防止输入法上屏被误判为确认补全       |
+| `Editor: Suggest On Trigger Characters`         | 取消勾选 | 防止输入特定符号时弹出补全框干扰输入 |
 
-按下 **`Ctrl + ~`** (Esc 下面那个键)，你会发现 VS Code 下方弹出了一个终端。
+### 3.2 SFTP 插件（VSCode）
 
-这个终端**直接就是你的 VPS 命令行**。你不需要再开一个第三方 SSH 工具（如 Putty 或 Termius），在这里执行 `python3 quant_manager.py` 或查看 `tail -f /var/www/html/db/contact_submissions.json` 非常方便。
+安装插件：**SFTP**（推荐 `Natizyskunk` 版本）
 
-###### SSH配置修改
-
-> 
-
-###### 输入与AI提示冲突
-
-修改 VS Code 核心设置（最有效）
-打开 VS Code 设置（Ctrl + ,），搜索并修改以下两项：
-
-> Editor: Accept Suggestion On Commit Character
->
-> 操作： 取消勾选（Off）。
->
-
-原因： 开启此项时，输入法上屏（按空格或数字）会被 VS Code 误判为确认代码补全，导致拼音直接变成英文字符。
-
-> Editor: Suggest On Trigger Characters
->
-> 操作： 取消勾选（Off）。
->
-> 原因： 防止在你输入特定符号时突然弹出补全框，干扰输入法。
-
-###### Chrome截取网页长图
-
-1. 打开想截图的网页;
-2. 按下 `F12`（或者 `Ctrl + Shift + I` / Mac 用 `Cmd + Option + I`）打开**开发者工具**;
-3. 按下组合键 `Ctrl + Shift + P`（Mac 用 `Cmd + Shift + P`）打开**指令菜单**;
-4. 在输入框中输入 `Capture`;
-5. 在下拉选项中找到 **`Capture full size screenshot`**，选中并回车;
-6. 浏览器会自动滚动并生成一张 `.png` 图片存入你的下载文件夹
-
-##### Python自动SCP脚本
-
-本地电脑（Windows）已经配置好了 Git Bash 或者安装了 OpenSSH，你可以直接用 Python 调用系统的 scp 命令。
-
-- 优点：不需要安装额外的 Python 库，代码量少。
-- 缺点：依赖本地环境必须有 scp 命令。
-
-```python
-import subprocess
-import os
-
-def upload_via_scp(local_file, remote_path):
-    """
-    local_file: 本地文件路径，例如 'jobs.csv'
-    remote_path: 远程完整路径，例如 'root@1.2.3.4:/root/job_analysis/jobs.csv'
-    """
-    # 拼接命令
-    # 注意：Windows下如果是Git Bash环境可以直接用scp，否则可能需要指定全路径
-    command = f"scp {local_file} {remote_path}"
-    
-    print(f"🚀 正在上传: {local_file} ...")
-    try:
-        # shell=True 允许运行字符串形式的命令
-        result = subprocess.run(command, shell=True, check=True)
-        print("✅ 上传成功！")
-    except subprocess.CalledProcessError as e:
-        print(f"❌ 上传失败: {e}")
-
-# 使用示例
-# 建议将 remote_path 写死在配置里
-REMOTE_USER = "root"
-REMOTE_IP = "你的VPS_IP"
-REMOTE_DIR = "/root/job_analysis/jobs.csv"
-
-# 爬虫跑完后执行
-# upload_via_scp("jobs.csv", f"{REMOTE_USER}@{REMOTE_IP}:{REMOTE_DIR}")
-```
-
-
-
-```python
-import subprocess
-
-cmd = "scp D:\\codes\\jobs.csv root@你的VPS_IP:/root/job_analysis/jobs.csv"
-
-print(f"🚀 正在唤起 PowerShell 执行: {cmd}")
-
-# shell=True 表示通过系统的 Shell (PowerShell) 来执行
-# capture_output=True 表示捕获输出结果（成功或失败的信息）
-# text=True 表示把输出结果当成文本处理（而不是乱码字节）
-result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-
-# 打印结果
-if result.returncode == 0:
-    print("✅ 上传成功！")
-    print(result.stdout) # 打印 PowerShell 的输出
-else:
-    print("❌ 出错了：")
-    print(result.stderr) # 打印错误信息
-```
-
-##### SFTP
-
-在 VS Code 插件市场搜索并安装：SFTP，目前维护较好的 `Natizyskunk` 版本
-
-- 在本地打开你的项目文件夹（如 `D:\Github\MarkNote`）。
-- 按下 `Ctrl + Shift + P` 调出命令面板。
-- 输入并选择 **`SFTP: Config`**。
-- 这会在你项目根目录下生成一个 `.vscode/sftp.json` 文件。
-
-```js
+**配置 `.vscode/sftp.json`**：
+```json
 {
     "name": "Japan-VPS",
     "host": "你的VPS_IP",
     "protocol": "sftp",
     "port": 50501,
     "username": "root",
-    "privateKeyPath": "C:/Users/源恒/.ssh/id_rsa", 
+    "privateKeyPath": "C:/Users/源恒/.ssh/id_rsa",
     "remotePath": "/var/www/html",
     "uploadOnSave": true,
     "watcher": {
@@ -302,38 +165,67 @@ else:
 }
 ```
 
-**`port`**: 填入你之前修改的 **50501**。
+**使用说明**：
+- **自动上传**：保存文件（`Ctrl + S`）后自动同步到 VPS
+- **手动上传/下载**：右键文件/文件夹 → 选择 `SFTP: Upload` 或 `Download`
+- **对比差异**：右键 → `SFTP: Diff` 查看本地与远程差异
 
-**`privateKeyPath`**: 填写你 Windows 本地私钥的路径。这样无需输入密码即可通过密钥安全登录。
+### 3.3 Python 自动 SCP 脚本
 
-**`remotePath`**: 代码在 VPS 上的存放路径（例如 Nginx 的默认目录 `/var/www/html`）。
+#### 方法一：调用系统 scp 命令（依赖 Git Bash 或 OpenSSH）
 
-**`uploadOnSave`**: 设置为 `true`，这样你每次 `Ctrl + S` 保存，代码就会自动推送到日本 VPS。
+```python
+import subprocess
 
-###### 如何使用同步功能
+def upload_via_scp(local_file, remote_path):
+    command = f"scp {local_file} {remote_path}"
+    print(f"🚀 正在上传: {local_file} ...")
+    try:
+        subprocess.run(command, shell=True, check=True)
+        print("✅ 上传成功！")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ 上传失败: {e}")
 
-- **自动上传**：只要你修改了本地文件并保存，右下角会跳出进度条，显示文件已上传。
-- **手动上传/下载**：
-  - 在左侧文件树上右键点击某个文件或文件夹，选择 **`SFTP: Upload`** (上传到服务器) 或 **`SFTP: Download`** (从服务器拉取)。
-- **对比差异**：
-  - 右键点击文件选择 **`SFTP: Diff`**，可以直观看到本地代码和服务器代码的区别，防止误覆盖。
+# 示例
+REMOTE_USER = "root"
+REMOTE_IP = "你的VPS_IP"
+REMOTE_DIR = "/root/job_analysis/jobs.csv"
+upload_via_scp("jobs.csv", f"{REMOTE_USER}@{REMOTE_IP}:{REMOTE_DIR}")
+```
 
-##### opencode
+#### 方法二：直接通过 PowerShell 执行
 
-1. 安装Nodejs
+```python
+import subprocess
 
-2. **以管理员身份运行 PowerShell**，输入以下命令并按回车
+cmd = "scp D:\\codes\\jobs.csv root@你的VPS_IP:/root/job_analysis/jobs.csv"
+result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
 
-   ```
+if result.returncode == 0:
+    print("✅ 上传成功！", result.stdout)
+else:
+    print("❌ 出错：", result.stderr)
+```
+
+### 3.4 OpenCode 安装（Windows）
+
+1. 安装 Node.js
+2. **以管理员身份运行 PowerShell**，执行：
+   ```powershell
    Set-ExecutionPolicy RemoteSigned
    ```
-
-   输入 Y 并按回车确认即可
-
-3. 使用命令提示符（CMD）
-
-   ```
+   输入 `Y` 确认
+3. 使用命令提示符（CMD）安装：
+   ```cmd
    npm i -g opencode-ai
    ```
 
-   
+## 4. 浏览器实用技巧
+
+### Chrome 截取网页长图
+
+1. 打开目标网页
+2. 按 `F12`（或 `Ctrl+Shift+I`）打开**开发者工具**
+3. 按 `Ctrl+Shift+P`（Mac: `Cmd+Shift+P`）打开**指令菜单**
+4. 输入 `Capture`，选择 **`Capture full size screenshot`** 并回车
+5. 浏览器自动生成长截图并保存为 `.png` 到下载文件夹
