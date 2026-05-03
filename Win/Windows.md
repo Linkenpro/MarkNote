@@ -269,3 +269,71 @@ else:
     print(result.stderr) # 打印错误信息
 ```
 
+##### SFTP
+
+在 VS Code 插件市场搜索并安装：SFTP，目前维护较好的 `Natizyskunk` 版本
+
+- 在本地打开你的项目文件夹（如 `D:\Github\MarkNote`）。
+- 按下 `Ctrl + Shift + P` 调出命令面板。
+- 输入并选择 **`SFTP: Config`**。
+- 这会在你项目根目录下生成一个 `.vscode/sftp.json` 文件。
+
+```js
+{
+    "name": "Japan-VPS",
+    "host": "你的VPS_IP",
+    "protocol": "sftp",
+    "port": 50501,
+    "username": "root",
+    "privateKeyPath": "C:/Users/源恒/.ssh/id_rsa", 
+    "remotePath": "/var/www/html",
+    "uploadOnSave": true,
+    "watcher": {
+        "files": "**/*",
+        "autoUpload": true,
+        "autoDelete": true
+    },
+    "ignore": [
+        "**/.vscode/**",
+        "**/.git/**",
+        "**/node_modules/**",
+        "**/.DS_Store"
+    ]
+}
+```
+
+**`port`**: 填入你之前修改的 **50501**。
+
+**`privateKeyPath`**: 填写你 Windows 本地私钥的路径。这样无需输入密码即可通过密钥安全登录。
+
+**`remotePath`**: 代码在 VPS 上的存放路径（例如 Nginx 的默认目录 `/var/www/html`）。
+
+**`uploadOnSave`**: 设置为 `true`，这样你每次 `Ctrl + S` 保存，代码就会自动推送到日本 VPS。
+
+###### 如何使用同步功能
+
+- **自动上传**：只要你修改了本地文件并保存，右下角会跳出进度条，显示文件已上传。
+- **手动上传/下载**：
+  - 在左侧文件树上右键点击某个文件或文件夹，选择 **`SFTP: Upload`** (上传到服务器) 或 **`SFTP: Download`** (从服务器拉取)。
+- **对比差异**：
+  - 右键点击文件选择 **`SFTP: Diff`**，可以直观看到本地代码和服务器代码的区别，防止误覆盖。
+
+##### opencode
+
+1. 安装Nodejs
+
+2. **以管理员身份运行 PowerShell**，输入以下命令并按回车
+
+   ```
+   Set-ExecutionPolicy RemoteSigned
+   ```
+
+   输入 Y 并按回车确认即可
+
+3. 使用命令提示符（CMD）
+
+   ```
+   npm i -g opencode-ai
+   ```
+
+   
