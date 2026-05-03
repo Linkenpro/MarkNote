@@ -7,7 +7,7 @@ https://blog.csdn.net/qq_22200671/article/details/108643942
 ###### 文件上传位置
 
 ```
-http://mis.yhsoft.com/svn/设计文档库/硬件部/刘道铭
+http://mis.yhsoft.com/svn/设计文档库/硬件部/名字
 ```
 
 ###### 安装软件

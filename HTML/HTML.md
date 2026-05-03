@@ -224,3 +224,84 @@ h1 {
 | 锚点 | `href="#id名"`         | 跳转本页位置   | 需配合目标元素的 `id` |
 | 功能 | `href="mailto:..."`    | 唤起邮件/电话  | 还有 `tel:` 拨号      |
 
+##### 响应式布局
+
+> 针对 1080p、1440p 及 2160p 屏幕进行网页优化
+
+核心点：
+
+- 清晰度（不模糊）
+- 布局适应性（不空洞）
+- 性能平衡（加载快）
+
+###### 响应式布局
+
+> 从“固定宽度”转向“比例与限制”
+
+- 相对单位：多用 rem、em、vw/vh 或 %
+- 设置最大宽度 (max-width)：一行文字长度在 70-80 字符，为容器设置 `max-width: 1440px` 或 `1600px` 并居中
+- 利用 CSS Grid / Flexbox：在 1080p 下显示 3 列，在 4K 下可以通过媒体查询 **(@media)** 扩展为 4 列或 5 列，保持视觉饱满
+
+###### 图像的高清适配
+
+- 使用矢量图 (SVG)：Logo、图标、简单插画尽量使用 SVG
+
+- 为不同的屏幕密度提供不同的图片资源
+
+  ```html
+  <img src="photo-1080.jpg" 
+       srcset="photo-1080.jpg 1x, photo-2160.jpg 2x, photo-4320.jpg 3x" 
+       alt="清晰的图片">
+  ```
+
+- WebP 格式：使用 WebP 或 AVIF 格式
+
+  > 它们在保持高分辨率的同时，体积比 JPG 小得多，有效缓解 4K 图片带来的带宽压力
+
+###### 字体与 UI 细节优化
+
+- 利用 clamp() 函数
+
+  > 让字体大小在 1080p 和 4K 之间平滑过渡
+  >
+  > ```css
+  > h1 {
+  >   font-size: clamp(24px, 5vw, 48px); /* 最小24px，随宽度缩放，最大48px */
+  > }
+  > ```
+
+###### 字体引入的两种方法
+
+**在HTML中引用**
+
+> 将生成的 `<link>` 代码放入你的 `index.html` 的 `<head>` 标签内。这种方式加载速度最快，因为浏览器可以并行下载字体。
+
+```html
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+```
+
+**在 CSS 中引用**
+
+> 直接在你的 `styles.css` 文件最顶部使用 `@import`。这会让 CSS 文件更整洁，但加载速度略慢于 `<link>`。
+
+```css
+/* styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+```
+
+###### 品牌logo滚动图
+
+> Infinite Logo Marquee——无限滚动跑马灯
+>
+> 纯 CSS 动画
