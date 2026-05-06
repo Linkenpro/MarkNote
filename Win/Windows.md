@@ -296,3 +296,32 @@ else:
 > **以管理员身份运行**安装
 >
 > 安装完成后，可以运行`CAD2025安装程序`
+
+###### 注册表修改软件安装日期（试用时间）
+
+> 系统从注册表中读取的一个数值
+
+1. 按下 Win + R，输入 regedit 并回车，打开注册表编辑器
+
+2. 定位到软件信息路径，通常软件的安装信息存储在以下两个位置之一（取决于软件是为当前用户还是全系统安装的）：
+
+   ```
+   路径 A：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
+   
+   路径 B（64位系统下的32位软件）：HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall
+   
+   路径 C（仅限当前用户安装）：HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall
+   ```
+
+3. 找到对应的软件文件夹：
+   在 Uninstall 文件夹下会有很多子文件夹（有些是软件名，有些是一串大括号组成的 GUID）。点击文件夹，在右侧找到 DisplayName 项，确认它是你想修改的软件。
+
+4. 修改 InstallDate 值：
+
+   - 在右侧列表中找到名为 **`InstallDate`** 的字符串值（REG_SZ）。
+
+   - 双击它，将数值修改为你想要的日期。
+
+   - **格式要求**：必须是 `YYYYMMDD`（例如，你想改为2024年5月20日，就输入 `20240520`）。
+
+5. 查看结果
