@@ -69,7 +69,7 @@ scp -r -P 50501 "C:/Users/Elin/Desktop/fetch_news.py" root@154.36.183.45:/root/b
 ###### 权限修复三件套
 
 ```
-chown -R www-data:www-data /var/www/html && find /var/www/html -type d -exec chmod 755 {} \; && find /var/www/html -type f -exec chmod 644 {} \;
+chown -R www-data:www-data /var/www && find /var/www -type d -exec chmod 755 {} \; && find /var/www -type f -exec chmod 644 {} \;
 ```
 
 其他命令
