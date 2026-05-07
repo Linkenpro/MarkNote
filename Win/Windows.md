@@ -143,25 +143,26 @@ ssh root@服务器IP
 **配置 `.vscode/sftp.json`**：
 ```json
 {
-    "name": "Japan-VPS",
-    "host": "你的VPS_IP",
+    "name": "My Server",
+    "host": "154.36.183.45",
     "protocol": "sftp",
     "port": 50501,
     "username": "root",
-    "privateKeyPath": "C:/Users/源恒/.ssh/id_rsa",
-    "remotePath": "/var/www/html",
+    "privateKeyPath": "C:/Users/源恒/.ssh/id_rsa", 
+    "remotePath": "/var/www",
     "uploadOnSave": true,
+    "downloadOnOpen": true,
     "watcher": {
-        "files": "**/*",
+        "files": "*",
         "autoUpload": true,
         "autoDelete": true
     },
     "ignore": [
-        "**/.vscode/**",
-        "**/.git/**",
-        "**/node_modules/**",
-        "**/.DS_Store"
-    ]
+    "**/.vscode/**",
+    "**/.git/**",
+    "**/node_modules/**",
+    "**/logs/**"
+]
 }
 ```
 
@@ -169,6 +170,11 @@ ssh root@服务器IP
 - **自动上传**：保存文件（`Ctrl + S`）后自动同步到 VPS
 - **手动上传/下载**：右键文件/文件夹 → 选择 `SFTP: Upload` 或 `Download`
 - **对比差异**：右键 → `SFTP: Diff` 查看本地与远程差异
+
+###### 手动同步
+
+- **右键点击文件夹** -> 选择 `SFTP: Sync Remote -> Local`。
+- 这会扫描 VPS 上的新文件并下载到本地
 
 ### 3.3 Python 自动 SCP 脚本
 
