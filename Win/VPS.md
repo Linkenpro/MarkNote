@@ -1,4 +1,4 @@
-#### 个人网页服务
+#### 1.个人网页服务
 
 ##### 更新网页文件
 
@@ -559,9 +559,77 @@ fs.readdir(PORTFOLIO_DIR, (err, files) => {
 node update_portfolio.js
 ```
 
+##### TWCSS3.4.0
 
+###### 解决twcss，浏览器cdn问题
 
-#### Debian服务器
+```
+# 进入index.html所在
+cd /var/www/static
+
+# 初始化 npm 项目
+npm init -y
+
+# 安装 Tailwind CSS 3.4.0
+npm install -D tailwindcss@3.4.0
+
+# 生成 Tailwind 配置文件
+npx tailwindcss init
+
+# 修改配置文件，扫描所有 HTML 文件
+nano tailwind.config.js
+```
+
+将内容修改
+
+```js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./**/*.html"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+保存退出（Ctrl+O, Enter, Ctrl+X）
+
+创建源 CSS 文件
+
+```
+mkdir -p src
+cat > src/input.css <<EOF
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+EOF
+```
+
+构建生产版 CSS
+
+```
+npx tailwindcss -i ./src/input.css -o ./css/tailwind.min.css --minify
+```
+
+修改 HTML 文件，移除 CDN，引入本地 CSS
+
+```
+#删除这一行：
+<script src="https://cdn.tailwindcss.com"></script>
+
+#在 <head> 中添加：
+<link rel="stylesheet" href="/css/tailwind.min.css">
+```
+
+确认文件权限
+
+```
+chmod 755 /var/www/static/css
+chmod 644 /var/www/static/css/tailwind.min.css
+```
+
+#### 2.Debian服务器
 
 ##### 用户管理
 
