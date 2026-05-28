@@ -83,7 +83,8 @@ cd /root/binance_quant && source venv/bin/activate
 ###### 查看定时任务日志
 
 ```
-cat /var/www/html/quant/logs/cron.log
+cat /var/www/logs/cron.log
+
 rm -rf /var/www/html/quant/logs/cron.log
 
 # 查看json文件
@@ -1131,6 +1132,9 @@ python3 -m venv venv
 
 ```
 source venv/bin/activate
+
+# 绝对路径
+source /root/binance_quant/venv/bin/activate
 ```
 
 运行py文件
