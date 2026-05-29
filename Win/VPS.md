@@ -9,23 +9,23 @@
 scp -r -P 50501 root@154.36.183.45:/var/www/html/quant/* "C:/Users/Elin/Desktop/file/"
 
 # 获取数据库
-scp -r -P 50501 root@154.36.183.45:/root/binance_quant/binance_history.db "C:/Users/Elin/Desktop/file/"
+scp -r -P 50501 root@154.36.183.45:/root/quant/binance_history.db "C:/Users/Elin/Desktop/file/"
 
 # 获取数据库
-scp -r -P 50501 root@154.36.183.45:/root/binance_quant/crypto_data.db "C:/Users/Elin/Desktop/"
+scp -r -P 50501 root@154.36.183.45:/root/quant/crypto_data.db "C:/Users/Elin/Desktop/"
 
 # 获取脚本py
-scp -r -P 50501 root@154.36.183.45:/root/binance_quant/market_json/market_json.py "C:/Users/Elin/Desktop/"
-scp -r -P 50501 root@154.36.183.45:/root/binance_quant/btc_trade2.py "C:/Users/Elin/Desktop/"
-scp -r -P 50501 "C:/Users/Elin/Desktop/market_json.py" root@154.36.183.45:/root/binance_quant/market_json/
+scp -r -P 50501 root@154.36.183.45:/root/quant/market_json/market_json.py "C:/Users/Elin/Desktop/"
+scp -r -P 50501 root@154.36.183.45:/root/quant/btc_trade2.py "C:/Users/Elin/Desktop/"
+scp -r -P 50501 "C:/Users/Elin/Desktop/market_json.py" root@154.36.183.45:/root/quant/market_json/
 
-scp -r -P 50501 root@154.36.183.45:/root/binance_quant/klines/btc5min.py "C:/Users/Elin/Desktop/"
+scp -r -P 50501 root@154.36.183.45:/root/quant/klines/btc5min.py "C:/Users/Elin/Desktop/"
 
 # 拉取文件夹
-scp -r -P 50501 root@154.36.183.45:/root/binance_quant/klines/* "C:/Users/Elin/Desktop/"
+scp -r -P 50501 root@154.36.183.45:/root/quant/klines/* "C:/Users/Elin/Desktop/"
 
 #
-scp -r -P 50501 root@154.36.183.45:/root/binance_quant/btc_trade/account_info.db "C:/Users/Elin/Desktop/"
+scp -r -P 50501 root@154.36.183.45:/root/quant/btc_trade/account_info.db "C:/Users/Elin/Desktop/"
 ```
 
 ```
@@ -33,14 +33,14 @@ scp -r root@154.36.183.45:/var/www/html/* "C:/Users/Elin/Desktop/file/"
 ```
 
 ```
-nano /root/binance_quant/btc_trade/wallet_trade.py
+nano /root/quant/btc_trade/wallet_trade.py
 ```
 
 拉取py文件
 
 ```
-scp -r -P 50501 root@154.36.183.45:/root/binance_quant/app.py "C:/Users/Elin/Desktop/"
-scp -r -P 50501 root@154.36.183.45:/root/binance_quant/binance_trade.py "C:/Users/Elin/Desktop/"
+scp -r -P 50501 root@154.36.183.45:/root/quant/app.py "C:/Users/Elin/Desktop/"
+scp -r -P 50501 root@154.36.183.45:/root/quant/binance_trade.py "C:/Users/Elin/Desktop/"
 ```
 
 ###### 移除vps的所有文件
@@ -55,15 +55,15 @@ rm -rf /var/www/html/*
 scp -r "C:/Users/源恒/Desktop/0322/*" root@154.36.183.45:/var/www/html/
 scp -r -P 50501 "C:\Users\源恒\Downloads\index.html" root@154.36.183.45:/var/www/html/
 scp -r -P 50501 "C:/Users/Elin/Desktop/0328/*" root@154.36.183.45:/var/www/html/quant/
-scp -r -P 50501 "C:/Users/Elin/Desktop/binance_trade.py" root@154.36.183.45:/root/binance_quant/
+scp -r -P 50501 "C:/Users/Elin/Desktop/binance_trade.py" root@154.36.183.45:/root/quant/
 
 # 回传文件到quant文件夹
 scp -r -P 50501 "C:/Users/Elin/Desktop/file/*" root@154.36.183.45:/var/www/html/quant/
 
 #
-scp -r -P 50501 "C:/Users/Elin/Desktop/btc5min.py" root@154.36.183.45:/root/binance_quant/klines/
+scp -r -P 50501 "C:/Users/Elin/Desktop/btc5min.py" root@154.36.183.45:/root/quant/klines/
 # 传新闻的py程序
-scp -r -P 50501 "C:/Users/Elin/Desktop/fetch_news.py" root@154.36.183.45:/root/binance_quant/
+scp -r -P 50501 "C:/Users/Elin/Desktop/fetch_news.py" root@154.36.183.45:/root/quant/
 ```
 
 ###### 权限修复三件套
@@ -77,7 +77,7 @@ chown -R www-data:www-data /var/www && find /var/www -type d -exec chmod 755 {} 
 ###### 启动量化python环境
 
 ```
-cd /root/binance_quant && source venv/bin/activate
+cd /root/quant && source venv/bin/activate
 ```
 
 ###### 查看定时任务日志
@@ -141,7 +141,7 @@ sudo apt update && sudo apt install tree -y
 
 cd /
 
-mkdir /root/binance_quant
+mkdir /root/quant
 
 网页文件整理
 mkdir /root/proxy/config
@@ -220,7 +220,7 @@ server {
 ```
 
 ```
-alias /root/binance_quant/logs;
+alias /root/quant/logs;
 ```
 
 ###### nginx配置文件位置查询
@@ -307,10 +307,10 @@ After=network.target
 [Service]
 User=root
 Group=root
-WorkingDirectory=/root/binance_quant
+WorkingDirectory=/root/quant
 # 确保使用虚拟环境的 python
-Environment="PATH=/root/binance_quant/venv/bin"
-ExecStart=/root/binance_quant/venv/bin/python app.py
+Environment="PATH=/root/quant/venv/bin"
+ExecStart=/root/quant/venv/bin/python app.py
 Restart=always
 RestartSec=5
 # 日志输出到 journalctl
@@ -1134,7 +1134,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # 绝对路径
-source /root/binance_quant/venv/bin/activate
+source /root/quant/venv/bin/activate
 ```
 
 运行py文件
@@ -1155,7 +1155,7 @@ crontab -e
 
 ```
 # 每天北京时间 08:30 运行量化脚本
-30 8 * * * cd /root/binance_quant && source venv/bin/activate && python binance_ccxtSQL.py >> /root/binance_quant/logs/cron.log 2>&1
+30 8 * * * cd /root/quant && source venv/bin/activate && python binance_ccxtSQL.py >> /root/quant/logs/cron.log 2>&1
 ```
 
 验证任务添加是否成功
@@ -1173,7 +1173,7 @@ sudo systemctl status cron
 查看日志文件
 
 ```
-tail -n 10 /root/binance_quant/logs/cron.log
+tail -n 10 /root/quant/logs/cron.log
 ```
 
 ###### 查看完整日志内容
@@ -1199,11 +1199,11 @@ source ~/.bashrc
 ###### 拉取py程序
 
 ```
-scp -r root@154.36.183.45:/root/binance_quant/binance_ccxtSQL.py "C:/Users/源恒/Desktop/"
+scp -r root@154.36.183.45:/root/quant/binance_ccxtSQL.py "C:/Users/源恒/Desktop/"
 ```
 
 ```
-scp -r "C:/Users/源恒/Desktop/btc5min.py" root@154.36.183.45:/root/binance_quant/
+scp -r "C:/Users/源恒/Desktop/btc5min.py" root@154.36.183.45:/root/quant/
 ```
 
 ##### 量化问题处理
@@ -1226,7 +1226,7 @@ BINANCE_SECRET=你的真实API_SECRET
 为了防止其他用户窃取你的密钥，必须限制该文件的权限，仅允许 root 读写：
 
 ```
-chmod 600 /root/binance_quant/.env
+chmod 600 /root/quant/.env
 ls -l .env
 # 输出应该是: -rw------- 1 root root ... .env
 ```
