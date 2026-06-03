@@ -1,638 +1,11 @@
-#### 1.个人网页服务
+### VPS运行维护
 
-##### 更新网页文件
-
-###### 从服务器拉取
-
-```
-# 拉去quant文件夹
-scp -r -P 50501 root@154.36.183.45:/var/www/html/quant/* "C:/Users/Elin/Desktop/file/"
-
-# 获取数据库
-scp -r -P 50501 root@154.36.183.45:/root/quant/binance_history.db "C:/Users/Elin/Desktop/file/"
-
-# 获取数据库
-scp -r -P 50501 root@154.36.183.45:/root/quant/crypto_data.db "C:/Users/Elin/Desktop/"
-
-# 获取脚本py
-scp -r -P 50501 root@154.36.183.45:/root/quant/market_json/market_json.py "C:/Users/Elin/Desktop/"
-scp -r -P 50501 root@154.36.183.45:/root/quant/btc_trade2.py "C:/Users/Elin/Desktop/"
-scp -r -P 50501 "C:/Users/Elin/Desktop/market_json.py" root@154.36.183.45:/root/quant/market_json/
-
-scp -r -P 50501 root@154.36.183.45:/root/quant/klines/btc5min.py "C:/Users/Elin/Desktop/"
-
-# 拉取文件夹
-scp -r -P 50501 root@154.36.183.45:/root/quant/klines/* "C:/Users/Elin/Desktop/"
-
-#
-scp -r -P 50501 root@154.36.183.45:/root/quant/btc_trade/account_info.db "C:/Users/Elin/Desktop/"
-```
-
-```
-scp -r root@154.36.183.45:/var/www/html/* "C:/Users/Elin/Desktop/file/"
-```
-
-```
-nano /root/quant/btc_trade/wallet_trade.py
-```
-
-拉取py文件
-
-```
-scp -r -P 50501 root@154.36.183.45:/root/quant/app.py "C:/Users/Elin/Desktop/"
-scp -r -P 50501 root@154.36.183.45:/root/quant/binance_trade.py "C:/Users/Elin/Desktop/"
-```
-
-###### 移除vps的所有文件
-
-```
-rm -rf /var/www/html/*
-```
-
-###### 回传文件
-
-```
-scp -r "C:/Users/源恒/Desktop/0322/*" root@154.36.183.45:/var/www/html/
-scp -r -P 50501 "C:\Users\源恒\Downloads\index.html" root@154.36.183.45:/var/www/html/
-scp -r -P 50501 "C:/Users/Elin/Desktop/0328/*" root@154.36.183.45:/var/www/html/quant/
-scp -r -P 50501 "C:/Users/Elin/Desktop/binance_trade.py" root@154.36.183.45:/root/quant/
-
-# 回传文件到quant文件夹
-scp -r -P 50501 "C:/Users/Elin/Desktop/file/*" root@154.36.183.45:/var/www/html/quant/
-
-#
-scp -r -P 50501 "C:/Users/Elin/Desktop/btc5min.py" root@154.36.183.45:/root/quant/klines/
-# 传新闻的py程序
-scp -r -P 50501 "C:/Users/Elin/Desktop/fetch_news.py" root@154.36.183.45:/root/quant/
-```
-
-###### 权限修复三件套
-
-```
-chown -R www-data:www-data /var/www && find /var/www -type d -exec chmod 755 {} \; && find /var/www -type f -exec chmod 644 {} \;
-```
-
-其他命令
-
-###### 启动量化python环境
-
-```
-cd /root/quant && source venv/bin/activate
-```
-
-###### 查看定时任务日志
-
-```
-cat /var/www/logs/cron.log
-
-rm -rf /var/www/html/quant/logs/cron.log
-
-# 查看json文件
-cat /var/www/html/quant/logs/wallet_trade.json
-```
-
-##### Nginx安装配置
-
-###### 安装 nginx
-
-```
-sudo apt update
-
-sudo apt install nginx -y
-```
-
-###### 启动并设置开机自启
-
-```
-sudo systemctl start nginx
-sudo systemctl enable nginx
-```
-
-###### 设置Nginx的防火墙端口
-
-```
-sudo ufw allow 'Nginx Full'
-
-或直接允许 80 端口
-sudo ufw allow 80
-sudo ufw allow 443
-```
-
-###### 安装Certbot
-
-```
-sudo apt install certbot python3-certbot-nginx -y
-```
-
-###### 配置https证书
-
-将域名替换为你自己的
-
-```
-sudo certbot --nginx -d server.moonode.uk -d moonode.uk
-```
-
-文件夹结构查看
-
-```
-tree
-
-sudo apt update && sudo apt install tree -y
-
-cd /
-
-mkdir /root/quant
-
-网页文件整理
-mkdir /root/proxy/config
-
-# 创建网站子目录
-mkdir -p /root/website/{html,assets,backup}
-```
-
-###### 网站个人配置
-
-```
-sudo nano /etc/nginx/sites-available/default
-```
-
-查看配置
-
-```
-cat /etc/nginx/sites-available/default
-```
-
-###### 错误日志
-
-```
-错误日志实时监控
-sudo tail -f /var/log/nginx/error.log
-```
-
-###### 网页图片问题
-
-```
-https://moonode.uk/images/logo.svg?v=test1
-```
-
-> 浏览器缓存：你的浏览器之前缓存了一个错误的 404 响应，并且死死地抓着不放，即使你后来修好了服务器，它依然直接返回缓存的 404，根本不去服务器请求。
->
-> Ctrl + Shift + R
-
-###### 利用 Nginx 静态文件服务
-
-```
-sudo nano /etc/nginx/sites-available/default
-```
-
-更新配置文件
-
-```
-sudo nginx -t
-```
-
-重新加载服务
-
-```
-sudo systemctl reload nginx
-```
-
-再次检查服务状态
-
-
-
-修改
-
-```
-server {
-    listen 80;
-    server_name your-domain.com;
-
-    # 其他配置...
-
-    # --- 新增的日志访问配置 ---
-    location /my-logs/ {
-        alias /path/to/your/quant/logs/; # 注意：这里必须是绝对路径，且末尾要有斜杠
-        autoindex on; # 可选：开启目录浏览，可以看到有哪些日志文件
-        # 为了安全，可以设置简单的账号密码（htpasswd）
-    }
-}
-```
-
-```
-alias /root/quant/logs;
-```
-
-###### nginx配置文件位置查询
-
-该命令用于测试 Nginx 配置文件的语法是否正确，
-
-执行时**会直接显示主配置文件的路径**
-
-```
-sudo nginx -t
-```
-
-```
-/etc/nginx/nginx.conf
-```
-
-###### 检查nginx本地日志
-
-```
-tail -n 20 /var/log/nginx/access.log
-```
-
-###### 隐藏nginx版本号
-
-修改Nginx 配置隐藏版本号
-
-```
-nano /etc/nginx/nginx.conf
-```
-
-为了让扫描器觉得你的服务器“不好下口”，建议在 nginx.conf 的 http 块中加入：
-
-```
-server_tokens off;
-```
-
-##### 网页数据库配置
-
-###### 安装数据库以支持登录功能
-
-一键安装命令
-
-```
-sudo apt update && sudo apt install mariadb-server -y
-```
-
-检查状态
-
-```
-sudo systemctl status mariadb
-```
-
-###### 安全初始化
-
-```
-sudo mysql_secure_installation
-```
-
-- 提示 `Enter current password for root`: 直接按 **Enter** (初始没有密码)。
-- `Switch to unix_socket authentication`: 输入 **n** (否)。
-- `Change the root password?`: 输入 **y** (是)，然后设置一个强密码（请记好，后面配置 PHP 要用）。`·96$ecret`
-- `Remove anonymous users?`: **y**
-- `Disallow root login remotely?`: **y**
-- `Remove test database and access to it?`: **y**
-- `Reload privilege tables now?`: **y**
-
-##### Flask后端服务API
-
-###### 守护进程创建
-
-让 API 在后台稳定运行，断线也不停
-
-```
-sudo nano /etc/systemd/system/quant_api.service
-```
-
-填写内容
-
-```
-[Unit]
-Description=Binance Quant API Service
-After=network.target
-
-[Service]
-User=root
-Group=root
-WorkingDirectory=/root/quant
-# 确保使用虚拟环境的 python
-Environment="PATH=/root/quant/venv/bin"
-ExecStart=/root/quant/venv/bin/python app.py
-Restart=always
-RestartSec=5
-# 日志输出到 journalctl
-StandardOutput=journal
-StandardError=journal
-
-[Install]
-WantedBy=multi-user.target
-```
-
-启动服务：
-
-```
-sudo systemctl daemon-reload
-sudo systemctl start quant_api
-sudo systemctl enable quant_api
-sudo systemctl status quant_api  # 确认状态为 active (running)
-```
-
-###### 守护进程清除
-
-停止并禁用服务
-
-```
-sudo systemctl stop quant_api
-sudo systemctl disable quant_api
-```
-
-删除服务配置文件
-
-> 系统服务的定义文件存放在 /etc/systemd/system/ 目录下，需要将其移除：
-
-```
-sudo rm /etc/systemd/system/quant_api.service
-```
-
-重载系统服务管理器
-
-```
-sudo systemctl daemon-reload && sudo systemctl reset-failed
-```
-
-清理程序文件
-
-```
-rm -rf 
-```
-
-##### NodeJS安装
-
-###### 安装 NVM 工具
-
-```
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-```
-
-###### 激活环境
-
-```
-source ~/.bashrc
-```
-
-###### 安装 Node.js (LTS 版本)
-
-```
-nvm install --lts
-```
-
-###### 验证安装
-
-```
-node -v
-npm -v
-```
-
-###### 安装 PM2 (进程管理器)
-
-已经装了 Nginx， 用 PM2 来管理 Node.js 进程
-
-```
-npm install -g pm2
-```
-
-###### 启动你的网站
-
-> 假设你的网站入口文件是 `app.js` (在 `/var/www/html/work` 目录下)：
-
-```
-cd /var/www/html/work
-pm2 start app.js --name "my-website"
-```
-
-###### 设置开机自启
-
-> 即使 VPS 重启，你的网站也会自动运行：
-
-```
-pm2 startup
-pm2 save
-```
-
-- 执行 pm2 startup 后，终端可能会输出一行带 sudo 的命令，记得复制那行命令再执行一次。
-
-###### 网站任务部署——1
-
-需要安装一个轻量级的 HTML 解析库 cheerio（类似于服务器端的 jQuery），它能帮我们精准地提取 <title> 和 <meta> 内容。
-
-在你的项目根目录 (/var/www/html/work) 下执行：
-
-```
-npm install cheerio
-```
-
-编写 Node.js 脚本
-
-创建一个名为 update_portfolio.js 的文件：
-
-```js
-const fs = require('fs');
-const path = require('path');
-const cheerio = require('cheerio');
-
-// ================= 配置区域 =================
-const PORTFOLIO_DIR = './portfolio';  // 作品文件夹
-const TARGET_FILE = './works.html';   // 首页文件
-// ===========================================
-
-console.log('🔍 正在扫描 portfolio 文件夹...');
-
-// 1. 读取文件夹下所有文件
-fs.readdir(PORTFOLIO_DIR, (err, files) => {
-    if (err) {
-        console.error('❌ 读取文件夹失败:', err);
-        return;
-    }
-
-    // 2. 过滤出 .html 文件
-    const htmlFiles = files.filter(file => path.extname(file) === '.html');
-    
-    let projectsData = [];
-
-    // 3. 遍历文件提取信息
-    htmlFiles.forEach(file => {
-        const filePath = path.join(PORTFOLIO_DIR, file);
-        const fileContent = fs.readFileSync(filePath, 'utf8');
-        
-        // 使用 cheerio 加载 HTML 内容
-        const $ = cheerio.load(fileContent);
-        
-        // 提取标题
-        const title = $('title').text().trim();
-        
-        // 提取描述
-        const description = $('meta[name="description"]').attr('content') || '暂无简介';
-        
-        // 提取封面图 (如果没有配置 cover meta，这里可以写个默认图)
-        let cover = $('meta[name="cover"]').attr('content');
-        if (!cover) {
-            // 简单处理：如果没有 meta 标签，尝试找第一个 img 标签，或者给个默认值
-            // 这里为了简单，先给个默认占位，或者你可以强制要求加 meta 标签
-            cover = ''; 
-        }
-
-        projectsData.push({
-            filename: file,
-            title: title,
-            desc: description,
-            cover: cover
-        });
-    });
-
-    // 4. 排序：按文件名倒序 (002.html 排在 001.html 前面)
-    projectsData.sort((a, b) => b.filename.localeCompare(a.filename));
-
-    // 5. 生成 HTML 字符串
-    let htmlList = '';
-    projectsData.forEach(p => {
-        // 注意图片路径：因为 works.html 在根目录，图片在 portfolio/001/images/xxx.jpg
-        // 所以路径要写成 portfolio/001/...
-        // 如果 p.cover 是 ./images/xxx.jpg，我们需要把 ./ 替换成 portfolio/具体文件夹/
-        
-        // 这里为了演示简单，假设 cover 是相对路径 ./images/xxx.jpg
-        // 我们需要修正路径指向正确的作品目录
-        let finalImgSrc = '';
-        if(p.cover) {
-             // 简单的路径修正逻辑：把 ./images/... 变成 portfolio/001/images/...
-             // 注意：这里有个小逻辑漏洞，如果 cover 写的是绝对路径就不需要改
-             // 建议在你的 001.html 里 cover 写相对路径，比如 images/001-main.jpg (去掉前面的 ./)
-             finalImgSrc = `portfolio/${p.filename.replace('.html', '')}/${p.cover.replace('./', '')}`;
-        }
-
-        htmlList += `
-            <article class="article-card">
-                <a href="portfolio/${p.filename}" class="work-a">
-                    <div class="card-image-container">
-                        <img src="${finalImgSrc}" alt="${p.title}" class="card-image">
-                        <div class="tag">作品</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="meta">Posted on ${p.filename}</div>
-                        <h3>${p.title}</h3>
-                        <p>${p.desc}</p>
-                    </div>
-                </a>
-            </article>
-        `;
-    });
-
-    // 6. 读取 works.html 并进行替换
-    fs.readFile(TARGET_FILE, 'utf8', (err, data) => {
-        if (err) {
-            console.error('❌ 读取 works.html 失败:', err);
-            return;
-        }
-
-        // 定义替换的标记
-        const startMarker = '<!-- PORTFOLIO_LIST_START -->';
-        const endMarker = '<!-- PORTFOLIO_LIST_END -->';
-
-        const startIndex = data.indexOf(startMarker);
-        const endIndex = data.indexOf(endMarker);
-
-        if (startIndex !== -1 && endIndex !== -1) {
-            // 拼接新内容：标记前 + 新生成的列表 + 标记后
-            const newContent = data.slice(0, startIndex + startMarker.length) + 
-                               '\n' + htmlList + '\n' + 
-                               data.slice(endIndex);
-
-            // 写回文件
-            fs.writeFile(TARGET_FILE, newContent, 'utf8', (err) => {
-                if (err) {
-                    console.error('❌ 写入文件失败:', err);
-                } else {
-                    console.log(`✅ 成功更新 ${TARGET_FILE}，共生成 ${projectsData.length} 个作品卡片。`);
-                }
-            });
-        } else {
-            console.log('❌ 错误：在 works.html 中找不到注释标记。');
-        }
-    });
-});
-```
-
-运行脚本
-
-```
-node update_portfolio.js
-```
-
-##### TWCSS3.4.0
-
-###### 解决twcss，浏览器cdn问题
-
-```
-# 进入index.html所在
-cd /var/www/static
-
-# 初始化 npm 项目
-npm init -y
-
-# 安装 Tailwind CSS 3.4.0
-npm install -D tailwindcss@3.4.0
-
-# 生成 Tailwind 配置文件
-npx tailwindcss init
-
-# 修改配置文件，扫描所有 HTML 文件
-nano tailwind.config.js
-```
-
-将内容修改
-
-```js
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ["./**/*.html"],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-```
-
-保存退出（Ctrl+O, Enter, Ctrl+X）
-
-创建源 CSS 文件
-
-```
-mkdir -p src
-cat > src/input.css <<EOF
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-EOF
-```
-
-构建生产版 CSS
-
-```
-npx tailwindcss -i ./src/input.css -o ./css/tailwind.min.css --minify
-```
-
-修改 HTML 文件，移除 CDN，引入本地 CSS
-
-```
-#删除这一行：
-<script src="https://cdn.tailwindcss.com"></script>
-
-#在 <head> 中添加：
-<link rel="stylesheet" href="/css/tailwind.min.css">
-```
-
-确认文件权限
-
-```
-chmod 755 /var/www/static/css
-chmod 644 /var/www/static/css/tailwind.min.css
-```
-
-#### 2.Debian服务器
+#### 系统
 
 ##### 用户管理
+
+- root
+- admin
 
 ###### 创建管理员用户
 
@@ -749,8 +122,6 @@ sudo ufw allow 12345/tcp
 ```
 sudo ufw delete allow 2053/tcp
 ```
-
-
 
 ##### 服务器ssh
 
@@ -906,7 +277,6 @@ sudo nano /etc/ssh/sshd_config
 > 确保里面只有 Port 50501。
 >
 > 删除或注释掉（加 #） Port 22。
->
 
 保存退出后重启服务
 
@@ -1118,11 +488,9 @@ rm -rf /root/.cache/pip
 df -h
 ```
 
+#### 量化
 
-
-#### 量化项目
-
-###### 虚拟环境
+###### 生成虚拟环境
 
 ```
 python3 -m venv venv
@@ -1130,10 +498,9 @@ python3 -m venv venv
 
 ###### 激活虚拟环境
 
-```
-source venv/bin/activate
+以绝对路径激活
 
-# 绝对路径
+```
 source /root/quant/venv/bin/activate
 ```
 
@@ -1238,6 +605,293 @@ pip install python-dotenv
 ```
 
 1
+
+#### 网页
+
+##### 更新网页文件
+
+###### 从服务器拉取文件
+
+语法格式
+
+```
+scp -r -P 端口号 用户名@服务器IP：[目标文件夹路径]/* [本地文件存放路径]
+```
+
+###### 从本地上传/回传文件
+
+语法格式
+
+```
+scp -r -P 端口号 [本地文件存放路径/*] 用户名@服务器IP：[目标文件夹路径]
+```
+
+##### 文件权限修复
+
+因上传文件用的root管理员，而网页文件其权限为www-data，须修复
+
+```
+chown -R www-data:www-data /var/www && find /var/www -type d -exec chmod 755 {} \; && find /var/www -type f -exec chmod 644 {} \;
+```
+
+##### Nginx安装配置
+
+###### 安装 nginx
+
+```
+sudo apt update
+
+sudo apt install nginx -y
+```
+
+###### 启动并设置开机自启
+
+```
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+###### 设置Nginx的防火墙端口
+
+```
+sudo ufw allow 'Nginx Full'
+
+或直接允许 80 端口
+sudo ufw allow 80
+sudo ufw allow 443
+```
+
+###### 安装Certbot
+
+```
+sudo apt install certbot python3-certbot-nginx -y
+```
+
+###### 申请并配置https证书
+
+```
+sudo certbot --nginx -d server.moonode.uk -d moonode.uk
+```
+
+##### Nginx网站个人配置
+
+个人配置
+
+```
+sudo nano /etc/nginx/sites-available/default
+```
+
+###### 修改Nginx 配置隐藏版本号
+
+默认配置
+
+```
+nano /etc/nginx/nginx.conf
+```
+
+为了让扫描器觉得你的服务器“不好下口”，建议在 nginx.conf 的 http 块中加入：
+
+```
+server_tokens off;
+```
+
+###### 查看配置
+
+```
+cat /etc/nginx/sites-available/default
+```
+
+###### 更新配置文件
+
+```
+sudo nginx -t
+```
+
+> 该命令用于测试 Nginx 配置文件的语法是否正确，执行时**也会直接显示主配置文件的路径**
+
+###### 重新加载服务
+
+```
+sudo systemctl reload nginx
+```
+
+##### Nginx错误日志
+
+###### 错误日志实时监控
+
+```
+sudo tail -f /var/log/nginx/error.log
+```
+
+##### 网页数据库——MariaDB配置
+
+###### 安装数据库以支持登录功能
+
+一键安装命令
+
+```
+sudo apt update && sudo apt install mariadb-server -y
+```
+
+检查状态
+
+```
+sudo systemctl status mariadb
+```
+
+###### 安全初始化
+
+```
+sudo mysql_secure_installation
+```
+
+- 提示 `Enter current password for root`: 直接按 **Enter** (初始没有密码)。
+- `Switch to unix_socket authentication`: 输入 **n** (否)。
+- `Change the root password?`: 输入 **y** (是)，然后设置一个强密码（请记好，后面配置 PHP 要用）。`·396ecret`
+- `Remove anonymous users?`: **y**
+- `Disallow root login remotely?`: **y**
+- `Remove test database and access to it?`: **y**
+- `Reload privilege tables now?`: **y**
+
+###### 数据库管理
+
+登录你的 MariaDB：
+
+```
+mysql -u root -p
+```
+
+输入密码登录后，直接运行这句 SQL：
+
+```
+SHOW VARIABLES LIKE 'datadir';
+```
+
+数据库路径
+
+```
+MariaDB [(none)]> SHOW VARIABLES LIKE 'datadir';
++---------------+-----------------+
+| Variable_name | Value           |
++---------------+-----------------+
+| datadir       | /var/lib/mysql/ |
++---------------+-----------------+
+1 row in set (0.017 sec)
+```
+
+创建数据库
+
+```
+CREATE DATABASE IF NOT EXISTS binance_quant DEFAULT CHARACTER SET utf8mb4;
+```
+
+切换数据库
+
+```
+USE binance_quant;
+```
+
+展示表
+
+```
+SHOW TABLES;
+```
+
+数据检验
+
+```
+SELECT * FROM btc_swap_5m ORDER BY BeiJing DESC LIMIT 3;
+```
+
+###### Win本地获取数据
+
+> 本地获取数据demo
+
+```python
+import pandas as pd
+from sshtunnel import SSHTunnelForwarder
+import pymysql
+
+# 在本地电脑上，秘密建立一条通往远程VPS的加密隧道
+with SSHTunnelForwarder(
+    ('你的VPS公网IP', 50501),               # 你的 VPS IP 和修改后的 SSH 端口
+    ssh_username="root",
+    ssh_pkey="~/.ssh/id_rsa",              # 替换为你本地电脑上的 SSH 密钥路径
+    remote_bind_address=('127.0.0.1', 3306) # 目标直指 VPS 本地的 MariaDB
+) as tunnel:
+
+    # 2. 本地程序直接连接被映射过来的安全本地端口
+    db_conn = pymysql.connect(
+        host='127.0.0.1',
+        port=tunnel.local_bind_port,       # 隧道随机生成的本地中转端口
+        user='root',
+        password='你.env里的MariaDB密码',
+        database='binance_quant'
+    )
+
+    # 3. 祭出 pandas，一句话把 VPS 里的海量数据拉到本地！
+    print("🚀 正在跨时空远程读取最新 K 线数据...")
+    df = pd.read_sql("SELECT * FROM btc_swap_5m ORDER BY BeiJing DESC LIMIT 500", db_conn)
+    db_conn.close()
+
+# 4. 此时数据已经在你本地电脑的内存里了，随心所欲地打印和分析
+print(df)
+```
+
+##### NodeJS安装
+
+###### 安装 NVM 工具
+
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
+
+###### 激活环境
+
+```
+source ~/.bashrc
+```
+
+###### 安装 Node.js (LTS 版本)
+
+```
+nvm install --lts
+```
+
+###### 验证安装
+
+```
+node -v
+npm -v
+```
+
+###### 安装 PM2 (进程管理器)
+
+已经装了 Nginx， 用 PM2 来管理 Node.js 进程
+
+```
+npm install -g pm2
+```
+
+###### 启动你的网站
+
+> 假设你的网站入口文件是 `app.js` (在 `/var/www/html/work` 目录下)：
+
+```
+cd /var/www/html/work
+pm2 start app.js --name "my-website"
+```
+
+###### 设置开机自启
+
+> 即使 VPS 重启，你的网站也会自动运行：
+
+```
+pm2 startup
+pm2 save
+```
+
+- 执行 pm2 startup 后，终端可能会输出一行带 sudo 的命令，记得复制那行命令再执行一次。
 
 #### 代理加速
 
@@ -1434,26 +1088,23 @@ ACEM脚本：
 
 9. 点击创建
 
-###### 软件
+###### 软件端使用
 
-Windows：V2rayN
+- Windows：Netch
 
-Mac：
+- Mac：
 
-安卓：V2rayNG
-
-###### Nginx文件配置
-
-```
-
-```
+- 安卓：V2rayNG
 
 
+**利用Nginx反向代理**
+
+更改
 
 ```
 location /v2ray/ {
     proxy_redirect off;
-    proxy_pass http://127.0.0.1:12345; # 对应 x-ui 节点端口
+    proxy_pass http://127.0.0.1:12345; # x-ui端口
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
@@ -1461,60 +1112,34 @@ location /v2ray/ {
 }
 ```
 
-##### 防火墙端口
+##### 代理优选IP
+
+> 工具： CloudflareSpeedTest（开源项目）
+>
+> 功能：查询Cloudflare的最快节点，配合proxy
+
+- 解压后运行`CloudflareST.exe`
+
+
+- 工具会自动测试几千个 Cloudflare 的 IP，并按延迟和下载速度排序
+
+
+- 测试结束后，你会得到一个csv表格
+
+
+**修改代理客户端设置**
+
+以Netch为例
 
 ```
-
-    location /v2ray/ {
-        if ($http_upgrade != "websocket") { 
-            return 404; #如果不是WS请求，直接返回404
-        }
-        proxy_redirect off;
-        proxy_pass http://127.0.0.1:12345; #转发至3x-ui端口
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-        # 传递真实 IP，方便你在面板看日志
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
+优选IP:443
+伪装域名:panel.moonode.uk
+SNI:panel.moonode.uk
 ```
 
-###### 端口连接-延迟测试
+**日本服务器优选ip**
 
 ```
-https://ping.pe/
-```
-
-##### 优选IP
-
-###### 寻找最优 IP
-
-> 目前最流行的是 CloudflareSpeedTest（开源项目）
-
-解压后运行`CloudflareST.exe`
-
-工具会自动测试几千个 Cloudflare 的 IP，并按 延迟 和 下载速度 排序
-
-测试结束后，你会得到一个列表。
-
-选一个延迟最低（比如 50-100ms）且下载速度最快的 IP（例如 162.159.x.x 或 104.x.x.x）。
-
-###### 修改代理客户端设置
-
-需要把“假 IP”填进去，但告诉服务器“真域名”
-
-地址 (Address)：填入你刚才优选出来的 IP（例如 104.16.123.45）。
-
-伪装域名 (Host / HTTP Host)：填入你的域名 panel.moonode.uk。
-
-SNI (Server Name Indication)：必须填 panel.moonode.uk。
-
-端口：依然是 443。
-
-```
-# 日本服务器优选ip
 162.159.39.28
 162.159.44.234
 162.159.44.36
@@ -1523,44 +1148,40 @@ SNI (Server Name Indication)：必须填 panel.moonode.uk。
 162.159.45.188
 ```
 
-##### ip测试
+#### Docker
 
-###### ping检测
-
-```
-ping.pe
-```
-
-###### ip欺诈分
+更新系统索引并安装必要的 HTTPS 传输组件
 
 ```
-https://scamalytics.com/
-```
-
-#### Docker安装
-
-```
-# 1. 更新系统索引并安装必要的 HTTPS 传输组件
 sudo apt update && sudo apt install -y curl
+```
 
-# 2. 下载并运行 Docker 官方安装脚本
+下载并运行 Docker 官方安装脚本
+
+```
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
+```
 
-# 3. 启动并设置开机自启
+启动并设置开机自启
+
+```
 sudo systemctl enable --now docker
 ```
 
-安装 Docker Compose (插件版)
+安装 Docker Compose(插件版)
 
 ```
 sudo apt install -y docker-compose-plugin
+```
 
-验证安装
+###### 验证安装
+
+```
 docker compose version
 ```
 
-禁止自启动
+###### 禁止docker开机自启动
 
 ```
 sudo systemctl disable docker
@@ -1574,7 +1195,7 @@ sudo systemctl stop docker
 sudo systemctl stop docker.socket
 ```
 
-彻底“杀死”残留进程
+彻底杀死docker的残留进程
 
 ```
 sudo pkill -f docker && sudo pkill -f containerd

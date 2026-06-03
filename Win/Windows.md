@@ -283,3 +283,12 @@ else:
 4. 输入 `Capture`，选择 **`Capture full size screenshot`** 并回车
 5. 浏览器自动生成长截图并保存为 `.png` 到下载文件夹
 
+## 5.Git
+
+###### git bash 代理
+
+```
+git config --global http.proxy socks5://127.0.0.1:2801
+git config --global https.proxy socks5://127.0.0.1:2801
+```
+
