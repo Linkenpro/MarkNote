@@ -2,6 +2,10 @@
 
 #### 系统
 
+```
+cd /root/quant/binance && source /root/quant/venv/bin/activate
+```
+
 ##### 用户管理
 
 - root
