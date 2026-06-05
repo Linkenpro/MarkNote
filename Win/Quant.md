@@ -43,3 +43,84 @@
   > `System clock synchronized: yes`
   >
   > `NTP service: active`
+
+##### 量化Systemd守护进程
+
+###### 1.创建 Service 配置文件
+
+```
+sudo nano /etc/systemd/system/quant.service
+```
+
+粘贴内容
+
+```
+[Unit]
+Description=Binance_quant
+After=network.target
+
+[Service]
+# 设置工作目录
+WorkingDirectory=/root/quant/binance/
+# 推荐使用绝对路径执行python
+ExecStart=/root/quant/venv/bin/python main.py
+# 确保程序异常退出后自动重启，延迟 5 秒
+Restart=always
+RestartSec=5
+User=root
+# 统一将日志存放在工作目录下，确保文件夹权限
+StandardOutput=append:/root/quant/binance/log/trading.log
+StandardError=append:/root/quant/binance/log/error.log
+
+[Install]
+WantedBy=multi-user.target
+```
+
+###### 2.加载并启动服务
+
+重载 Systemd 配置，每次修改 .service 文件后必须执行
+
+```
+sudo systemctl daemon-reload
+```
+
+设置开机自启动
+
+```
+sudo systemctl enable quant
+```
+
+启动服务命令
+
+```
+sudo systemctl start quant
+```
+
+**日常管理**
+
+查看状态，是否在跑，以及最近的报错信息
+
+```
+sudo systemctl status quant
+```
+
+停止运行
+
+```
+sudo systemctl stop quant
+```
+
+重启服务（更新main.py)
+
+```
+sudo systemctl restart quant
+```
+
+实时查看日志,代替原来的 tail -f
+
+```
+journalctl -u quant -f
+```
+
+
+
