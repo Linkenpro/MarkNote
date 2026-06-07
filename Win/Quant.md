@@ -122,5 +122,23 @@ sudo systemctl restart quant
 journalctl -u quant -f
 ```
 
+##### 管理quant文件夹
 
+拉取文件
+
+```
+scp -r -P 50501 root@154.36.183.45:/root/quant/binance/* "C:\Users\Elin\Desktop\openCode\quant"
+```
+
+回传文件
+
+```
+scp -r -P 50501 "C:\Users\Elin\Desktop\openCode\quant\*" root@154.36.183.45:/root/quant/binance/
+```
+
+只拉取数据库
+
+```
+scp -r -P 50501 root@154.36.183.45:/root/quant/binance/db/* "C:\Users\Elin\Desktop\openCode\quant\db"
+```
 
