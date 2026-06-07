@@ -127,18 +127,28 @@ journalctl -u quant -f
 拉取文件
 
 ```
-scp -r -P 50501 root@154.36.183.45:/root/quant/binance/* "C:\Users\Elin\Desktop\openCode\quant"
+scp -r -P 50501 root@154.36.183.45:/root/quant/binance/* "D:\Python\Program\quant"
 ```
 
 回传文件
 
 ```
-scp -r -P 50501 "C:\Users\Elin\Desktop\openCode\quant\*" root@154.36.183.45:/root/quant/binance/
+scp -r -P 50501 "D:\Python\Program\quant\*" root@154.36.183.45:/root/quant/binance/
+```
+
+```
+scp -r -P 50501 "D:\Python\Program\quant\report\*" root@154.36.183.45:/root/quant/binance/report/
+```
+
+回传
+
+```
+scp -r -P 50501 "D:\Python\Program\quant\trade\*" root@154.36.183.45:/root/quant/binance/trade/
 ```
 
 只拉取数据库
 
 ```
-scp -r -P 50501 root@154.36.183.45:/root/quant/binance/db/* "C:\Users\Elin\Desktop\openCode\quant\db"
+scp -r -P 50501 root@154.36.183.45:/root/quant/binance/db/* "D:\Python\Program\quant\db"
 ```
 
