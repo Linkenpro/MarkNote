@@ -140,6 +140,17 @@ ssh root@服务器IP
 
 安装插件：**SFTP**（推荐 `Natizyskunk` 版本）
 
+> 文件设置："C:\Users\源恒\.ssh\config"
+
+```
+Host my-vps
+    HostName 154.36.183.45
+    User root
+    Port 50501
+    # 正确路径
+    IdentityFile C:\Users\源恒\.ssh\id_rsa
+```
+
 **配置 `.vscode/sftp.json`**：
 ```json
 {
@@ -148,21 +159,19 @@ ssh root@服务器IP
     "protocol": "sftp",
     "port": 50501,
     "username": "root",
-    "privateKeyPath": "C:/Users/源恒/.ssh/id_rsa", 
-    "remotePath": "/var/www",
-    "uploadOnSave": true,
-    "downloadOnOpen": true,
+    "privateKeyPath": "C:/Users/源恒/.ssh/id_rsa",
+    "remotePath": "/root/quant/binance",
+    "uploadOnSave": false,
     "watcher": {
         "files": "*",
-        "autoUpload": true,
-        "autoDelete": true
+        "autoUpload": false,
+        "autoDelete": false
     },
     "ignore": [
-    "**/.vscode/**",
-    "**/.git/**",
-    "**/node_modules/**",
-    "**/logs/**"
-]
+        "**/.vscode/**",
+        "**/.git/**",
+        "**/__pycache__/**"
+    ]
 }
 ```
 
@@ -176,6 +185,10 @@ ssh root@服务器IP
 - **右键点击文件夹** -> 选择 `SFTP: Sync Remote -> Local`。
 - 这会扫描 VPS 上的新文件并下载到本地
 
+
+
+
+
 ### 3.3 Python 自动 SCP 脚本
 
 #### 方法一：调用系统 scp 命令（依赖 Git Bash 或 OpenSSH）
@@ -185,12 +198,12 @@ import subprocess
 
 def upload_via_scp(local_file, remote_path):
     command = f"scp {local_file} {remote_path}"
-    print(f"🚀 正在上传: {local_file} ...")
+    print(f"正在上传: {local_file} ...")
     try:
         subprocess.run(command, shell=True, check=True)
-        print("✅ 上传成功！")
+        print("上传成功！")
     except subprocess.CalledProcessError as e:
-        print(f"❌ 上传失败: {e}")
+        print(f"上传失败: {e}")
 
 # 示例
 REMOTE_USER = "root"
