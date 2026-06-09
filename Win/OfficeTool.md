@@ -27,13 +27,13 @@
 
 ###### 激活步骤
 
-- 在许可证管理中安装批量许可证，例如 *Office LTSC 专业增强版 2024 - 批量许可证*
+- 在许可证管理中安装批量许可证，例如**Office LTSC 专业增强版 2024 - 批量许可证**
 
 - 在 KMS 管理中设置一个 KMS 主机。KMS 主机可以是一个域名，也可以是一个 IP 地址
 
+  **kms主机地址网查询**
+
   ```
-  kms主机地址网查询
-  
   https://www.coolhub.top/tech-articles/kms_list.html
   ```
 
