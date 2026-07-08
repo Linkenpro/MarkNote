@@ -10,6 +10,27 @@ ffmpeg -i input.jpg  -q:v 30 output_compressed.jpg
 
 > -q:v 30（1为最高质量，100为最低质量），数值越低文件越大
 
+###### 批量压缩图片脚本
+
+```bat
+@echo off
+rem 1. 强制脚本使用 UTF-8 编码，彻底解决中文文件名乱码、不兼容的问题
+chcp 65001 > nul
+
+rem 2. 创建文件夹
+if not exist "compress_png" mkdir "compress_png"
+
+rem 3. 循环处理当前文件夹下的所有 bmp 和 BMP 图片（兼容大小写、中英数、空格）
+for /f "delims=" %%i in ('dir /b *.bmp *.BMP 2^>nul') do (
+    echo 正在压缩: "%%i"
+    ffmpeg -i "%%i" "compress_png\%%~ni.png" -y
+)
+
+echo.
+echo 全部压缩完成！
+pause
+```
+
 ###### 调整图片分辨率
 
 ```

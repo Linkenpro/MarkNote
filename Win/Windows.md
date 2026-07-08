@@ -19,10 +19,11 @@
 以**管理员身份**运行 PowerShell：
 
 - **卸载所有非商店应用**（保留微软商店）：
+  
   ```powershell
   Get-AppxPackage -allusers | Where-Object {$_.Name -notlike "*Microsoft.WindowsStore*"} | Remove-AppxPackage
   ```
-
+  
 - **恢复所有预装软件**：
   ```powershell
   Get-AppxPackage -allusers | foreach {Add-AppxPackage -register "$($_.InstallLocation)\appxmanifest.xml" -DisableDevelopmentMode}
@@ -281,4 +282,23 @@ takeown /f "C:\ProgramData\Autodesk\ODIS" /r /d y
 git config --global http.proxy socks5://127.0.0.1:2801
 git config --global https.proxy socks5://127.0.0.1:2801
 ```
+
+#### 7.浏览器兼容性
+
+> 政企网站兼容性，上传图片大小限制
+
+###### 微软官方Edge浏览器IE模式
+
+**开启全局开关**
+
+- 设置>>>默认浏览器>>>允许在 Internet Explorer 模式下重新加载网站
+- 设置为“允许”,根据提示重启浏览器
+
+**手动切换 IE 模式**
+
+- 打开目标政企网站
+- 点击右上角三个点>>>更多工具>>>在 Internet Explorer 模式下重新加载
+- 页面刷新后，地址栏左侧会出现一个蓝色的“e”图标，表示已成功进入 IE 模式
+
+###### 360浏览器
 
