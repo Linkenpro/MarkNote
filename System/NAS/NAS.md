@@ -41,7 +41,3 @@ DNS 基础见 [Cloudflare](../Cloudflare/Cloudflare.md)。凭据保存在服务�
 2. 确认 NAS 的公网 IPv6 与域名 AAAA 记录一致。
 3. 检查 IPv6 防火墙及服务监听地址、端口。
 4. 从具备 IPv6 的外部网络测试域名与 HTTPS。
-
-## 参考
-
-- [Lucky 安装与配置](https://lucky666.cn/docs/install/)
